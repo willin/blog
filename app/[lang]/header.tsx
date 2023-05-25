@@ -19,8 +19,8 @@ function PageLinks({ items }: { items: { href: string; label: string }[] }) {
   );
 }
 
-export async function MainHeader({ lang }: { lang: Locale }) {
-  const t = await translation(lang);
+export function MainHeader({ lang }: { lang: Locale }) {
+  const t = translation(lang);
 
   const items = allPages
     .filter((p) => p.lang === lang)

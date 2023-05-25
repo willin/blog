@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   description: 'Read my thoughts on software development, design, and more.'
 };
 
-export default async function BlogPage({ params: { lang } }: ContextParams) {
-  const t = await translation(lang);
+export default function BlogPage({ params: { lang } }: ContextParams) {
+  const t = translation(lang);
 
   return (
     <article>

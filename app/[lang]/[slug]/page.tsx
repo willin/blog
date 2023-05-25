@@ -5,12 +5,12 @@ import { ContextParams } from '../helper';
 import { Mdx } from '../blog/mdx';
 import ViewCounter from '../blog/view-counter';
 
-export default async function CustomPage({ params }: ContextParams) {
+export default function CustomPage({ params }: ContextParams) {
   const post = allPages.find((post) => post.slug === params.slug && post.lang === params.lang);
   if (!post) {
     notFound();
   }
-  const t = await translation(params.lang);
+  const t = translation(params.lang);
 
   return (
     <div>
@@ -22,6 +22,6 @@ export default async function CustomPage({ params }: ContextParams) {
   );
 }
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return allPages.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
 }

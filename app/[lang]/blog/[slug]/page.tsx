@@ -7,12 +7,12 @@ import { ContextParams } from '../../helper';
 
 // import type { Blog } from 'contentlayer/generated';
 
-export default async function Post({ params }: ContextParams) {
+export default function Post({ params }: ContextParams) {
   const post = allBlogs.find((post) => post.slug === params.slug && post.lang === params.lang);
   if (!post) {
     notFound();
   }
-  const t = await translation(params.lang);
+  const t = translation(params.lang);
 
   return (
     <div>
@@ -24,6 +24,6 @@ export default async function Post({ params }: ContextParams) {
   );
 }
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return allBlogs.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
 }

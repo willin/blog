@@ -2,8 +2,8 @@ import { translation } from '@/lib/i18n';
 import { ContextParams } from './helper';
 import { SocialLinks } from './social';
 
-export default async function Home({ params: { lang } }: ContextParams) {
-  const t = await translation(lang);
+export default function Home({ params: { lang } }: ContextParams) {
+  const t = translation(lang);
 
   return (
     <div className='flex justify-center'>
