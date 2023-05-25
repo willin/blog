@@ -1,0 +1,344 @@
+---
+title: 全栈框架应用快速集成 Authing SSO
+date: '2022-01-30'
+tags: [remix, nextjs, full-stack, sso, authing]
+description: 分别以 Next.js 和 Remix 框架为例，讲解如何在半小时内快速集成 Authing SSO
+image: /images/authing-full-stack/app-id-and-secret.png
+---
+
+# 可用资源
+
+- NPM 包
+  - `@authing/nextjs`：[https://github.com/Authing/authing-nextjs](https://github.com/Authing/authing-nextjs)
+  - `@authing/remix`： [https://github.com/Authing/authing-remix](https://github.com/Authing/authing-remix)
+- 论坛帮助
+  - Next.js 问题反馈： [https://forum.authing.cn/t/topic/601](https://forum.authing.cn/t/topic/601)
+  - Remix 问题反馈： [https://forum.authing.cn/t/topic/602](https://forum.authing.cn/t/topic/602)
+
+# Authing 用户池配置
+
+该部分基本上大部分框架是通用的，首先需要[创建用户池](https://www.authing.cn/?utm_source=v0&utm_campaign=blog&utm_medium=article&utm_term=userpool)应用。
+
+![](/images/blog/authing-full-stack/app-id-and-secret.png)
+
+填写应用名称，可以获取到 App ID 和 App Secret 配置。
+
+![](/images/blog/authing-full-stack/app-domain-and-callback-redirecturi.png)
+
+配置回调地址，注意如果是使用 Next.js 框架，建议用 `/api/xxx` 的前缀（所有接口服务必须在该目录下），如果是 Remix 框架则随意。
+
+这步的配置不着急，可以根据后续项目来进行更改。
+
+![](/images/blog/authing-full-stack/authorization-type.png)
+
+授权配置，默认即可。目前 SDK 提供的方式也是通过 `code`。（后续可能会添加更多灵活的选择，如果你对此有了解，可以集成自己的鉴权回调。）
+
+# Next.js
+
+## 安装依赖
+
+```bash
+npm install --save @authing/nextjs iron-session swr
+# or
+yarn add @authing/nextjs iron-session swr
+```
+
+## 配置环境变量
+
+如 `config/index.ts`，或者其他地方。建议不要忽略该步骤，将用到的变量参数统一管理。
+
+```ts
+export const clientId = process.env.AUTHING_CLIENT_ID || '61e4da899687d7055442f6b7';
+export const clientSecret = process.env.AUTHING_CLIENT_SECRET || '';
+export const appDomain = process.env.AUTHING_CLIENT_DOMAIN || 'https://remix.authing.cn';
+export const redirectUri = process.env.AUTHING_REDIRECT_URI || 'http://localhost:3000/authing/callback';
+export const logoutRedirectUri = process.env.AUTHING_LOGOUT_REDIRECT_URI || 'http://localhost:3000/';
+```
+
+## 创建 SessionStorage
+
+创建 `lib/session.ts`。示例中使用的是 `iron-session` 进行创建。
+
+## 创建登录、注销和回调 API
+
+注意：登录 URL 为 `/api/login`， 注销为 `/api/logout`
+
+创建 `pages/api/login.ts`：
+
+```ts
+import { createLoginApi } from '@authing/nextjs';
+import { appDomain, clientId, redirectUri } from '../../config';
+
+export default createLoginApi({
+  appDomain,
+  clientId,
+  redirectUri,
+  scope: 'openid roles username phone profile'
+});
+```
+
+创建 `pages/api/logout.ts`：
+
+```ts
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { createLogoutApi } from '@authing/nextjs';
+import { appDomain, logoutRedirectUri } from '../../config';
+import { sessionOptions } from '../../lib/session';
+
+export default withIronSessionApiRoute(
+  createLogoutApi({
+    appDomain,
+    redirectUri: logoutRedirectUri
+  }),
+  sessionOptions
+);
+```
+
+创建 `pages/api/callback.ts`：
+
+```ts
+import { createCallbackApi } from '@authing/nextjs';
+import { appDomain, clientId, clientSecret } from '../../config';
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { sessionOptions } from '../../lib/session';
+
+export default withIronSessionApiRoute(
+  createCallbackApi({
+    appDomain,
+    clientId,
+    clientSecret,
+    // 登录失败返回登录页
+    failureRedirect: '/error',
+    successRedirect: '/ssr'
+  }),
+  sessionOptions
+);
+```
+
+## 在 SSR 中使用
+
+参考 `pages/ssr.tsx`：
+
+```ts
+import { withIronSessionSsr } from 'iron-session/next';
+import { sessionOptions } from '../lib/session';
+
+export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
+  const user = req.session.user;
+
+  if (user === undefined) {
+    res.setHeader('location', '/api/login');
+    res.statusCode = 302;
+    res.end();
+    return {
+      props: {
+        user: { isLoggedIn: false }
+      }
+    };
+  }
+
+  return {
+    props: { user: req.session.user }
+  };
+}, sessionOptions);
+```
+
+## 在 SSG 中使用
+
+创建接口： `pages/api/me.ts`：
+
+```ts
+import { withIronSessionApiRoute } from 'iron-session/next';
+import { sessionOptions } from '../../lib/session';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export type User = {
+  isLoggedIn: boolean;
+  username: string;
+};
+
+export default withIronSessionApiRoute(userRoute, sessionOptions);
+
+async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
+  if (req.session.user) {
+    // in a real world application you might read the user id from the session and then do a database request
+    // to get more information on the user if needed
+    res.json({
+      ...req.session.user,
+      isLoggedIn: true
+    });
+  } else {
+    res.json({
+      isLoggedIn: false,
+      username: ''
+    });
+  }
+}
+```
+
+创建钩子 `hooks/use-user.ts`：
+
+```ts
+import { useEffect } from 'react';
+import Router from 'next/router';
+import useSWR from 'swr';
+import { User } from '../pages/api/me';
+
+export default function useUser({ redirectTo = '', redirectIfFound = false } = {}) {
+  const { data: user, error } = useSWR<User>('/api/me');
+
+  useEffect(() => {
+    // if no redirect needed, just return (example: already on /dashboard)
+    // if user data not yet there (fetch in progress, logged in or not) then don't do anything yet
+    if (!redirectTo || !user) return;
+
+    if (
+      // If redirectTo is set, redirect if the user was not found.
+      (redirectTo && !redirectIfFound && !user?.isLoggedIn) ||
+      // If redirectIfFound is also set, redirect if the user was found
+      (redirectIfFound && user?.isLoggedIn)
+    ) {
+      Router.push(redirectTo);
+    }
+  }, [user, redirectIfFound, redirectTo]);
+
+  return { user, error };
+}
+```
+
+创建页面 `pages/sg.tsx`：
+
+```ts
+import useUser from '../hooks/use-user';
+import Link from 'next/link';
+
+// Make sure to check https://nextjs.org/docs/basic-features/layouts for more info on how to use layouts
+export default function SgProfile() {
+  const { user } = useUser({
+    redirectTo: '/api/login'
+  });
+
+  return (
+    <>
+      <nav>
+        <Link href='/ssr'>SSR</Link> | <Link href='/api/logout'>Logout</Link>
+      </nav>
+      {user && (
+        <>
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+        </>
+      )}
+    </>
+  );
+}
+```
+
+## 小结
+
+从上面的例子中可以看出，在 Next.js 中使用，需要注意以下几点：
+
+- 你会安装更多的依赖
+  - 你需要自己选择第三方的 Session 存储方案，可以是 Cookie Session，也可以是 Redis 或者 JWT
+  - 你需要优化你的项目代码，区分好不同的页面类型。普通页面、SSR 页面、SSG 页面和 API（在 `/api` 目录下）
+  - 如果不使用 SSR 你可能会依赖 SWR 之类的库去优化你页面上的请求
+
+本示例项目代码下载：[CSDN](https://download.csdn.net/download/jslygwx/78527372)
+
+# Remix
+
+## 安装依赖
+
+```bash
+npm install --save @authing/remix
+# or
+yarn add @authing/remix
+```
+
+## 配置环境变量
+
+如 `app/config.server.ts`，或者其他地方。建议不要忽略该步骤，将用到的变量参数统一管理。
+
+```ts
+export const clientId = process.env.AUTHING_CLIENT_ID || '61e4da899687d7055442f6b7';
+export const clientSecret = process.env.AUTHING_CLIENT_SECRET || '';
+export const appDomain = process.env.AUTHING_CLIENT_DOMAIN || 'https://remix.authing.cn';
+export const redirectUri = process.env.AUTHING_REDIRECT_URI || 'http://localhost:3000/authing/callback';
+export const logoutRedirectUri = process.env.AUTHING_LOGOUT_REDIRECT_URI || 'http://localhost:3000/';
+```
+
+## 创建 SessionStorage
+
+创建 `app/services/session.server.ts`。
+
+注意， Remix v1.1.3 （截止目前，2022 年 2 月）及之前版本请不要使用 CookieSession，会存在 UTF-8 编码解析错误。
+
+## 创建登录页、注销页和回调页
+
+创建 `app/routes/login.tsx`：
+
+```ts
+import { createLoginLoader } from '@authing/remix';
+import { appDomain, clientId, redirectUri } from '~/config.server';
+
+export const loader = createLoginLoader({
+  appDomain,
+  clientId,
+  redirectUri,
+  scope: 'openid roles username phone profile'
+});
+```
+
+创建 `app/routes/logout.tsx`：
+
+```ts
+import { createLogoutLoader } from '@authing/remix';
+import { sessionStorage } from '~/services/session.server';
+import { appDomain, logoutRedirectUri } from '~/config.server';
+
+export const loader = createLogoutLoader({
+  redirectUri: logoutRedirectUri,
+  appDomain,
+  sessionStorage
+});
+```
+
+创建 `app/routes/authing/callback.tsx`：
+
+```ts
+import { createCallbackLoader } from '@authing/remix';
+import { sessionStorage } from '~/services/session.server';
+import { appDomain, clientId, clientSecret } from '~/config.server';
+
+export const loader = createCallbackLoader({
+  appDomain,
+  clientId,
+  clientSecret,
+  // 登录失败返回登录页
+  failureRedirect: '/error',
+  successRedirect: '/user',
+  sessionStorage
+});
+```
+
+## 在路由中使用
+
+```ts
+import { isAuthenticated } from '@authing/remix';
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await isAuthenticated(request, sessionStorage);
+
+  return json(user || {});
+};
+
+// 在页面中使用
+const user = useLoaderData();
+```
+
+## 小结
+
+对比来看，第一步就发现了 Remix 不需要过多的依赖，内置了一些常用的后端功能。
+
+但很不幸的是，在目前的版本（Remix v1.1.3），是存在重大 Bug 的，Cookie 不能存储 UTF-8 字符串，会导致登录信息无法读取。
+
+本示例项目代码下载：[CSDN](https://download.csdn.net/download/jslygwx/78527571)
