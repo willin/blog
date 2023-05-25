@@ -52,17 +52,17 @@ const social: SocialItem[] = [
   // 抖音
   {
     name: '抖音: v0',
-    url: 'https://wealth.willin.wang/_next/image?url=%2Fimages%2Fdouyin.png&w=640&q=75'
+    url: '/_next/image?url=%2Fimages%2Fdouyin.png&w=640&q=75'
   },
   // 支付宝实盘
   {
     name: '支付宝基金实盘',
-    url: 'https://wealth.willin.wang/_next/image?url=%2Fimages%2Falipay-fund.png&w=640&q=75'
+    url: '/_next/image?url=%2Fimages%2Falipay-fund.png&w=640&q=75'
   },
   // 微信公众号
   {
     name: '微信公众号：初瘦',
-    url: 'https://wealth.willin.wang/_next/image?url=%2Fimages%2Fqr.png&w=640&q=75'
+    url: '/_next/image?url=%2Fimages%2Fqr.png&w=640&q=75'
   },
   // SegmentFault
   {
