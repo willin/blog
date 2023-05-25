@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable */
 import { ComputedFields, defineDocumentType, makeSource } from 'contentlayer/source-files';
 import { i18n } from './i18n-config';
 
