@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { ComputedFields, defineDocumentType, makeSource } from 'contentlayer/source-files';
 import { i18n } from './i18n-config';
 
@@ -12,7 +12,7 @@ const computedFields: ComputedFields = {
     resolve: (doc) => i18n.locales.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}/`)) || i18n.defaultLocale
   },
   structuredData: {
-    type: 'object',
+    type: 'json',
     resolve: (doc) => ({
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
