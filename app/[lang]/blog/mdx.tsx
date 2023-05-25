@@ -24,13 +24,21 @@ const CustomLink = (props: { [k: string]: string }) => {
 
 function RoundedImage(props: { [k: string]: string }) {
   // @ts-ignore
-  return <Image alt={props.alt} className='rounded-lg' {...props} />;
+  return <Image alt={props.alt} className='rounded-lg shadow max-h-[80vh] max-w-[90%]' {...props} />;
 }
 
 function DefaultImage(props: { [k: string]: string }) {
   return (
     <div className='flex justify-center my-4'>
-      <img alt={props.alt} className='rounded-lg shadow max-h-[100vh]' {...props} />
+      <img alt={props.alt} className='rounded-lg shadow max-h-[80vh] max-w-[90%]' {...props} />
+    </div>
+  );
+}
+
+function CustomTable(props: { [k: string]: string }) {
+  return (
+    <div className='overflow-x-auto'>
+      <table {...props} />
     </div>
   );
 }
@@ -38,7 +46,8 @@ function DefaultImage(props: { [k: string]: string }) {
 const components = {
   Image: RoundedImage,
   img: DefaultImage,
-  a: CustomLink
+  a: CustomLink,
+  table: CustomTable
 };
 
 export function Mdx({ code }: { code: string }) {

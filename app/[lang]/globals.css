@@ -89,7 +89,7 @@
   }
 
   .prose table {
-    @apply table min-w-full table-zebra shadow;
+    @apply table min-w-[90%] w-full lg:w-[90%] table-zebra shadow mx-auto table-normal;
   }
 
   .prose tr {
@@ -97,12 +97,12 @@
   }
 
   [data-rehype-pretty-code-fragment] code {
-    @apply grid min-w-full w-full break-words border-0 bg-transparent p-0 text-sm text-black;
+    @apply grid break-words border-0 bg-transparent p-0 text-sm text-black;
     counter-reset: line;
     box-decoration-break: clone;
   }
   [data-rehype-pretty-code-fragment] pre {
-    @apply p-2 rounded shadow;
+    @apply mx-auto p-2 rounded shadow min-w-[90%] w-full lg:w-[90%];
   }
   [data-rehype-pretty-code-fragment] code * {
     user-select: text;

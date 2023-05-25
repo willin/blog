@@ -14,8 +14,7 @@ export default async function BlogPage({ params: { lang } }: ContextParams) {
   const t = await translation(lang);
 
   return (
-    <section>
-      <h1 className='font-bold text-3xl font-serif mb-5'>Blog</h1>
+    <article>
       {allBlogs
         .filter((p) => p.lang === lang)
         .sort((a, b) => {
@@ -32,6 +31,6 @@ export default async function BlogPage({ params: { lang } }: ContextParams) {
             </div>
           </Link>
         ))}
-    </section>
+    </article>
   );
 }
