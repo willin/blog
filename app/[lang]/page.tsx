@@ -2,6 +2,7 @@ import { translation } from '@/lib/i18n';
 import { ContextParams } from './helper';
 import { SocialLinks } from './social';
 import Link from 'next/link';
+import { allPages } from 'contentlayer/generated';
 
 export default async function Home({ params: { lang } }: ContextParams) {
   const t = await translation(lang);
@@ -19,7 +20,13 @@ export default async function Home({ params: { lang } }: ContextParams) {
             <Link className='btn btn-primary' href={`/${lang}/blog`}>
               {t('site.blog')}
             </Link>
-            {/* Pages & Projects */}
+            {allPages
+              .filter((p) => p.lang === lang)
+              .map((page) => (
+                <Link className='btn btn-secondary btn-outline' href={`/${lang}/${page.slug}`} key={page.slug}>
+                  {page.title}
+                </Link>
+              ))}
           </div>
           <h2 className='mt-4 btn btn-secondary cursor-default'>{t('site.social')}</h2>
           <div className='card-actions justify-center'>

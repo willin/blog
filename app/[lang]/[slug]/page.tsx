@@ -1,14 +1,12 @@
 import { notFound } from 'next/navigation';
-import { allBlogs } from 'contentlayer/generated';
+import { allPages } from 'contentlayer/generated';
 import { translation } from '@/lib/i18n';
-import ViewCounter from '../view-counter';
-import { Mdx } from '../mdx';
-import { ContextParams } from '../../helper';
+import { ContextParams } from '../helper';
+import { Mdx } from '../blog/mdx';
+import ViewCounter from '../blog/view-counter';
 
-// import type { Blog } from 'contentlayer/generated';
-
-export default async function Post({ params }: ContextParams) {
-  const post = allBlogs.find((post) => post.slug === params.slug && post.lang === params.lang);
+export default async function CustomPage({ params }: ContextParams) {
+  const post = allPages.find((post) => post.slug === params.slug && post.lang === params.lang);
   if (!post) {
     notFound();
   }
@@ -25,5 +23,5 @@ export default async function Post({ params }: ContextParams) {
 }
 
 export async function generateStaticParams() {
-  return allBlogs.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
+  return allPages.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
 }

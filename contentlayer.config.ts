@@ -2,7 +2,7 @@
 import { ComputedFields, defineDocumentType, makeSource } from 'contentlayer/source-files';
 import { i18n } from './i18n-config';
 
-const computedFields: ComputedFields = {
+const computedFields = (type: string): ComputedFields => ({
   slug: {
     type: 'string',
     resolve: (doc) => doc._raw.sourceFileName.replace(/^\d{4}-\d{1,2}-\d{1,2}-/, '').replace(/\.mdx$/, '')
@@ -17,18 +17,18 @@ const computedFields: ComputedFields = {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
       headline: doc.title,
-      datePublished: doc.publishedAt,
-      dateModified: doc.publishedAt,
-      description: doc.summary,
+      datePublished: doc.date,
+      dateModified: doc.date,
+      description: doc.excerpt,
       image: doc.image ? `https://willin.wang${doc.image}` : `https://willin.wang/api/og?title=${doc.title}`,
-      url: `https://willin.wang/${doc.lang}/blog/${doc.slug}`,
+      url: `https://willin.wang/${doc.lang}/${type === 'page' ? '' : `${type}/`}${doc.slug}`,
       author: {
         '@type': 'Person',
         name: 'Willin Wang'
       }
     })
   }
-};
+});
 
 export const Blog = defineDocumentType(() => ({
   name: 'Blog',
@@ -44,7 +44,7 @@ export const Blog = defineDocumentType(() => ({
       required: true
     }
   },
-  computedFields
+  computedFields: computedFields('blog')
 }));
 
 export const Page = defineDocumentType(() => ({
@@ -60,7 +60,8 @@ export const Page = defineDocumentType(() => ({
       type: 'string',
       required: true
     }
-  }
+  },
+  computedFields: computedFields('page')
 }));
 
 const contentLayerConfig = makeSource({
