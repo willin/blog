@@ -4,6 +4,8 @@ import { BaseURL } from '@/lib/config';
 export default function sitemap() {
   // Defined Routes
   const defs = ['', '/about', '/wallet'];
+  const lastModified = new Date().toISOString().split('T')[0];
+
   const routes = ['']
     .concat(...[...i18n.locales.map((lang) => defs.map((path) => `/${lang}${path}`))])
     .map((route) => ({

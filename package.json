@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.2.32",
+    "@vercel/analytics": "^1.0.1",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.7",
     "dlv": "^1.1.3",

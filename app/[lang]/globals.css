@@ -4,6 +4,7 @@
 
 @layer base {
   * {
+    white-space: pre-line;
     user-select: none;
     cursor: url('/images/default.cur'), default;
   }
