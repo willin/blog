@@ -15,7 +15,7 @@ export default async function Home({ params: { lang } }: ContextParams) {
         </figure>
         <div className='card-body items-center text-center'>
           <h1 className='card-title btn btn-secondary cursor-default'>{t('site.title')}</h1>
-          <p className='leading-7'>{t('site.desc')}</p>
+          <p className='leading-7 whitespace-pre-line'>{t('site.desc')}</p>
           <div className='card-actions justify-center'>
             <Link className='btn btn-primary' href={`/${lang}/blog`}>
               {t('site.blog')}

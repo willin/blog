@@ -7,7 +7,7 @@ async function handler() {
     return NextResponse.json(data);
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ message: e.message }, { status: 500 });
+    return NextResponse.json({ message: (e as Error).message }, { status: 500 });
   }
 }
 

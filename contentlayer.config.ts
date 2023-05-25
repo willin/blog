@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { ComputedFields, defineDocumentType, makeSource } from 'contentlayer/source-files';
+import remarkGfm from 'remark-gfm';
+import remarkGithub from 'remark-github';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypePrettyCode from 'rehype-pretty-code';
 import { i18n } from './i18n-config';
 
 const computedFields = (type: string): ComputedFields => ({
@@ -67,7 +73,45 @@ export const Page = defineDocumentType(() => ({
 const contentLayerConfig = makeSource({
   contentDirPath: 'content',
   documentTypes: [Blog, Page],
-  mdx: {}
+  mdx: {
+    remarkPlugins: [
+      //
+      remarkGfm,
+      [remarkGithub, { repository: 'willin/blog' }]
+    ],
+    rehypePlugins: [
+      //
+      rehypeSlug,
+      [
+        rehypePrettyCode,
+        {
+          theme: 'one-dark-pro',
+          onVisitLine(node: any) {
+            // Prevent lines from collapsing in `display: grid` mode, and allow empty
+            // lines to be copy/pasted
+            if (node.children.length === 0) {
+              node.children = [{ type: 'text', value: ' ' }];
+            }
+          },
+          onVisitHighlightedLine(node: any) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            node.properties.className.push('line--highlighted');
+          },
+          onVisitHighlightedWord(node: any) {
+            node.properties.className = ['word--highlighted'];
+          }
+        }
+      ],
+      [
+        rehypeAutolinkHeadings,
+        {
+          properties: {
+            className: ['anchor']
+          }
+        }
+      ]
+    ]
+  }
 });
 
 export default contentLayerConfig;
