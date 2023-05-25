@@ -1,6 +1,7 @@
 import { translation } from '@/lib/i18n';
 import { ContextParams } from './helper';
 import { SocialLinks } from './social';
+import Link from 'next/link';
 
 export default async function Home({ params: { lang } }: ContextParams) {
   const t = await translation(lang);
@@ -14,6 +15,12 @@ export default async function Home({ params: { lang } }: ContextParams) {
         <div className='card-body items-center text-center'>
           <h1 className='card-title btn btn-secondary cursor-default'>{t('site.title')}</h1>
           <p className='leading-7'>{t('site.desc')}</p>
+          <div className='card-actions justify-center'>
+            <Link className='btn btn-primary' href={`/${lang}/blog`}>
+              {t('site.blog')}
+            </Link>
+            {/* Pages & Projects */}
+          </div>
           <h2 className='mt-4 btn btn-secondary cursor-default'>{t('site.social')}</h2>
           <div className='card-actions justify-center'>
             <SocialLinks />

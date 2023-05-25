@@ -51,7 +51,7 @@ export default function RootLayout({ children, params }: { children: React.React
       <head />
       <body>
         <BackgroundImage />
-        <MainHeader />
+        <MainHeader lang={params.lang} />
         <AppLayer>
           {children}
           <footer className='text-center text-sm mt-4'>
