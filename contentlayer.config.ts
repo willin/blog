@@ -9,7 +9,7 @@ const computedFields: ComputedFields = {
   },
   lang: {
     type: 'string',
-    resolve: (doc) => i18n.locales.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}/`)) || i18n.defaultLocale
+    resolve: (doc) => i18n.locales.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}`)) || i18n.defaultLocale
   },
   structuredData: {
     type: 'json',

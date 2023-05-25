@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { translation } from '@/lib/i18n';
 import { allBlogs } from 'contentlayer/generated';
 import ViewCounter from './view-counter';
 import { ContextParams } from '../helper';
@@ -10,10 +11,13 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage({ params: { lang } }: ContextParams) {
+  const t = await translation(lang);
+
   return (
     <section>
       <h1 className='font-bold text-3xl font-serif mb-5'>Blog</h1>
       {allBlogs
+        .filter((p) => p.lang === lang)
         .sort((a, b) => {
           if (new Date(a.date) > new Date(b.date)) {
             return -1;
@@ -24,7 +28,7 @@ export default async function BlogPage({ params: { lang } }: ContextParams) {
           <Link key={post.slug} className='flex flex-col space-y-1 mb-4' href={`/${lang}/blog/${post.slug}`}>
             <div className='w-full flex flex-col'>
               <p>{post.title}</p>
-              <ViewCounter slug={post.slug} trackView={false} />
+              <ViewCounter slug={post.slug} trackView={false} label={t('common.views')} />
             </div>
           </Link>
         ))}
