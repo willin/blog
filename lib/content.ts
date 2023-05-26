@@ -1,4 +1,5 @@
 import { allBlogs } from 'contentlayer/generated';
+import { ReadTimeResults } from 'reading-time';
 
 export const allTags = (lang?: string) => {
   const tags: { name: string; count: number }[] = [];
@@ -30,4 +31,20 @@ export const allCategories = (lang?: string) => {
       }
     });
   return cats.sort((x, y) => (x.count > y.count ? -1 : 1));
+};
+
+export const allWordCount = () => {
+  let wordcount = 0;
+  allBlogs.forEach((blog) => {
+    wordcount += (blog.readingTime as ReadTimeResults).words;
+  });
+  return wordcount;
+};
+
+export const allReadingTime = () => {
+  let time = 0;
+  allBlogs.forEach((blog) => {
+    time += (blog.readingTime as ReadTimeResults).minutes;
+  });
+  return Math.ceil(time / 6) / 10;
 };

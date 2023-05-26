@@ -1,4 +1,5 @@
 import clsx from 'classnames';
+import { randomClassNames } from './helper';
 
 type SocialItem = { name: string; url: string; icon?: string };
 
@@ -76,20 +77,10 @@ const social: SocialItem[] = [
   }
 ];
 
-const classNames = [
-  'btn-primary',
-  'btn-warning',
-  'btn-secondary',
-  'btn-info',
-  'btn-success',
-  'btn-accent',
-  'btn-error'
-];
-
 export function ImageLink({ item, index }: { item: SocialItem; index: number }) {
   return (
     <a
-      className={clsx('btn btn-xs btn-outline', classNames[index % classNames.length])}
+      className={clsx('btn btn-xs btn-outline', randomClassNames[index % randomClassNames.length])}
       href={item.url}
       target='_blank'>
       <img src={item.icon} alt={item.name} />
@@ -100,7 +91,7 @@ export function ImageLink({ item, index }: { item: SocialItem; index: number }) 
 export function TextLink({ item, index }: { item: SocialItem; index: number }) {
   return (
     <a
-      className={clsx('btn btn-xs btn-outline', classNames[index % classNames.length])}
+      className={clsx('btn btn-xs btn-outline', randomClassNames[index % randomClassNames.length])}
       href={item.url}
       target='_blank'>
       {item.name}

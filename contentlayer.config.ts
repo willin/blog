@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { ComputedFields, LocalDocument, defineDocumentType, makeSource } from 'contentlayer/source-files';
+import readingTime from 'reading-time';
 import remarkGfm from 'remark-gfm';
 import remarkGithub from 'remark-github';
 import rehypeSlug from 'rehype-slug';
@@ -22,6 +23,10 @@ const computedFields = (type: string): ComputedFields => ({
   lang: {
     type: 'string',
     resolve: (doc) => getLang(doc)
+  },
+  readingTime: {
+    type: 'json',
+    resolve: (doc) => readingTime(doc.body.raw as string)
   },
   structuredData: {
     type: 'json',

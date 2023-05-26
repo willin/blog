@@ -15,3 +15,13 @@ export interface iBalance {
 export function formatMoney(n: number) {
   return n.toLocaleString('zh-CN', { style: 'currency', currency: 'CNY' });
 }
+
+export const randomClassNames = [
+  'btn-primary',
+  'btn-warning',
+  'btn-secondary',
+  'btn-info',
+  'btn-success',
+  'btn-accent',
+  'btn-error'
+];

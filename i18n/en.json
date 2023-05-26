@@ -3,7 +3,10 @@
     "title": "Willin Wang (v0)",
     "desc": "To be Willin is to be willing.\nNo one can change the past, just like no one can predict the feature.\nI prefer to write the history, rather than to record the history.",
     "blog": "Posts",
-    "social": "Social Media"
+    "social": "Social Media",
+    "view_by_category": "View posts by categories",
+    "view_by_tag": "View posts by tags",
+    "total_wordcount": "Total wordcount: {{wordcount}}, reading time about {{readtime}} hours."
   },
   "common": {
     "views": "views",
