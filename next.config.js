@@ -3,11 +3,6 @@ const { get } = require('@vercel/edge-config');
 const { withContentlayer } = require('next-contentlayer');
 
 const securityHeaders = [
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
-  {
-    key: 'Referrer-Policy',
-    value: 'origin-when-cross-origin'
-  },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
   {
     key: 'X-Content-Type-Options',
