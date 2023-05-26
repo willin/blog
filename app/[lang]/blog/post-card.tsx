@@ -14,15 +14,15 @@ export function PostCard({ post, lang }: { post: Blog; lang: Locale }) {
           <img src={post.image || '/images/bg.jpg'} alt='Cover' />
         </figure>
         <div className='card-body'>
-          <h2 className='card-title'>{post.title}</h2>
-          <p>{post.description}&nbsp;</p>
+          <h2 className='card-title text-lg text-secondary'>{post.title}</h2>
+          <p className='text-sm'>{post.description}&nbsp;</p>
           <div className='card-actions justify-end'>
             <div className='btn-group'>
-              <button className='btn btn-outline btn-xs'>
+              <button className='btn btn-outline btn-xs btn-disabled'>
                 <ViewCounter slug={post.slug} trackView={false} label={t('common.views')} />
               </button>
-              <button className='btn btn-outline btn-xs'>{post.date}</button>
-              <button className='btn btn-outline btn-xs'>{post.category}</button>
+              <button className='btn btn-outline btn-xs btn-disabled'>{post.date}</button>
+              <button className='btn btn-outline btn-xs btn-disabled'>{post.category}</button>
             </div>
           </div>
         </div>

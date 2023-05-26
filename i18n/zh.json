@@ -6,7 +6,7 @@
     "social": "欢迎在以下社交媒体关注我",
     "view_by_category": "按照【分类】筛选文章",
     "view_by_tag": "按照【标签】筛选文章",
-    "total_wordcount": "总计写下 {{wordcount}} 字，完整阅读预计需要 {{readtime}} 小时，已有 {{views}} 次阅读。"
+    "total_wordcount": "已写下 <span class=\"badge badge-lg\">{{posts}}</span> 篇博客文章，共计 <span class=\"badge badge-lg badge-secondary\">{{wordcount}}</span> 字，完整阅读预计需要 <span class=\"badge badge-lg badge-primary\">{{readtime}}</span> 小时，已有 <span class=\"badge badge-lg badge-accent\">{{views}}</span> 次阅读。"
   },
   "common": {
     "views": "阅读",

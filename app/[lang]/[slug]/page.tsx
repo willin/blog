@@ -1,25 +1,19 @@
 import { notFound } from 'next/navigation';
 import { allPages } from 'contentlayer/generated';
-import { translation } from '@/lib/i18n';
 import { ContextParams } from '../helper';
-import { Mdx } from '../blog/mdx';
-import ViewCounter from '../blog/view-counter';
+import { NotTranslated } from '../blog/not-translated';
+import { PostDetail } from '../blog/[slug]/detail';
 
 export default function CustomPage({ params }: ContextParams) {
-  const post = allPages.find((post) => post.slug === params.slug && post.lang === params.lang);
+  const posts = allPages.filter((post) => post.slug === params.slug);
+  const post = posts.find((post) => post.lang === params.lang);
   if (!post) {
+    if (posts.length > 0) {
+      return <NotTranslated post={posts[0]} type='page' />;
+    }
     notFound();
   }
-  const t = translation(params.lang);
-
-  return (
-    <div>
-      <h1>{post.title}</h1>
-      <ViewCounter slug={post.slug} trackView label={t('common.views')} />
-      <Mdx code={post.body.code} />
-      <script type='application/ld+json'>{JSON.stringify(post.structuredData)}</script>
-    </div>
-  );
+  return <PostDetail post={post} type='page' lang={params.lang} />;
 }
 
 export function generateStaticParams() {

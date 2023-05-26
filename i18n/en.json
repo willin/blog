@@ -6,7 +6,7 @@
     "social": "Social Media",
     "view_by_category": "View posts by categories",
     "view_by_tag": "View posts by tags",
-    "total_wordcount": "Total wordcount: {{wordcount}}, reading time about {{readtime}} hours, total {{views}} views."
+    "total_wordcount": "Total posts: <span class=\"badge badge-lg\">{{posts}}</span>, wordcount: <span class=\"badge badge-lg badge-secondary\">{{wordcount}}</span>, reading time about <span class=\"badge badge-lg badge-primary\">{{readtime}}</span> hours, total <span class=\"badge badge-lg badge-accent\">{{views}}</span> views."
   },
   "common": {
     "views": "views",
