@@ -37,7 +37,6 @@ const computedFields = (type: string): ComputedFields => ({
       description: doc?.description,
       datePublished: doc.date,
       dateModified: doc.date,
-      description: doc.excerpt,
       image: doc.image ? `https://willin.wang${doc.image}` : `https://willin.wang/api/og?title=${doc.title}`,
       url: `https://willin.wang/${getLang(doc)}/${type === 'page' ? '' : `${type}/`}${getSlug(doc)}`,
       author: {

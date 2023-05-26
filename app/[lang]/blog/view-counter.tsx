@@ -33,5 +33,5 @@ export default function ViewCounter({ slug, trackView, label }: { slug: string; 
   }, [slug]);
 
   // eslint-disable-next-line no-irregular-whitespace
-  return data ? `${views.toLocaleString()} ${label}` : `0 ${label}​`;
+  return <>{data ? `${views.toLocaleString()} ${label}` : `0 ${label}​`}</>;
 }

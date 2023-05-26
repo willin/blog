@@ -2,8 +2,9 @@ import { Blog } from 'contentlayer/generated';
 import Link from 'next/link';
 import ViewCounter from './view-counter';
 import { translation } from '@/lib/i18n';
+import { Locale } from '@/i18n-config';
 
-export function PostCard({ post, lang }: { post: Blog; lang: string }) {
+export function PostCard({ post, lang }: { post: Blog; lang: Locale }) {
   const t = translation(lang);
 
   return (
