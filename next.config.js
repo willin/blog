@@ -28,15 +28,15 @@ const nextConfig = {
     } catch {
       return [];
     }
+  },
+  headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: securityHeaders
+      }
+    ];
   }
-  // headers() {
-  //   return [
-  //     {
-  //       source: '/(.*)',
-  //       headers: securityHeaders
-  //     }
-  //   ];
-  // }
 };
 
 module.exports = withContentlayer(nextConfig);

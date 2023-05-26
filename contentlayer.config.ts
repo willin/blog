@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { ComputedFields, defineDocumentType, makeSource } from 'contentlayer/source-files';
+import { ComputedFields, LocalDocument, defineDocumentType, makeSource } from 'contentlayer/source-files';
 import remarkGfm from 'remark-gfm';
 import remarkGithub from 'remark-github';
 import rehypeSlug from 'rehype-slug';
@@ -8,14 +8,20 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrettyCode from 'rehype-pretty-code';
 import { i18n } from './i18n-config';
 
+const getSlug = (doc: LocalDocument) =>
+  doc._raw.sourceFileName.replace(/^\d{4}-\d{1,2}-\d{1,2}-/, '').replace(/\.mdx$/, '');
+
+const getLang = (doc: LocalDocument) =>
+  i18n.locales.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}`)) || i18n.defaultLocale;
+
 const computedFields = (type: string): ComputedFields => ({
   slug: {
     type: 'string',
-    resolve: (doc) => doc._raw.sourceFileName.replace(/^\d{4}-\d{1,2}-\d{1,2}-/, '').replace(/\.mdx$/, '')
+    resolve: (doc) => getSlug(doc)
   },
   lang: {
     type: 'string',
-    resolve: (doc) => i18n.locales.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}`)) || i18n.defaultLocale
+    resolve: (doc) => getLang(doc)
   },
   structuredData: {
     type: 'json',
@@ -27,7 +33,7 @@ const computedFields = (type: string): ComputedFields => ({
       dateModified: doc.date,
       description: doc.excerpt,
       image: doc.image ? `https://willin.wang${doc.image}` : `https://willin.wang/api/og?title=${doc.title}`,
-      url: `https://willin.wang/${doc.lang}/${type === 'page' ? '' : `${type}/`}${doc.slug}`,
+      url: `https://willin.wang/${getLang(doc)}/${type === 'page' ? '' : `${type}/`}${getSlug(doc)}`,
       author: {
         '@type': 'Person',
         name: 'Willin Wang'
