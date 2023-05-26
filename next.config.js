@@ -5,7 +5,6 @@ const { withContentlayer } = require('next-contentlayer');
 // https://nextjs.org/docs/advanced-features/security-headers
 const ContentSecurityPolicy = `
     default-src 'self' vercel.live;
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.vercel-insights.com vercel.live paged2.googlesyndication.com;
     style-src 'self' 'unsafe-inline';
     img-src * blob: data:;
     media-src 'none';
