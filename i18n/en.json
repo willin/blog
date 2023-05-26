@@ -6,7 +6,7 @@
     "social": "Social Media",
     "view_by_category": "View posts by categories",
     "view_by_tag": "View posts by tags",
-    "total_wordcount": "Total wordcount: {{wordcount}}, reading time about {{readtime}} hours."
+    "total_wordcount": "Total wordcount: {{wordcount}}, reading time about {{readtime}} hours, total {{views}} views."
   },
   "common": {
     "views": "views",

@@ -34,6 +34,7 @@ const computedFields = (type: string): ComputedFields => ({
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
       headline: doc.title,
+      description: doc?.description,
       datePublished: doc.date,
       dateModified: doc.date,
       description: doc.excerpt,
@@ -61,7 +62,13 @@ export const Blog = defineDocumentType(() => ({
       required: true
     },
     tags: { type: 'json' },
-    category: { type: 'string' }
+    category: { type: 'string' },
+    description: {
+      type: 'string'
+    },
+    image: {
+      type: 'string'
+    }
   },
   computedFields: computedFields('blog')
 }));

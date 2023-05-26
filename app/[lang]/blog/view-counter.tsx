@@ -32,9 +32,6 @@ export default function ViewCounter({ slug, trackView, label }: { slug: string; 
     }
   }, [slug]);
 
-  return (
-    <p className='font-mono text-sm text-neutral-500 tracking-tighter'>
-      {data ? `${views.toLocaleString()} ${label}` : '​'}
-    </p>
-  );
+  // eslint-disable-next-line no-irregular-whitespace
+  return data ? `${views.toLocaleString()} ${label}` : `0 ${label}​`;
 }
