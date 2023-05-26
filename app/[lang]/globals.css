@@ -51,6 +51,89 @@
     overflow-x: auto;
     white-space: nowrap;
   }
+
+  .prose .anchor {
+    @apply absolute invisible no-underline;
+
+    margin-left: -1em;
+    padding-right: 0.5em;
+    width: 80%;
+    max-width: 700px;
+    cursor: pointer;
+  }
+
+  .anchor:hover {
+    @apply visible;
+  }
+
+  .prose .anchor:after {
+    content: ' ';
+  }
+
+  .prose *:hover > .anchor {
+    @apply visible;
+  }
+
+  .prose img {
+    /* Don't apply styles to next/image */
+    @apply m-0;
+  }
+
+  code[class*='language-'],
+  pre[class*='language-'] {
+    @apply text-neutral-50;
+  }
+
+  .prose {
+    @apply min-w-full;
+  }
+
+  .prose table {
+    @apply table min-w-[90%] w-full lg:w-[90%] table-zebra shadow mx-auto table-normal;
+  }
+
+  .prose tr {
+    @apply hover;
+  }
+
+  [data-rehype-pretty-code-fragment] code {
+    @apply grid break-words border-0 bg-transparent p-0 text-sm text-black;
+    counter-reset: line;
+    box-decoration-break: clone;
+  }
+  [data-rehype-pretty-code-fragment] pre {
+    @apply mx-auto p-2 rounded shadow min-w-[90%] w-full lg:w-[90%];
+  }
+  [data-rehype-pretty-code-fragment] code * {
+    user-select: text;
+  }
+  [data-rehype-pretty-code-fragment] .line {
+    @apply py-1;
+  }
+  [data-rehype-pretty-code-fragment] [data-line-numbers] > .line::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 1rem;
+    margin-right: 1rem;
+    text-align: right;
+    color: gray;
+  }
+  [data-rehype-pretty-code-fragment] .line--highlighted {
+    @apply bg-slate-500 bg-opacity-10;
+  }
+  [data-rehype-pretty-code-fragment] .line-highlighted span {
+    @apply relative;
+  }
+  [data-rehype-pretty-code-fragment] .word--highlighted {
+    @apply rounded-md bg-slate-500 bg-opacity-10 p-1;
+  }
+  [data-rehype-pretty-code-title] {
+    @apply px-4 py-3 font-mono text-xs font-medium border rounded-t-lg text-neutral-200 border-[#333333] bg-[#1c1c1c];
+  }
+  [data-rehype-pretty-code-title] + pre {
+    @apply mt-0 rounded-t-none border-t-0;
+  }
 }
 
 @layer components {
@@ -66,8 +149,4 @@
     transform: rotate(-3deg) scale(1.2);
     /* scaleX(-1); */
   }
-}
-
-.react-date-picker__wrapper {
-  border: 0 !important;
 }

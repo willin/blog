@@ -1,0 +1,257 @@
+---
+title: Next.js 13 appDir 实战 i18n
+date: '2022-12-03'
+description: Next.js 13 + appDir 实验特性 + i18n 服务器/客户端组件渲染
+category: 技术
+tags: [nextjs, 全栈, react, 博客, i18n]
+---
+
+# 背景
+
+官方目前未打算支持 i18n 国际化路由支持，且尚未提供解决方案，但是我们可以通过实验特性 appDir 来实现。
+
+> ## Not Planned Features
+>
+> We are currently not planning to include the following features in app:
+>
+> - Internationalization (i18n) - we will be providing a guide on how to implement internationalization in app.
+> - AMP Support
+>
+> If you need any of these features, we will continue to support `pages`, including bug fixes and feature additions, for multiple major versions.
+
+文档地址： https://beta.nextjs.org/docs/app-directory-roadmap#not-planned-features
+
+首先需要了解一下 `Server and Client Components` 服务器组件和客户端组件。
+
+| What do you need to do?                                                                                        | Server Component | Client Component                                                                        |
+| :------------------------------------------------------------------------------------------------------------- | :--------------- | :-------------------------------------------------------------------------------------- |
+| Fetch data. [Learn more](https://beta.nextjs.org/docs/data-fetching/fetching).                                 | ✅               | [⚠️](https://beta.nextjs.org/docs/rendering/server-and-client-components#data-fetching) |
+| Access backend resources (directly)                                                                            | ✅               | ❌                                                                                      |
+| Keep sensitive information on the server (access tokens, API keys, etc)                                        | ✅               | ❌                                                                                      |
+| Keep large dependencies on the server / Reduce client-side JavaScript                                          | ✅               | ❌                                                                                      |
+| Add interactivity and event listeners (`onClick()`, `onChange()`, etc)                                         | ❌               | ✅                                                                                      |
+| Use State and Lifecycle Effects (`useState()`, `useReducer()`, `useEffect()`, etc)                             | ❌               | ✅                                                                                      |
+| Use browser-only APIs                                                                                          | ❌               | ✅                                                                                      |
+| Use custom hooks that depend on state, effects, or browser-only APIs                                           | ❌               | ✅                                                                                      |
+| Use [React Class components](https://reactjs.org/docs/components-and-props.html#function-and-class-components) | ❌               | ✅                                                                                      |
+
+简单来说，服务器端组件不支持事件侦听、不支持生命周期状态，这导致了原有的好多组件不可以直接拿来就用了。比如 next-i18next， next-themes 等等好多，直接引入使用会报各种莫名其妙的错误。
+
+废话不多说，直接进入正题。
+
+# 实现
+
+## i18n 方法
+
+首先你需要一个 i18n 的实现，可以用 i18next，也可以用 rosetta 之类的。我这里实现了一个简化版的。
+
+```ts
+// 参考示例项目的 /i18n/next-i18n.ts
+import dlv from 'dlv';
+import tmpl from 'templite';
+
+// eslint-disable-next-line no-unused-vars
+type Fn = (...args: any[]) => string;
+export interface I18nDict {
+  [key: string]: string | number | Fn | I18nDict;
+}
+
+export interface NextI18nOptions {
+  /**
+   * Define the list of supported languages, this is used to determine if one of
+   * the languages requested by the user is supported by the application.
+   * This should be be same as the supportedLngs in the i18next options.
+   */
+  supportedLanguages: string[];
+  /**
+   * Define the fallback language that it's going to be used in the case user
+   * expected language is not supported.
+   * This should be be same as the fallbackLng in the i18next options.
+   */
+  fallbackLng: string;
+}
+
+export class NextI18n {
+  private currentLocale: string;
+
+  public fallbackLng: string;
+
+  public supportedLanguages: string[];
+
+  private dict: I18nDict = {};
+
+  constructor(options: NextI18nOptions) {
+    this.currentLocale = options.fallbackLng;
+    this.supportedLanguages = options.supportedLanguages;
+    this.fallbackLng = options.fallbackLng;
+  }
+
+  public locale = (lang?: string) => {
+    if (lang !== undefined && this.currentLocale !== lang) {
+      this.currentLocale = lang;
+      this.onChangeLanguage?.(lang);
+    }
+    return this.currentLocale;
+  };
+
+  public set = (lang: string, dict: I18nDict) => {
+    this.dict[lang] = Object.assign(this.dict[lang] || {}, dict);
+  };
+
+  public t = (key: string, params?: any, lang?: string): string => {
+    // eslint-disable-next-line
+    const val = dlv(this.dict[lang || this.currentLocale] as any, key, key);
+    // eslint-disable-next-line
+    if (typeof val === 'function') return val(params) as string;
+    // eslint-disable-next-line
+    if (typeof val === 'string') return tmpl(val, params);
+    return val as string;
+  };
+
+  /* PROTECTED */
+  // eslint-disable-next-line no-unused-vars
+  private onChangeLanguage?: (locale: string) => void;
+
+  // eslint-disable-next-line no-unused-vars
+  public setOnChange = (fn: (locale: string) => void) => {
+    this.onChangeLanguage = fn;
+  };
+}
+```
+
+然后是初始化这个 i18n 实例：
+
+```ts
+// 参考示例项目的 /i18n/index.ts
+import { NextI18n } from './next-i18n';
+
+export const languages = {
+  'zh-CN': { name: '简体中文', flag: '🇨🇳', unicode: '1f1e8-1f1f3' },
+  'zh-TW': { name: '正體中文', flag: '🇹🇼', unicode: '1f1f9-1f1fc' },
+  en: { name: 'English', flag: '🇺🇸', unicode: '1f1fa-1f1f8' },
+  ko: { name: '한국어', flag: '🇰🇷', unicode: '1f1f0-1f1f7' },
+  ja: { name: '日本語', flag: '🇯🇵', unicode: '1f1ef-1f1f5' }
+};
+
+export const supportedLanguages = Object.keys(languages);
+export const fallbackLng = 'zh-CN';
+
+const i18n = new NextI18n({
+  supportedLanguages,
+  fallbackLng
+});
+
+supportedLanguages.forEach((locale) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  i18n.set(locale, require(`./${locale}/common.json`));
+});
+
+export default i18n;
+```
+
+## Provider
+
+注意 Provider 中用到了 `useState` 来强制刷新，所以必须是个 `Client Component`。
+
+```ts
+// 参考示例项目的 /i18n/provider.ts
+'use client';
+
+import { createContext, createElement, ReactNode, useMemo, useState } from 'react';
+import { NextI18n } from './next-i18n';
+
+export const context = createContext<{ i18n: NextI18n } | null>(null);
+
+interface I18nProviderProps {
+  children: ReactNode;
+  i18n: NextI18n;
+}
+
+export function I18nProvider({ i18n, children }: I18nProviderProps) {
+  const [, setTick] = useState(0);
+
+  const value = useMemo(() => {
+    // eslint-disable-next-line
+    i18n.setOnChange(() => {
+      setTick((s) => s + 1);
+    });
+    return { i18n };
+  }, [i18n]);
+
+  // eslint-disable-next-line react/no-children-prop
+  return createElement(context.Provider, {
+    value: { ...value },
+    children
+  });
+}
+```
+
+## Hook
+
+不用说，也是个 `Client Component`。
+
+```ts
+// 参考示例项目的 /i18n/hook.ts
+'use client';
+
+import { useContext } from 'react';
+import { context } from './provider';
+
+export function useI18n() {
+  const content = useContext(context);
+  if (!content) {
+    throw new Error('Unable to get instance of i18n');
+  }
+  return content.i18n;
+}
+```
+
+## app 中创建
+
+不要直接在 layout、page 中使用 `Client Component`，所以我又在 Provider 上套了一层。
+
+```tsx
+// laoyout.tsx
+// 手动套一层 provider
+import { I18nClientProvider } from './providers';
+
+export default function RootLayout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
+  const { locale = 'zh-CN' } = params || {};
+
+  return (
+    <I18nClientProvider locale={locale}>
+      <html lang={locale}>
+        <head />
+        <body>
+          <div className='pt-20' style={{ minHeight: 'calc(100vh - 75px)' }}>
+            {children}
+          </div>
+        </body>
+      </html>
+    </I18nClientProvider>
+  );
+}
+```
+
+这个 Provider 的代码为：
+
+```tsx
+'use client';
+import { I18nProvider, i18n } from '@/i18n';
+import { useEffect } from 'react';
+
+export function I18nClientProvider({ children, locale }: { children: React.ReactNode; locale: string }) {
+  useEffect(() => {
+    if (i18n.locale() !== locale) {
+      i18n.locale(locale);
+    }
+  }, [locale]);
+
+  return <I18nProvider i18n={i18n}>{children}</I18nProvider>;
+}
+```
+
+# 最后
+
+- 附上示例项目代码： https://github.com/willin/beta.willin.wang/tree/87dce6e673659dbc8e5a3aac25e3cb6f6ea828bb
+- 示例项目演示地址： https://willin-wang-ndd35eg64-willin.vercel.app/

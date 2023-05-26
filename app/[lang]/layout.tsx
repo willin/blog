@@ -1,12 +1,13 @@
 import './globals.css';
+import { Analytics } from '@vercel/analytics/react';
 import { i18n } from '@/i18n-config';
 import { BackgroundImage } from './background';
 import { MainHeader } from './header';
 import { ContextParams } from './helper';
 import { Metadata } from 'next';
 import { BaseURL } from '@/lib/config';
-import { BottomNav } from './bottom';
 import { Bootstrap } from './bootstrap';
+import { AppLayer } from './container';
 
 export function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: '$Willin$',
+    title: 'Willin',
     statusBarStyle: 'black-translucent'
   },
   appLinks: {
@@ -41,6 +42,17 @@ export const metadata: Metadata = {
       'en-US': `${BaseURL}/en`,
       'zh-CN': `${BaseURL}/zh`
     }
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
   }
 };
 
@@ -50,8 +62,8 @@ export default function RootLayout({ children, params }: { children: React.React
       <head />
       <body>
         <BackgroundImage />
-        <MainHeader />
-        <div className='container mx-auto shadow bg-base-100/70 p-2 sm:p-4 mb-20'>
+        <MainHeader lang={params.lang} />
+        <AppLayer>
           {children}
           <footer className='text-center text-sm mt-4'>
             <p>
@@ -61,21 +73,28 @@ export default function RootLayout({ children, params }: { children: React.React
                   alt='Github Followers'
                 />
               </a>{' '}
-              <a href='https://github.com/willin/wealth' target='_blank' className='inline-block'>
-                <img alt='GitHub Repo stars' src='https://img.shields.io/github/stars/willin/wealth?style=social' />
+              <a href='https://github.com/willin/blog' target='_blank' className='inline-block'>
+                <img alt='GitHub Repo stars' src='https://img.shields.io/github/stars/willin/blog?style=social' />
               </a>
             </p>
             <p>
-              &copy;{' '}
               <a href='https://willin.wang' target='_blank'>
                 Willin Wang
-              </a>
-            </p>{' '}
+              </a>{' '}
+              &copy; 2002 ~ {new Date().getFullYear()}
+            </p>
+            <p>
+              <small>
+                <a href='https://beian.miit.gov.cn/' target='_blank'>
+                  苏ICP备17011988号-1
+                </a>
+              </small>
+            </p>
           </footer>
-        </div>
+        </AppLayer>
 
-        <BottomNav lang={params.lang} />
         <Bootstrap />
+        <Analytics />
       </body>
     </html>
   );
