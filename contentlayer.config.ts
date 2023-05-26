@@ -54,7 +54,9 @@ export const Blog = defineDocumentType(() => ({
     date: {
       type: 'string',
       required: true
-    }
+    },
+    tags: { type: 'json' },
+    category: { type: 'string' }
   },
   computedFields: computedFields('blog')
 }));

@@ -6,6 +6,8 @@
     "social": "欢迎在以下社交媒体关注我"
   },
   "common": {
-    "views": "阅读"
+    "views": "阅读",
+    "category": "分类",
+    "tags": "标签"
   }
 }

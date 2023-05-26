@@ -6,6 +6,8 @@
     "social": "Social Media"
   },
   "common": {
-    "views": "views"
+    "views": "views",
+    "category": "Category",
+    "tags": "Tags"
   }
 }

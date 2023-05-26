@@ -4,6 +4,7 @@ import { translation } from '@/lib/i18n';
 import { allBlogs } from 'contentlayer/generated';
 import ViewCounter from './view-counter';
 import { ContextParams } from '../helper';
+import { allCategories, allTags } from '@/lib/content';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -15,6 +16,20 @@ export default function BlogPage({ params: { lang } }: ContextParams) {
 
   return (
     <article>
+      <section>
+        {allCategories(lang).map((category) => (
+          <span key={category.name} className='mr-2'>
+            {category.name} {category.count}
+          </span>
+        ))}
+      </section>
+      <section>
+        {allTags(lang).map((tag) => (
+          <span key={tag.name} className='mr-2'>
+            {tag.name} {tag.count}
+          </span>
+        ))}
+      </section>
       {allBlogs
         .filter((p) => p.lang === lang)
         .sort((a, b) => {
