@@ -21,7 +21,7 @@ export function generateStaticParams() {
   return allBlogs.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
 }
 
-export async function generateMetadata({ params }: ContextParams): Promise<Metadata | undefined> {
+export async function generateMetadata({ params }: ContextParams) {
   const post = allBlogs.find((post) => post.slug === params.slug && post.lang === params.lang);
   if (!post) {
     return;
@@ -29,9 +29,9 @@ export async function generateMetadata({ params }: ContextParams): Promise<Metad
 
   const { title, date, description, image, slug } = post;
   const ogImage = image
-    ? (image ).startsWith('http')
+    ? image.startsWith('http')
       ? image
-      : `${BaseURL}${image }`
+      : `${BaseURL}${image}`
     : `${BaseURL}/api/og?title=${title}`;
 
   return {

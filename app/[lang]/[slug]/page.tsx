@@ -4,6 +4,7 @@ import { ContextParams } from '../helper';
 import { NotTranslated } from '../blog/not-translated';
 import { PostDetail } from '../blog/[slug]/detail';
 import { BaseURL } from '@/lib/config';
+import { translation } from '@/lib/i18n';
 
 export default function CustomPage({ params }: ContextParams) {
   const posts = allPages.filter((post) => post.slug === params.slug);
@@ -21,18 +22,19 @@ export function generateStaticParams() {
   return allPages.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
 }
 
-export async function generateMetadata({ params }: ContextParams): Promise<Metadata | undefined> {
+export async function generateMetadata({ params }: ContextParams) {
   const post = allPages.find((post) => post.slug === params.slug && post.lang === params.lang);
   if (!post) {
     return;
   }
+  const t = translation(params.lang);
 
-  const { title, date, description, image, slug } = post;
+  const { title, date, description = t('site.description'), image, slug } = post as any;
   const ogImage = image
     ? (image as string).startsWith('http')
       ? image
       : `${BaseURL}${image as string}`
-    : `${BaseURL}/api/og?title=${title}`;
+    : `${BaseURL}/api/og?title=${title as string}`;
 
   return {
     title,
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: ContextParams): Promise<Metad
       description,
       type: 'article',
       publishedTime: date,
-      url: `${BaseURL}/${params.lang}/${slug}`,
+      url: `${BaseURL}/${params.lang}/${slug as string}`,
       images: [
         {
           url: ogImage
