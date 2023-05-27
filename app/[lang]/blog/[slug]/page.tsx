@@ -36,7 +36,9 @@ export async function generateMetadata({ params }: ContextParams) {
     ? image.startsWith('http')
       ? image
       : `${BaseURL}${image}`
-    : `${BaseURL}/api/og?title=${title}`;
+    : //temp
+      `${BaseURL}/images/og.png`;
+  //  `${BaseURL}/api/og?title=${title}`;
 
   return {
     title,
