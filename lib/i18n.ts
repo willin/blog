@@ -1,4 +1,3 @@
-import 'server-only';
 import dlv from 'dlv';
 import tmpl from 'templite';
 import type { Locale } from '../i18n-config';

@@ -5,8 +5,10 @@ import { PostDetail } from '../blog/[slug]/detail';
 import { BaseURL } from '@/lib/config';
 import { translation } from '@/lib/i18n';
 import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/next-auth';
 
-export default function CustomPage({ params }: ContextParams) {
+export default async function CustomPage({ params }: ContextParams) {
   const posts = allPages.filter((post) => post.slug === params.slug);
   const post = posts.find((post) => post.lang === params.lang);
   if (!post) {
@@ -15,7 +17,9 @@ export default function CustomPage({ params }: ContextParams) {
     }
     redirect('/');
   }
-  return <PostDetail post={post} type='page' lang={params.lang} />;
+  const session = await getServerSession(authOptions);
+  // @ts-ignore
+  return <PostDetail post={post} type='page' lang={params.lang} username={session?.user?.username as string} />;
 }
 
 export function generateStaticParams() {

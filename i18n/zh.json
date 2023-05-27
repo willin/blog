@@ -9,6 +9,10 @@
     "total_wordcount": "已写下 <span class=\"badge badge-lg\">{{posts}}</span> 篇博客文章，共计 <span class=\"badge badge-lg badge-secondary\">{{wordcount}}</span> 字，完整阅读预计需要 <span class=\"badge badge-lg badge-primary\">{{readtime}}</span> 小时，已有 <span class=\"badge badge-lg badge-accent\">{{views}}</span> 次阅读。"
   },
   "common": {
+    "login_and_follow": "您需要登录并且在 Github 上关注 {{username}} 后才能继续阅读本文。",
+    "login": "登录",
+    "logout": "退出",
+    "follow": "去关注",
     "views": "阅读",
     "category": "分类",
     "tags": "标签",
