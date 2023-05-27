@@ -1,10 +1,10 @@
-import { notFound } from 'next/navigation';
 import { allPages } from 'contentlayer/generated';
 import { ContextParams } from '../helper';
 import { NotTranslated } from '../blog/not-translated';
 import { PostDetail } from '../blog/[slug]/detail';
 import { BaseURL } from '@/lib/config';
 import { translation } from '@/lib/i18n';
+import { redirect } from 'next/navigation';
 
 export default function CustomPage({ params }: ContextParams) {
   const posts = allPages.filter((post) => post.slug === params.slug);
@@ -13,7 +13,7 @@ export default function CustomPage({ params }: ContextParams) {
     if (posts.length > 0) {
       return <NotTranslated post={posts[0]} type='page' />;
     }
-    notFound();
+    redirect('/');
   }
   return <PostDetail post={post} type='page' lang={params.lang} />;
 }

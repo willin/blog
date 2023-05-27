@@ -1,9 +1,9 @@
-import { notFound } from 'next/navigation';
 import { allBlogs } from 'contentlayer/generated';
 import { ContextParams } from '../../helper';
 import { NotTranslated } from '../not-translated';
 import { PostDetail } from './detail';
 import { BaseURL } from '@/lib/config';
+import { redirect } from 'next/navigation';
 
 export default function Post({ params }: ContextParams) {
   const posts = allBlogs.filter((post) => post.slug === params.slug);
@@ -12,7 +12,7 @@ export default function Post({ params }: ContextParams) {
     if (posts.length > 0) {
       return <NotTranslated post={posts[0]} type='post' />;
     }
-    notFound();
+    redirect('/');
   }
   return <PostDetail post={post} type='post' lang={params.lang} />;
 }
