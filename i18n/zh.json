@@ -11,6 +11,11 @@
   "common": {
     "views": "阅读",
     "category": "分类",
-    "tags": "标签"
+    "tags": "标签",
+    "publish_at": "最初发表于：",
+    "category_by": "所属目录：",
+    "tags_by": "相关标签：",
+    "wordcount": "文章字数： {{wordcount}}",
+    "reading_time": "阅读时长： {{time}} 分钟"
   }
 }
