@@ -67,6 +67,10 @@ export const Blog = defineDocumentType(() => ({
     },
     image: {
       type: 'string'
+    },
+    follow: {
+      type: 'boolean',
+      default: false
     }
   },
   computedFields: computedFields('blog')
@@ -84,6 +88,10 @@ export const Page = defineDocumentType(() => ({
     date: {
       type: 'string',
       required: true
+    },
+    follow: {
+      type: 'boolean',
+      default: false
     }
   },
   computedFields: computedFields('page')

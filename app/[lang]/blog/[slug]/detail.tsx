@@ -6,6 +6,7 @@ import { Mdx } from '../mdx';
 import Link from 'next/link';
 import { ReadTimeResults } from 'reading-time';
 import { BaseURL } from '@/lib/config';
+import { PostContent } from './authenticate';
 
 function PostCategory({ post, lang }: { post: Blog; lang: Locale }) {
   if (!post.category) return null;
@@ -93,7 +94,7 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
           {t('common.reading_time', { time: lang === 'zh' ? Math.ceil(readingTime.minutes) : readingTime.text })}
         </span>
       </aside>
-      <Mdx code={post.body.code} />
+      <PostContent post={post} />
       <div className='divider'>The End</div>
       <aside className='my-4'>
         <span className='badge mr-4'>

@@ -6,7 +6,7 @@ import { BaseURL } from '@/lib/config';
 import { translation } from '@/lib/i18n';
 import { redirect } from 'next/navigation';
 
-export default function CustomPage({ params }: ContextParams) {
+export default async function CustomPage({ params }: ContextParams) {
   const posts = allPages.filter((post) => post.slug === params.slug);
   const post = posts.find((post) => post.lang === params.lang);
   if (!post) {

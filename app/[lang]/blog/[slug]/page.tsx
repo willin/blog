@@ -5,7 +5,7 @@ import { PostDetail } from './detail';
 import { BaseURL } from '@/lib/config';
 import { redirect } from 'next/navigation';
 
-export default function Post({ params }: ContextParams) {
+export default async function Post({ params }: ContextParams) {
   const posts = allBlogs.filter((post) => post.slug === params.slug);
   const post = posts.find((post) => post.lang === params.lang);
   if (!post) {
@@ -14,6 +14,7 @@ export default function Post({ params }: ContextParams) {
     }
     redirect('/');
   }
+
   return <PostDetail post={post} type='post' lang={params.lang} />;
 }
 
@@ -32,7 +33,9 @@ export async function generateMetadata({ params }: ContextParams) {
     ? image.startsWith('http')
       ? image
       : `${BaseURL}${image}`
-    : `${BaseURL}/api/og?title=${title}`;
+    : //temp
+      `${BaseURL}/images/og.png`;
+  //  `${BaseURL}/api/og?title=${title}`;
 
   return {
     title,
