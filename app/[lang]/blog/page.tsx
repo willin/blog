@@ -48,19 +48,7 @@ export default async function BlogPage({ params: { lang } }: ContextParams) {
         </section>
       )}
       <section className='my-10 grid grid-flow-row-dense auto-rows-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-        {posts.length > 0 &&
-          posts.map(
-            (post, i) =>
-              i < 50 && (
-                <PostCard post={post} key={post.slug} lang={lang} />
-                // <Link key={post.slug} className='flex flex-col space-y-1 mb-4' href={`/${lang}/blog/${post.slug}`}>
-                //   <div className='w-full flex flex-col'>
-                //     <p>{post.title}</p>
-                //     <ViewCounter slug={post.slug} trackView={false} label={t('common.views')} />
-                //   </div>
-                // </Link>
-              )
-          )}
+        {posts.length > 0 && posts.map((post) => <PostCard post={post} key={post.slug} lang={lang} />)}
       </section>
     </article>
   );
