@@ -40,3 +40,12 @@ export function generateStaticParams() {
     ...[...i18n.locales.map((lang) => allCategories(lang).map((p) => ({ params: { slug: p.name, lang: lang } })))]
   );
 }
+
+export function generateMetadata({ params }: ContextParams) {
+  const t = translation(params.lang);
+  const slug = decodeURIComponent(params.slug);
+  return {
+    title: slug + ' | ' + t('site.blog'),
+    description: t('site.desc')
+  };
+}

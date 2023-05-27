@@ -11,6 +11,11 @@
   "common": {
     "views": "views",
     "category": "Category",
-    "tags": "Tags"
+    "tags": "Tags",
+    "publish_at": "Published at ",
+    "category_by": "Categoried by ",
+    "tags_by": "Tagged by ",
+    "wordcount": "Wordcount: {{wordcount}}",
+    "reading_time": "Reading time: {{time}}"
   }
 }
