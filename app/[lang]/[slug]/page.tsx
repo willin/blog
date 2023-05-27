@@ -5,8 +5,6 @@ import { PostDetail } from '../blog/[slug]/detail';
 import { BaseURL } from '@/lib/config';
 import { translation } from '@/lib/i18n';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/next-auth';
 
 export default async function CustomPage({ params }: ContextParams) {
   const posts = allPages.filter((post) => post.slug === params.slug);
@@ -17,9 +15,7 @@ export default async function CustomPage({ params }: ContextParams) {
     }
     redirect('/');
   }
-  const session = await getServerSession(authOptions);
-  // @ts-ignore
-  return <PostDetail post={post} type='page' lang={params.lang} username={session?.user?.username as string} />;
+  return <PostDetail post={post} type='page' lang={params.lang} />;
 }
 
 export function generateStaticParams() {

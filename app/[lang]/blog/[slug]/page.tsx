@@ -4,8 +4,6 @@ import { NotTranslated } from '../not-translated';
 import { PostDetail } from './detail';
 import { BaseURL } from '@/lib/config';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/next-auth';
 
 export default async function Post({ params }: ContextParams) {
   const posts = allBlogs.filter((post) => post.slug === params.slug);
@@ -16,9 +14,8 @@ export default async function Post({ params }: ContextParams) {
     }
     redirect('/');
   }
-  const session = await getServerSession(authOptions);
-  // @ts-ignore
-  return <PostDetail post={post} type='post' lang={params.lang} username={session?.user?.username as string} />;
+
+  return <PostDetail post={post} type='post' lang={params.lang} />;
 }
 
 export function generateStaticParams() {

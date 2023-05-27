@@ -47,10 +47,18 @@ function LoginAndFollow({ lang, username }: { lang: string; username?: string })
   );
 }
 
-export function PostContent({ post, username }: { post: Blog | Page; username?: string }) {
+export function PostContent({ post }: { post: Blog | Page }) {
   const [valid, setValid] = useState(!post.follow);
+  const [username, setUsername] = useState('');
   useEffect(() => {
-    if (!username) return;
+    if (!username) {
+      fetch(`/api/me`)
+        .then((res) => res.json())
+        .then((data: { username: string }) => {
+          setUsername(data.username);
+        })
+        .catch(() => {});
+    }
     if (username === AdminId) {
       setValid(true);
       return;
@@ -62,7 +70,7 @@ export function PostContent({ post, username }: { post: Blog | Page; username?: 
         }
       })
       .catch(() => {});
-  }, [post.slug]);
+  }, [post.slug, username]);
   if (!valid) {
     return (
       <>

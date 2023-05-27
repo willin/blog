@@ -78,17 +78,7 @@ function PostCopyright({ lang, post, type }: { lang: Locale; post: Blog | Page; 
   );
 }
 
-export function PostDetail({
-  post,
-  lang,
-  type,
-  username
-}: {
-  post: Blog | Page;
-  lang: Locale;
-  type: string;
-  username?: string;
-}) {
+export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Locale; type: string }) {
   const t = translation(lang);
   const readingTime = post.readingTime as ReadTimeResults;
 
@@ -104,7 +94,7 @@ export function PostDetail({
           {t('common.reading_time', { time: lang === 'zh' ? Math.ceil(readingTime.minutes) : readingTime.text })}
         </span>
       </aside>
-      <PostContent post={post} username={username} />
+      <PostContent post={post} />
       <div className='divider'>The End</div>
       <aside className='my-4'>
         <span className='badge mr-4'>
