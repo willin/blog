@@ -3,6 +3,7 @@ import { allBlogs } from 'contentlayer/generated';
 import { ContextParams } from '../../helper';
 import { NotTranslated } from '../not-translated';
 import { PostDetail } from './detail';
+import { BaseURL } from '@/lib/config';
 
 export default function Post({ params }: ContextParams) {
   const posts = allBlogs.filter((post) => post.slug === params.slug);
@@ -18,4 +19,41 @@ export default function Post({ params }: ContextParams) {
 
 export function generateStaticParams() {
   return allBlogs.map((p) => ({ params: { slug: p.slug, lang: p.lang } }));
+}
+
+export async function generateMetadata({ params }: ContextParams): Promise<Metadata | undefined> {
+  const post = allBlogs.find((post) => post.slug === params.slug && post.lang === params.lang);
+  if (!post) {
+    return;
+  }
+
+  const { title, date, description, image, slug } = post;
+  const ogImage = image
+    ? (image ).startsWith('http')
+      ? image
+      : `${BaseURL}${image }`
+    : `${BaseURL}/api/og?title=${title}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: date,
+      url: `${BaseURL}/${params.lang}/blog/${slug}`,
+      images: [
+        {
+          url: ogImage
+        }
+      ]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage]
+    }
+  };
 }
