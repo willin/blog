@@ -48,7 +48,7 @@ export function Bootstrap() {
           sponsor.parentNode.replaceChild(prompt, sponsor);
         }
       });
-  }, [pathname, following]);
+  }, [pathname, following, vip]);
   if (following || vip) return null;
 
   return (
