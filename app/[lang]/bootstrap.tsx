@@ -32,7 +32,7 @@ export function Bootstrap() {
       .catch(() => (result = false))
       .finally(() => {
         const elm = document.querySelector('ins.adsbygoogle');
-        if (!result && elm === null) {
+        if (!result || elm === null) {
           // 删除文章正文
           const sponsor = document.querySelector('article.prose');
           if (!sponsor) return;
