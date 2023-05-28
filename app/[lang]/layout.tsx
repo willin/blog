@@ -8,6 +8,7 @@ import { Metadata } from 'next';
 import { BaseURL } from '@/lib/config';
 import { Bootstrap } from './bootstrap';
 import { AppLayer } from './container';
+import { FooterLogin } from './footer-login';
 
 export function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -76,6 +77,7 @@ export default function RootLayout({ children, params }: { children: React.React
               <a href='https://github.com/willin/blog' target='_blank' className='inline-block'>
                 <img alt='GitHub Repo stars' src='https://img.shields.io/github/stars/willin/blog?style=social' />
               </a>
+              <FooterLogin lang={params.lang} />
             </p>
             <p>
               <a href='https://willin.wang' target='_blank'>

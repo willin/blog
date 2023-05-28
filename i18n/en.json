@@ -11,8 +11,9 @@
   "common": {
     "login_and_follow": "You need to login and follow github {{username}} first.",
     "login": "Login",
+    "fans_login": "Github Fans Remove Ads",
     "logout": "Logout",
-    "follow": "Follow",
+    "follow": "Go & Follow",
     "views": "views",
     "category": "Category",
     "tags": "Tags",

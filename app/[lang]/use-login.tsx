@@ -10,20 +10,23 @@ export async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit
 }
 
 export function useLoginInfo() {
-  const [following, setFollowing] = useState(false);
+  const [following, setFollowing] = useState(true);
   const { data } = useSWR<{ username: string; vip: boolean }>('/api/me', fetcher);
   const { username = '', vip = false } = data || {};
 
   useEffect(() => {
-    if (!username) return;
+    if (!username) {
+      setFollowing(false);
+      return;
+    }
     if (username === AdminId) {
       setFollowing(true);
       return;
     }
     fetch(`https://api.github.com/users/${username}/following/${AdminId}`)
       .then((res) => {
-        if (res.status === 204) {
-          setFollowing(true);
+        if (res.status !== 204) {
+          setFollowing(false);
         }
       })
       .catch(() => {});

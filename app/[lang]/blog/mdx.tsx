@@ -29,9 +29,9 @@ function RoundedImage(props: { [k: string]: string }) {
 
 function DefaultImage(props: { [k: string]: string }) {
   return (
-    <div className='flex justify-center my-4'>
+    <span className='flex justify-center my-4'>
       <img alt={props.alt} className='rounded-lg shadow max-h-[80vh] max-w-[90%]' {...props} />
-    </div>
+    </span>
   );
 }
 
