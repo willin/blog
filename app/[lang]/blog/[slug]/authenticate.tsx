@@ -1,11 +1,10 @@
 'use client';
 import { Blog, Page } from 'contentlayer/generated';
-import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { AdminId } from '@/lib/config';
 import { translation } from '@/lib/i18n';
 import { Locale } from '@/i18n-config';
 import { Mdx } from '../mdx';
+import { useLoginInfo } from '../../use-login';
 
 function LoginAndFollow({ lang, username }: { lang: string; username?: string }) {
   const loggedIn = !!username;
@@ -48,30 +47,13 @@ function LoginAndFollow({ lang, username }: { lang: string; username?: string })
 }
 
 export function PostContent({ post }: { post: Blog | Page }) {
-  const [valid, setValid] = useState(!post.follow);
-  const [username, setUsername] = useState('');
-  useEffect(() => {
-    if (!username) {
-      fetch(`/api/me`)
-        .then((res) => res.json())
-        .then((data: { username: string }) => {
-          setUsername(data.username);
-        })
-        .catch(() => {});
-    }
-    if (username === AdminId) {
-      setValid(true);
-      return;
-    }
-    fetch(`https://api.github.com/users/${username}/following/${AdminId}`)
-      .then((res) => {
-        if (res.status === 204) {
-          setValid(true);
-        }
-      })
-      .catch(() => {});
-  }, [post.slug, username]);
-  if (!valid) {
+  if (!post.follow) {
+    return <Mdx code={post.body.code} />;
+  }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { username, following, vip } = useLoginInfo();
+
+  if (post.follow && !following) {
     return (
       <>
         <div className='my-10'>{(post as Blog).description || ' '}</div>
@@ -79,5 +61,13 @@ export function PostContent({ post }: { post: Blog | Page }) {
       </>
     );
   }
+  // if (post.vip && !vip) {
+  //   return (
+  //     <>
+  //       <div className='my-10'>{(post as Blog).description || ' '}</div>
+  //       <LoginAndFollow lang={post.lang} username={username} />
+  //     </>
+  //   );
+  // }
   return <Mdx code={post.body.code} />;
 }

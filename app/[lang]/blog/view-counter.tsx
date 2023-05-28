@@ -1,23 +1,15 @@
 'use client';
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import { fetcher } from '../use-login';
 
 type PostView = {
   slug: string;
   count: string;
 };
 
-async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
-  const res = await fetch(input, {
-    ...init,
-    method: 'POST'
-  });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return res.json();
-}
-
 export default function ViewCounter({ slug, trackView, label }: { slug: string; trackView: boolean; label: string }) {
-  const { data } = useSWR<PostView[]>('/api/views', fetcher);
+  const { data } = useSWR<PostView[]>('/api/views', (url: string) => fetcher(url, { method: 'POST' }));
   const viewsForSlug = data && data?.find((view) => view.slug === slug);
   const views = new Number(viewsForSlug?.count || 0);
 
