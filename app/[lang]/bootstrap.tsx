@@ -7,10 +7,10 @@ import { useLoginInfo } from './use-login';
 const SCRIPT = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5059418763237956';
 
 export function Bootstrap() {
-  const { following, vip } = useLoginInfo();
+  const { loading, following, vip } = useLoginInfo();
   const pathname = usePathname();
   useEffect(() => {
-    if (following || vip) return;
+    if (loading || following || vip) return;
     try {
       // @ts-ignore
       // eslint-disable-next-line
@@ -48,8 +48,8 @@ export function Bootstrap() {
           sponsor.parentNode.replaceChild(prompt, sponsor);
         }
       });
-  }, [pathname, following, vip]);
-  if (following || vip) return null;
+  }, [pathname, following, loading, vip]);
+  if (loading || following || vip) return null;
 
   return (
     <>
