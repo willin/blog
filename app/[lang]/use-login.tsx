@@ -30,7 +30,7 @@ export function useLoginInfo() {
         }
       })
       .catch(() => {});
-  }, [username]);
+  }, [username, following]);
 
   return {
     username,
