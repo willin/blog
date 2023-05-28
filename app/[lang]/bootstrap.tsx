@@ -34,7 +34,9 @@ export function Bootstrap() {
         const elm = document.querySelector('ins.adsbygoogle');
         if (
           !result ||
+          // @ts-ignore
           (elm && window.getComputedStyle(elm).display === 'none') ||
+          // @ts-ignore
           (elm && window.getComputedStyle(elm.parentElement).display === 'none')
         ) {
           // 删除文章正文
