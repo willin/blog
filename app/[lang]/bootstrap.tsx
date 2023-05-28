@@ -32,7 +32,6 @@ export function Bootstrap() {
       .catch(() => (result = false))
       .finally(() => {
         const elm = document.querySelector('ins.adsbygoogle');
-        console.log(window.getComputedStyle(elm).display);
         if (
           !result ||
           (elm && window.getComputedStyle(elm).display === 'none') ||
