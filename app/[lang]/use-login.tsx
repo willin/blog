@@ -10,12 +10,18 @@ export async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit
 }
 
 export function useLoginInfo() {
+  const [loading, setLoading] = useState(true);
   const [following, setFollowing] = useState(false);
   const { data } = useSWR<{ username: string; vip: boolean }>('/api/me', fetcher);
-  const { username = '', vip = false } = data || {};
+  const { username, vip = false } = data || {};
 
   useEffect(() => {
-    if (!username) return;
+    if (username != undefined) {
+      setLoading(false);
+    }
+    if (!username) {
+      return;
+    }
     if (username === AdminId) {
       setFollowing(true);
       return;
@@ -30,6 +36,7 @@ export function useLoginInfo() {
   }, [username]);
 
   return {
+    loading,
     username,
     vip,
     following

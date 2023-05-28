@@ -53,7 +53,7 @@ export function PostContent({ post }: { post: Blog | Page }) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { username, following, vip } = useLoginInfo();
 
-  if (post.follow && !following) {
+  if (post.follow && (!username || !following)) {
     return (
       <>
         <div className='my-10'>{(post as Blog).description || ' '}</div>

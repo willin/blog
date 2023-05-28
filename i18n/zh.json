@@ -11,6 +11,7 @@
   "common": {
     "login_and_follow": "您需要登录并且在 Github 上关注 {{username}} 后才能继续阅读本文。",
     "login": "登录",
+    "fans_login": "Github 粉丝登录免广告",
     "logout": "退出",
     "follow": "去关注",
     "views": "阅读",

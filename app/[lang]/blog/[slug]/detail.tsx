@@ -85,7 +85,7 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
   return (
     <article>
       <h1 className='text-5xl text-secondary text-center my-4'>{post.title}</h1>
-      <aside className='text-center'>
+      <aside className='text-center mb-8'>
         <span className='badge'>
           <ViewCounter slug={post.slug} trackView label={t('common.views')} />
         </span>
@@ -94,6 +94,15 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
           {t('common.reading_time', { time: lang === 'zh' ? Math.ceil(readingTime.minutes) : readingTime.text })}
         </span>
       </aside>
+      <div className='ads mx-auto text-center'>
+        <ins
+          className='adsbygoogle'
+          style={{ display: 'block' }}
+          data-ad-client='ca-pub-5059418763237956'
+          data-ad-slot='9518721243'
+          data-ad-format='auto'
+          data-full-width-responsive='true'></ins>
+      </div>
       <PostContent post={post} />
       <div className='divider'>The End</div>
       <aside className='my-4'>
