@@ -85,7 +85,7 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
   return (
     <article>
       <h1 className='text-5xl text-secondary text-center my-4'>{post.title}</h1>
-      <aside className='text-center'>
+      <aside className='text-center mb-8'>
         <span className='badge'>
           <ViewCounter slug={post.slug} trackView label={t('common.views')} />
         </span>
