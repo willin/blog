@@ -32,7 +32,12 @@ export function Bootstrap() {
       .catch(() => (result = false))
       .finally(() => {
         const elm = document.querySelector('ins.adsbygoogle');
-        if (!result || elm === null) {
+        console.log(window.getComputedStyle(elm).display);
+        if (
+          !result ||
+          (elm && window.getComputedStyle(elm).display === 'none') ||
+          (elm && window.getComputedStyle(elm.parentElement).display === 'none')
+        ) {
           // 删除文章正文
           const sponsor = document.querySelector('article.prose');
           if (!sponsor) return;

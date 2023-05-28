@@ -108,6 +108,15 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
         )}
         <PostCopyright post={post} lang={lang} type={type} />
       </aside>
+      <div className='ads'>
+        <ins
+          className='adsbygoogle'
+          style={{ display: 'block' }}
+          data-ad-client='ca-pub-5059418763237956'
+          data-ad-slot='9518721243'
+          data-ad-format='auto'
+          data-full-width-responsive='true'></ins>
+      </div>
       <script type='application/ld+json'>{JSON.stringify(post.structuredData)}</script>
     </article>
   );
