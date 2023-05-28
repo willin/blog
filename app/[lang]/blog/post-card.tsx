@@ -1,3 +1,4 @@
+import clsx from 'classnames';
 import { Blog } from 'contentlayer/generated';
 import Link from 'next/link';
 import ViewCounter from './view-counter';
@@ -8,14 +9,19 @@ export function PostCard({ post, lang }: { post: Blog; lang: Locale }) {
   const t = translation(lang);
 
   return (
-    <Link href={`/${lang}/blog/${post.slug}`} className='grid row-span-1 col-span-1'>
-      <div className='card bg-base-100 shadow-xl image-full'>
+    <Link
+      href={`/${lang}/blog/${post.slug}`}
+      className={clsx({
+        'row-span-6': !!post.image,
+        'row-span-4': !post.image
+      })}>
+      <div className='card bg-base-100 shadow-xl image-full max-h-max'>
         <figure>
           <img src={post.image || '/images/bg.jpg'} alt='Cover' />
         </figure>
         <div className='card-body'>
-          <h2 className='card-title text-lg text-secondary'>{post.title}</h2>
-          <p className='text-sm'>{post.description}&nbsp;</p>
+          <h2 className='card-title text-lg text-secondary break-words'>{post.title}</h2>
+          <p className='text-sm break-words'>{post.description}&nbsp;</p>
           <div className='card-actions justify-end'>
             <div className='btn-group'>
               <button className='btn btn-outline btn-xs btn-disabled'>
