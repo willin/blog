@@ -106,15 +106,27 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
       <PostContent post={post} />
       <div className='divider'>The End</div>
       <aside className='my-4'>
-        <span className='badge mr-4'>
-          {t('common.publish_at')} {post.date}
-        </span>
-        {type === 'post' && (
-          <>
-            <PostCategory post={post as Blog} lang={lang} />
-            <PostTags post={post as Blog} lang={lang} />
-          </>
-        )}
+        <div className='text-center'>
+          <div className='tooltip' data-tip={t('common.donate_tip')}>
+            <a
+              target='_blank'
+              className='btn btn-secondary btn-lg my-2 hover:glass'
+              href={lang === 'zh' ? 'https://afdian.net/a/willin' : 'https://github.com/sponsors/willin'}>
+              {t('common.donate')}
+            </a>
+          </div>
+        </div>
+        <div className='text-center'>
+          <span className='badge mr-4'>
+            {t('common.publish_at')} {post.date}
+          </span>
+          {type === 'post' && (
+            <>
+              <PostCategory post={post as Blog} lang={lang} />
+              <PostTags post={post as Blog} lang={lang} />
+            </>
+          )}
+        </div>
         <PostCopyright post={post} lang={lang} type={type} />
       </aside>
       <script type='application/ld+json'>{JSON.stringify(post.structuredData)}</script>

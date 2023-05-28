@@ -9,6 +9,8 @@
     "total_wordcount": "Total posts: <span class=\"badge badge-lg\">{{posts}}</span>, wordcount: <span class=\"badge badge-lg badge-secondary\">{{wordcount}}</span>, reading time about <span class=\"badge badge-lg badge-primary\">{{readtime}}</span> hours, total <span class=\"badge badge-lg badge-accent\">{{views}}</span> views."
   },
   "common": {
+    "donate": "⚡ Sponsor Willin",
+    "donate_tip": "Thank you, my boss ❤️",
     "login_and_follow": "You need to login and follow github {{username}} first.",
     "login": "Login",
     "fans_login": "Github Fans Remove Ads",

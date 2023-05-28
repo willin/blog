@@ -9,6 +9,8 @@
     "total_wordcount": "已写下 <span class=\"badge badge-lg\">{{posts}}</span> 篇博客文章，共计 <span class=\"badge badge-lg badge-secondary\">{{wordcount}}</span> 字，完整阅读预计需要 <span class=\"badge badge-lg badge-primary\">{{readtime}}</span> 小时，已有 <span class=\"badge badge-lg badge-accent\">{{views}}</span> 次阅读。"
   },
   "common": {
+    "donate": "⚡ 为老王充电",
+    "donate_tip": "感谢您的慷慨赞助 ❤️",
     "login_and_follow": "您需要登录并且在 Github 上关注 {{username}} 后才能继续阅读本文。",
     "login": "登录",
     "fans_login": "Github 粉丝登录免广告",
