@@ -94,6 +94,15 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
           {t('common.reading_time', { time: lang === 'zh' ? Math.ceil(readingTime.minutes) : readingTime.text })}
         </span>
       </aside>
+      <div className='ads mx-auto text-center'>
+        <ins
+          className='adsbygoogle'
+          style={{ display: 'block' }}
+          data-ad-client='ca-pub-5059418763237956'
+          data-ad-slot='9518721243'
+          data-ad-format='auto'
+          data-full-width-responsive='true'></ins>
+      </div>
       <PostContent post={post} />
       <div className='divider'>The End</div>
       <aside className='my-4'>
@@ -108,15 +117,6 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
         )}
         <PostCopyright post={post} lang={lang} type={type} />
       </aside>
-      <div className='ads'>
-        <ins
-          className='adsbygoogle'
-          style={{ display: 'block' }}
-          data-ad-client='ca-pub-5059418763237956'
-          data-ad-slot='9518721243'
-          data-ad-format='auto'
-          data-full-width-responsive='true'></ins>
-      </div>
       <script type='application/ld+json'>{JSON.stringify(post.structuredData)}</script>
     </article>
   );
