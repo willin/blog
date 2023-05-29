@@ -2,7 +2,6 @@ import { Blog, Page } from 'contentlayer/generated';
 import { translation } from '@/lib/i18n';
 import { Locale } from '@/i18n-config';
 import ViewCounter from '../view-counter';
-import { Mdx } from '../mdx';
 import Link from 'next/link';
 import { ReadTimeResults } from 'reading-time';
 import { BaseURL } from '@/lib/config';

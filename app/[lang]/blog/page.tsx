@@ -14,10 +14,7 @@ export default async function BlogPage({ params: { lang } }: ContextParams) {
   const posts = allBlogs
     .filter((p) => p.lang === lang)
     .sort((a, b) => {
-      if (new Date(a.date) > new Date(b.date)) {
-        return -1;
-      }
-      return 1;
+      return new Date(a.date) > new Date(b.date) ? -1 : 1;
     });
 
   return (

@@ -59,12 +59,10 @@
   }
 
   .prose .anchor {
-    @apply absolute invisible no-underline;
-
-    margin-left: -1em;
+    @apply absolute invisible no-underline text-primary max-w-full;
+    margin-left: -2.5rem;
     padding-right: 0.5em;
     width: 80%;
-    max-width: 700px;
     cursor: pointer;
   }
 
@@ -73,7 +71,7 @@
   }
 
   .prose .anchor:after {
-    content: ' ';
+    content: '#';
   }
 
   .prose *:hover > .anchor {

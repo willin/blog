@@ -11,7 +11,11 @@ export default function PostList({ params: { lang, slug } }: ContextParams) {
   const cats = allCategories(lang);
   const tags = allTags(lang);
   const tag = decodeURIComponent(slug);
-  const posts = allBlogs.filter((p) => p.lang === lang && ((p.tags as string[]) || []).includes(tag));
+  const posts = allBlogs
+    .filter((p) => p.lang === lang && ((p.tags as string[]) || []).includes(tag))
+    .sort((a, b) => {
+      return new Date(a.date) > new Date(b.date) ? -1 : 1;
+    });
 
   return (
     <article>
