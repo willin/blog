@@ -2,6 +2,7 @@ import { InvoiceDetail, Invoices } from '@/components/invoices';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Codeblock } from './code';
 
 const CustomLink = (props: { [k: string]: string }) => {
   const href = props.href;
@@ -45,6 +46,7 @@ function CustomTable(props: { [k: string]: string }) {
 }
 
 const components = {
+  pre: Codeblock,
   Image: RoundedImage,
   img: DefaultImage,
   a: CustomLink,
