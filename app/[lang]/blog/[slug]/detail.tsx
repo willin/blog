@@ -84,7 +84,7 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
 
   return (
     <article>
-      <h1 className='text-5xl text-secondary text-center my-4'>{post.title}</h1>
+      <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.title}</h1>
       <aside className='text-center mb-8'>
         <span className='badge'>
           <ViewCounter slug={post.slug} trackView label={t('common.views')} />
@@ -103,7 +103,9 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
           data-ad-format='auto'
           data-full-width-responsive='true'></ins>
       </div>
-      <PostContent post={post} />
+      <div className='break-words'>
+        <PostContent post={post} />
+      </div>
       <div className='divider'>The End</div>
       <aside className='my-4'>
         <div className='text-center'>

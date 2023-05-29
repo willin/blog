@@ -45,6 +45,12 @@
     appearance: none;
   }
 
+  .break-words,
+  .break-words p {
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
   table {
     display: block;
     max-width: fit-content;

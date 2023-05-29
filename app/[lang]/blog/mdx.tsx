@@ -1,3 +1,4 @@
+import { InvoiceDetail, Invoices } from '@/components/invoices';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -47,7 +48,9 @@ const components = {
   Image: RoundedImage,
   img: DefaultImage,
   a: CustomLink,
-  table: CustomTable
+  table: CustomTable,
+  Invoices: Invoices,
+  InvoiceDetail: InvoiceDetail
 };
 
 export function Mdx({ code }: { code: string }) {

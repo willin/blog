@@ -2,12 +2,21 @@
 import { Kysely } from 'kysely';
 import { PlanetScaleDialect } from 'kysely-planetscale';
 
-interface ViewsTable {
+export interface ViewsTable {
   slug: string;
   count: number;
 }
 
+export interface InvoicesTable {
+  date: string;
+  amount: number;
+  category: 'DONATE' | 'OPENSOURCE';
+  type: 'IN' | 'OUT';
+  desc: string;
+}
+
 interface Database {
+  invoices: InvoicesTable;
   views: ViewsTable;
 }
 

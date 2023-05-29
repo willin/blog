@@ -47,7 +47,7 @@ export default async function BlogPage({ params: { lang } }: ContextParams) {
           <TagList lang={lang} type='tag' items={tags} />
         </section>
       )}
-      <section className='my-10 grid grid-flow-row-dense auto-rows-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+      <section className='my-10 grid grid-flow-row-dense auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
         {posts.length > 0 && posts.map((post) => <PostCard post={post} key={post.slug} lang={lang} />)}
       </section>
     </article>

@@ -24,5 +24,15 @@
     "tags_by": "Tagged by ",
     "wordcount": "Wordcount: {{wordcount}}",
     "reading_time": "Reading time: {{time}}"
+  },
+  "components": {
+    "income": "⚡ Income",
+    "expenditure": "❤️ Expenditure",
+    "balance": "🌾 Balance",
+    "this_year": "This year",
+    "no_data": "Nothing here",
+    "date": "Date",
+    "amount": "Amount",
+    "desc": "Description"
   }
 }
