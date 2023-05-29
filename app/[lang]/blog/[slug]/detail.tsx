@@ -2,7 +2,6 @@ import { Blog, Page } from 'contentlayer/generated';
 import { translation } from '@/lib/i18n';
 import { Locale } from '@/i18n-config';
 import ViewCounter from '../view-counter';
-import { Mdx } from '../mdx';
 import Link from 'next/link';
 import { ReadTimeResults } from 'reading-time';
 import { BaseURL } from '@/lib/config';
@@ -86,13 +85,24 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
     <article>
       <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.title}</h1>
       <aside className='text-center mb-8'>
+        {type === 'page' && (
+          <span className='badge mr-4'>
+            {t('common.publish_at')} {post.date}
+          </span>
+        )}
         <span className='badge'>
           <ViewCounter slug={post.slug} trackView label={t('common.views')} />
         </span>
-        <span className='badge mx-4'>{t('common.wordcount', { wordcount: readingTime.words.toLocaleString() })}</span>
-        <span className='badge'>
-          {t('common.reading_time', { time: lang === 'zh' ? Math.ceil(readingTime.minutes) : readingTime.text })}
-        </span>
+        {type === 'post' && (
+          <>
+            <span className='badge mx-4'>
+              {t('common.wordcount', { wordcount: readingTime.words.toLocaleString() })}
+            </span>
+            <span className='badge'>
+              {t('common.reading_time', { time: lang === 'zh' ? Math.ceil(readingTime.minutes) : readingTime.text })}
+            </span>
+          </>
+        )}
       </aside>
       <div className='ads mx-auto text-center'>
         <ins
@@ -118,17 +128,17 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
             </a>
           </div>
         </div>
-        <div className='text-center'>
-          <span className='badge mr-4'>
-            {t('common.publish_at')} {post.date}
-          </span>
-          {type === 'post' && (
-            <>
-              <PostCategory post={post as Blog} lang={lang} />
-              <PostTags post={post as Blog} lang={lang} />
-            </>
-          )}
-        </div>
+
+        {type === 'post' && (
+          <div className='text-center'>
+            <span className='badge mr-4'>
+              {t('common.publish_at')} {post.date}
+            </span>
+            <PostCategory post={post as Blog} lang={lang} />
+            <PostTags post={post as Blog} lang={lang} />
+          </div>
+        )}
+
         <PostCopyright post={post} lang={lang} type={type} />
       </aside>
       <script type='application/ld+json'>{JSON.stringify(post.structuredData)}</script>

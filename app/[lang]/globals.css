@@ -59,13 +59,15 @@
   }
 
   .prose .anchor {
-    @apply absolute invisible no-underline;
-
-    margin-left: -1em;
-    padding-right: 0.5em;
-    width: 80%;
-    max-width: 700px;
-    cursor: pointer;
+    @apply absolute invisible no-underline text-secondary max-w-full;
+    margin-left: -1.5rem;
+    width: 100%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    text-align: left;
+    height: max-content;
   }
 
   .anchor:hover {
@@ -73,7 +75,7 @@
   }
 
   .prose .anchor:after {
-    content: ' ';
+    content: '#';
   }
 
   .prose *:hover > .anchor {
@@ -93,22 +95,37 @@
   .prose {
     @apply min-w-full;
   }
+  .prose > * {
+    @apply min-w-[95%] w-full lg:w-[95%] mx-auto;
+  }
+  .prose h1,
+  .prose h2 {
+    @apply relative text-primary-content bg-primary border-primary-focus mx-auto rounded shadow-lg text-center min-w-[95%] w-full lg:w-[95%] py-1;
+  }
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    @apply text-secondary-focus relative;
+  }
 
   .prose table {
-    @apply table min-w-[90%] w-full lg:w-[90%] table-zebra shadow mx-auto table-normal;
+    @apply table min-w-[95%] w-full lg:w-[95%] table-zebra shadow mx-auto table-normal;
   }
 
   .prose tr {
     @apply hover;
   }
-
+  [data-rehype-pretty-code-fragment] {
+    @apply relative min-w-[95%] w-full lg:w-[95%] mx-auto rounded shadow-lg;
+  }
   [data-rehype-pretty-code-fragment] code {
     @apply grid break-words border-0 bg-transparent p-0 text-sm text-black;
     counter-reset: line;
     box-decoration-break: clone;
   }
   [data-rehype-pretty-code-fragment] pre {
-    @apply mx-auto p-2 rounded shadow min-w-[90%] w-full lg:w-[90%];
+    @apply mx-auto p-4;
   }
   [data-rehype-pretty-code-fragment] code * {
     user-select: text;
@@ -135,9 +152,14 @@
     @apply rounded-md bg-slate-500 bg-opacity-10 p-1;
   }
   [data-rehype-pretty-code-title] {
-    @apply px-4 py-3 font-mono text-xs font-medium border rounded-t-lg text-neutral-200 border-[#333333] bg-[#1c1c1c];
+    @apply px-4 py-3 pl-12 font-mono text-xs font-medium border rounded-t-lg text-secondary-content bg-secondary border-secondary;
   }
-  [data-rehype-pretty-code-title] + pre {
+
+  [data-rehype-pretty-code-title] ~ [data-language-icon] {
+    @apply block;
+  }
+
+  [data-rehype-pretty-code-title] ~ pre {
     @apply mt-0 rounded-t-none border-t-0;
   }
 }

@@ -18,6 +18,8 @@ export function Bootstrap() {
     } catch (e) {
       //
     }
+    // Ignore core pages
+    if (pathname.includes('/sponsor') || pathname.includes('/about') || pathname.includes('/projects')) return;
     // (A) TEST FETCH HEADER REQUEST TO GOOGLE ADSENSE
     const test = new Request(
       SCRIPT,

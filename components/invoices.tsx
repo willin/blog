@@ -1,4 +1,5 @@
 'use client';
+import clsx from 'classnames';
 import useSWR from 'swr';
 import type { InvoicesTable } from '@/lib/mysql';
 import { Locale } from '@/i18n-config';
@@ -49,7 +50,13 @@ export function Invoices({ lang }: { lang: Locale }) {
 
         <div className='stat'>
           <div className='stat-title'>{t('components.balance')}</div>
-          <div className='stat-value text-primary'>{formatMoney(metrics?.in || 0 - metrics?.out || 0)}</div>
+          <div
+            className={clsx('stat-value', {
+              'text-primary': (metrics?.in || 0 - metrics?.out || 0) < 0,
+              'text-secondary': (metrics?.in || 0 - metrics?.out || 0) >= 0
+            })}>
+            {formatMoney(metrics?.in || 0 - metrics?.out || 0)}
+          </div>
           <div className='stat-desc'>
             {t('components.this_year')} {formatMoney(metrics?.yearIn || 0 - metrics?.yearOut || 0)}
           </div>
@@ -100,11 +107,11 @@ export function InvoiceDetail({ lang }: { lang: Locale }) {
   const { data: invoices = [] } = useSWR<InvoicesTable[]>('/api/invoices', fetcher);
 
   return (
-    <div className='text-center'>
+    <>
       <h2>{t('components.income')}</h2>
       <TableBody invoices={invoices?.filter((x) => x.type === 'IN')} lang={lang} />
       <h2>{t('components.expenditure')}</h2>
       <TableBody invoices={invoices?.filter((x) => x.type === 'OUT')} lang={lang} />
-    </div>
+    </>
   );
 }

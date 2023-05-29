@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.2.32",
+    "@phosphor-icons/react": "^2.0.9",
     "@vercel/analytics": "^1.0.1",
     "@vercel/og": "^0.5.6",
     "classnames": "^2.3.2",
