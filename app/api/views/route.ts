@@ -1,4 +1,4 @@
-import { queryBuilder } from '@/lib/planetscale';
+import { queryBuilder } from '@/lib/mysql';
 import { NextResponse } from 'next/server';
 
 async function handler() {
@@ -11,4 +11,6 @@ async function handler() {
   }
 }
 
-export { handler as POST };
+export { handler as GET };
+export const revalidate = 3600;
+export const runtime = 'edge';
