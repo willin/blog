@@ -35,7 +35,7 @@ export function CopyButton({ className, elementRef, ...props }: CopyButtonProps)
   return (
     <button
       className={clsx(
-        'h-8 w-8 cursor-pointer rounded-md text-primary-600 ring-1 ring-inset ring-gray-500/20 backdrop-blur-md transition-colors hover:bg-gray-100 hover:text-primary-500 dark:hover:bg-gray-800',
+        'h-8 w-8 cursor-pointer rounded-md ring-1 ring-inset ring-base-500/20 backdrop-blur-md transition-colors bg-base text-primary-content hover:text-primary',
         className
       )}
       aria-label='Copy to Clipboard'
@@ -66,17 +66,17 @@ export type CodeblockProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLPr
 
 export function Codeblock({ children, ...props }: CodeblockProps) {
   const language = props['data-language'];
-  const theme = props['data-theme'];
+  // const theme = props['data-theme'];
   const LanguageIcon = getIconForLanguage(language);
   const ref = useRef<HTMLPreElement>(null);
 
   return (
     <>
       <LanguageIcon
-        className='text-foreground absolute left-4 top-[13px] hidden'
+        className='text-secondary-focus absolute left-4 top-[11px] hidden'
         aria-hidden={true}
         data-language-icon
-        data-theme={theme}
+        // data-theme={theme}
         width={20}
         height={20}
       />
@@ -88,7 +88,7 @@ export function Codeblock({ children, ...props }: CodeblockProps) {
       <CopyButton
         className='absolute right-2.5 top-[9px] opacity-0 transition-opacity focus:opacity-100 lg:right-[13px] lg:top-[13px] [[data-rehype-pretty-code-title]~&]:right-[9px] [[data-rehype-pretty-code-title]~&]:top-[7px] [div:hover>&]:opacity-100'
         elementRef={ref}
-        data-theme={theme}
+        // data-theme={theme}
       />
     </>
   );
