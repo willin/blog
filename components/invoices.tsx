@@ -107,11 +107,11 @@ export function InvoiceDetail({ lang }: { lang: Locale }) {
   const { data: invoices = [] } = useSWR<InvoicesTable[]>('/api/invoices', fetcher);
 
   return (
-    <div className='text-center'>
+    <>
       <h2>{t('components.income')}</h2>
       <TableBody invoices={invoices?.filter((x) => x.type === 'IN')} lang={lang} />
       <h2>{t('components.expenditure')}</h2>
       <TableBody invoices={invoices?.filter((x) => x.type === 'OUT')} lang={lang} />
-    </div>
+    </>
   );
 }
