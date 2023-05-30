@@ -82,7 +82,7 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
   const readingTime = post.readingTime as ReadTimeResults;
 
   return (
-    <article>
+    <main>
       <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.title}</h1>
       <aside className='text-center mb-8'>
         {type === 'page' && (
@@ -142,6 +142,6 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
         <PostCopyright post={post} lang={lang} type={type} />
       </aside>
       <script type='application/ld+json'>{JSON.stringify(post.structuredData)}</script>
-    </article>
+    </main>
   );
 }
