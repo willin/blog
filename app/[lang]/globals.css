@@ -87,6 +87,10 @@
     @apply m-0;
   }
 
+  .prose code {
+    @apply text-accent border-accent border rounded;
+  }
+
   code[class*='language-'],
   pre[class*='language-'] {
     @apply text-neutral-50;

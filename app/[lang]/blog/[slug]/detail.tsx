@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ReadTimeResults } from 'reading-time';
 import { BaseURL } from '@/lib/config';
 import { PostContent } from './authenticate';
+import { Donate } from '@/components/donate';
 
 function PostCategory({ post, lang }: { post: Blog; lang: Locale }) {
   if (!post.category) return null;
@@ -118,16 +119,7 @@ export function PostDetail({ post, lang, type }: { post: Blog | Page; lang: Loca
       </div>
       <div className='divider'>The End</div>
       <aside className='my-4'>
-        <div className='text-center'>
-          <div className='tooltip' data-tip={t('common.donate_tip')}>
-            <a
-              target='_blank'
-              className='btn btn-secondary btn-lg my-2 hover:glass'
-              href={lang === 'zh' ? 'https://afdian.net/a/willin' : 'https://github.com/sponsors/willin'}>
-              {t('common.donate')}
-            </a>
-          </div>
-        </div>
+        <Donate lang={lang} />
 
         {type === 'post' && (
           <div className='text-center'>
