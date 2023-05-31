@@ -34,7 +34,7 @@ export function MainHeader({ lang }: { lang: Locale }) {
   });
 
   return (
-    <header className='sticky top-0 flex justify-center w-full z-20 opacity-90 hover:opacity-100 bg-base-100 mb-4'>
+    <header className='sticky top-0 flex justify-center w-full z-[9999] opacity-90 hover:opacity-100 bg-base-100 mb-4'>
       <div className='navbar bg-base-100'>
         <div className='navbar-start'>
           <div className='dropdown'>

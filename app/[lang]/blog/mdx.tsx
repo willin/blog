@@ -3,6 +3,7 @@ import { useMDXComponent } from 'next-contentlayer/hooks';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Codeblock } from './code';
+import { Donate } from '@/components/donate';
 
 const CustomLink = (props: { [k: string]: string }) => {
   const href = props.href;
@@ -52,6 +53,7 @@ const components = {
   a: CustomLink,
   table: CustomTable,
   Invoices: Invoices,
+  Donate: Donate,
   InvoiceDetail: InvoiceDetail
 };
 
