@@ -12,9 +12,9 @@ export function FooterLogin({ lang }: { lang: Locale }) {
     return (
       <>
         {!vip && !following && (
-          <button onClick={() => signIn('github')} className='btn btn-xs btn-secondary align-super ml-4'>
+          <a href='https://github.com/willin' target='_blank' className='btn btn-xs btn-secondary align-super ml-4'>
             {t('common.follow')}
-          </button>
+          </a>
         )}
         <button onClick={() => signOut()} className='btn btn-xs align-super ml-4'>
           {t('common.logout')}
