@@ -15,18 +15,22 @@ export function Invoices({ lang }: { lang: Locale }) {
     (acc, cur) => {
       if (cur.type === 'IN') {
         acc.in += +cur.amount;
+        acc.balance += +cur.amount;
         if (new Date(cur.date).getFullYear() === year) {
           acc.yearIn += +cur.amount;
+          acc.balanceYear += +cur.amount;
         }
       } else {
         acc.out += +cur.amount;
+        acc.balance -= cur.amount;
         if (new Date(cur.date).getFullYear() === year) {
           acc.yearOut += +cur.amount;
+          acc.balanceYear -= +cur.amount;
         }
       }
       return acc;
     },
-    { in: 0, out: 0, yearIn: 0, yearOut: 0 }
+    { in: 0, out: 0, balance: 0, balanceYear: 0, yearIn: 0, yearOut: 0 }
   );
 
   return (
@@ -52,13 +56,13 @@ export function Invoices({ lang }: { lang: Locale }) {
           <div className='stat-title'>{t('components.balance')}</div>
           <div
             className={clsx('stat-value', {
-              'text-primary': (metrics?.in || 0 - metrics?.out || 0) < 0,
-              'text-secondary': (metrics?.in || 0 - metrics?.out || 0) >= 0
+              'text-primary': metrics?.balance < 0,
+              'text-secondary': metrics?.balance >= 0
             })}>
-            {formatMoney(metrics?.in || 0 - metrics?.out || 0)}
+            {formatMoney(metrics?.balance || 0)}
           </div>
           <div className='stat-desc'>
-            {t('components.this_year')} {formatMoney(metrics?.yearIn || 0 - metrics?.yearOut || 0)}
+            {t('components.this_year')} {formatMoney(metrics?.balanceYear || 0)}
           </div>
         </div>
       </div>
