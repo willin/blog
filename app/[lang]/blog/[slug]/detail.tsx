@@ -63,7 +63,9 @@ function PostCopyright({ lang, post, type }: { lang: Locale; post: Blog | Page; 
           </p>
           <p className='text-sm mb-1'>
             本文链接：{' '}
-            <a href={`${BaseURL}/${lang}/${type}/${post.slug}`}>{`${BaseURL}/${lang}/${type}/${post.slug}`}</a>
+            <a href={`${BaseURL}/${lang}/${type !== 'page' ? `blog/` : ''}${post.slug}`}>{`${BaseURL}/${lang}/${
+              type !== 'page' ? `blog/` : ''
+            }${post.slug}`}</a>
           </p>
           <p className='text-sm  mt-1'>
             本博客所有文章除特别声明外，均为原创，采用{' '}
