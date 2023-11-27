@@ -17,11 +17,11 @@ export const links: LinksFunction = () => [
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'SSO - Willin Wang' },
-    { name: 'description', content: 'Source: https://github.com/willin/sso' },
+    { title: 'Willin Wang' },
+    { name: 'description', content: 'To be Willin is to be willing. ' },
     {
       name: 'keywords',
-      content: ['Remix', 'IDaaS', 'SSO', 'OIDC', 'OAuth', 'React', 'JavaScript', 'Willin Wang'].join(', ')
+      content: ['v0', '长岛冰泪', 'JavaScript', 'Remix', 'Willin Wang'].join(', ')
     },
     { name: 'author', content: 'Willin Wang' }
   ];

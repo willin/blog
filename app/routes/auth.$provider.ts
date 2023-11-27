@@ -1,9 +1,5 @@
-import { type LoaderFunction, type ActionFunction, redirect } from '@remix-run/cloudflare';
+import { type ActionFunction } from '@remix-run/cloudflare';
 import { z } from 'zod';
-
-export const loader: LoaderFunction = () => {
-  return redirect('/');
-};
 
 export const action: ActionFunction = async ({ request, context, params }) => {
   const provider = z.enum(['sso']).parse(params.provider);
@@ -15,3 +11,5 @@ export const action: ActionFunction = async ({ request, context, params }) => {
     failureRedirect: returnPath
   });
 };
+
+export const loader = action;
