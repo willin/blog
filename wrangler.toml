@@ -1,3 +1,5 @@
+compatibility_flags = [ "nodejs_compat" ]
+
 kv_namespaces = [
   { binding = "CACHE", id = "9b90bf3df7a6448ba65be8805d5d1a01" }
 ]

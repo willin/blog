@@ -8,6 +8,8 @@ import { D1Provider } from './provider/d1.db';
 import { DatabaseService } from './services/database';
 import { AuthService } from './services/auth';
 import { ViewService } from './services/views';
+import { GithubProvider } from './provider/github';
+import { ContentService } from './services/content';
 if (process.env.NODE_ENV === 'development') {
   logDevReady(build);
 }
@@ -20,15 +22,18 @@ export const onRequest = createPagesFunctionHandler({
     // Init Providers
     // const cacheProvider = new KVProvider(ctx.env.CACHE);
     const dbProvider = new D1Provider(ctx.env.DB);
+    const githubProvider = new GithubProvider(ctx.env);
     // Init Services
     // const cache = new CacheService(cacheProvider);
     const db = new DatabaseService(dbProvider);
+    const content = new ContentService(env, githubProvider);
     // Inject Main Services
     const auth = new AuthService(env, url);
     const view = new ViewService(env, db);
     const services: RemixServer.Services = {
       auth,
-      view
+      view,
+      content
     };
     return { env, services };
   },
