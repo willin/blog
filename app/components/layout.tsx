@@ -24,10 +24,17 @@ export default function Layout({ children }: { children: ReactNode }) {
             </a>
           </p>
           <p>
-            &copy;{' '}
             <a href='https://willin.wang' target='_blank' rel='noreferrer'>
               Willin Wang
-            </a>
+            </a>{' '}
+            &copy; 2002 ~ {new Date().getFullYear()}
+          </p>
+          <p>
+            <small>
+              <a href='https://beian.miit.gov.cn/' target='_blank' rel='noreferrer'>
+                苏ICP备17011988号-1
+              </a>
+            </small>
           </p>
         </footer>
       </main>
