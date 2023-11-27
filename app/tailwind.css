@@ -62,4 +62,23 @@
     transform: rotate(-3deg) scale(1.2);
     /* scaleX(-1); */
   }
+
+  .background-animate {
+    background-size: 400%;
+    animation: AnimationName 4s ease infinite;
+  }
+
+  .bg-clip-text {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  @keyframes AnimationName {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
 }

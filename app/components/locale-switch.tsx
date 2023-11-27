@@ -4,12 +4,12 @@ import { getLocale, i18nConfig, languages } from '~/i18n';
 
 const reg = new RegExp(i18nConfig.supportedLanguages.map((x) => `/${x}`).join('|'));
 
-export default function LocaleSwitch({ title }: { [k: string]: string }) {
+export default function LocaleSwitch() {
   const { pathname, search } = useLocation();
   const lang = getLocale(pathname);
 
   return (
-    <div title={title} className='dropdown dropdown-end'>
+    <div className='dropdown dropdown-end'>
       <div tabIndex={0} className='btn btn-ghost gap-1 normal-case'>
         <svg
           className='inline-block h-4 w-4 fill-current md:h-5 md:w-5'

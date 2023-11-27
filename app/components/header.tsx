@@ -1,7 +1,8 @@
+import { useI18n } from 'remix-i18n';
+import { LocaleLink } from './link';
 import LocaleSwitch from './locale-switch';
 import ThemeSwitch from './theme-switch';
-import { LocaleLink } from './link';
-import { useI18n } from 'remix-i18n';
+import UserPanel from './user-panel';
 
 function PageLinks({ items }: { items: { href: string; label: string }[] }) {
   return (
@@ -54,6 +55,7 @@ export default function MainHeader() {
         <div className='navbar-end'>
           <LocaleSwitch />
           <ThemeSwitch />
+          <UserPanel />
         </div>
       </div>
     </header>

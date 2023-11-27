@@ -1,14 +1,22 @@
+import clsx from 'classnames';
 import { type ReactNode } from 'react';
 import BackgroundImage from './background';
 import Bootstrap from './bootstrap';
 import MainHeader from './header';
+import { useLocation } from '@remix-run/react';
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+
   return (
     <>
       <BackgroundImage />
       <MainHeader />
-      <main className='w-[960px] max-w-full mx-auto shadow bg-base-100/90 p-2 sm:p-4 mb-20'>
+      <main
+        className={clsx('p-2 sm:p-4 mb-20 mx-auto', {
+          'container max-w-full shadow bg-base-100/90 rounded':
+            pathname !== '/' && pathname !== '/zh' && pathname !== '/en'
+        })}>
         <article className='prose'>{children}</article>
         <Bootstrap />
         <footer className='text-center text-sm mt-4'>
