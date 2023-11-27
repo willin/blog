@@ -1,0 +1,8 @@
+kv_namespaces = [
+  { binding = "CACHE", id = "9b90bf3df7a6448ba65be8805d5d1a01" }
+]
+
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "v0"
+database_id = "d734a9d9-04b5-4fe8-bfd0-7c09d902857b"

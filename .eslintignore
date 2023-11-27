@@ -1,0 +1,7 @@
+build/
+/public
+/*.js
+/*.mjs
+/.*/
+content/
+demo/
