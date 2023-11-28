@@ -13,18 +13,24 @@ import { removeTrailingSlash } from './utils/trailing-slash';
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: styles },
   { rel: 'shortcut icon', href: '/favicon.ico', type: 'image/ico' },
-  { rel: 'icon', href: '/favicon.png', type: 'image/png' }
+  { rel: 'icon', href: '/favicon.png', type: 'image/png' },
+  { rel: 'manifest', href: '/manifest.json' }
 ];
 
 export const meta: MetaFunction = () => {
   return [
+    { charSet: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width,initial-scale=1' },
     { title: 'Willin Wang' },
     { name: 'description', content: 'To be Willin is to be willing. ' },
     {
       name: 'keywords',
       content: ['v0', '长岛冰泪', 'JavaScript', 'Remix', 'Willin Wang'].join(', ')
     },
-    { name: 'author', content: 'Willin Wang' }
+    { name: 'author', content: 'Willin Wang' },
+    { name: 'apple-touch-fullscreen', content: 'yes' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'theme-color', content: '#FF8E05' }
   ];
 };
 
@@ -48,8 +54,6 @@ export default function App() {
     <ThemeProvider specifiedTheme={theme}>
       <html lang={i18n.locale()} data-theme={theme}>
         <head>
-          <meta charSet='utf-8' />
-          <meta name='viewport' content='width=device-width,initial-scale=1' />
           <Meta />
           <Links />
         </head>

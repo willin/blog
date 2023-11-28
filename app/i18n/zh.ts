@@ -3,8 +3,10 @@ import type { I18nDict } from 'remix-i18n';
 export const dict: I18nDict = {
   site: {
     title: 'Willin (v0) 老王',
+    subtitle: '全职开源、旅居、自媒体、兼职顾问',
     desc: 'To be Willin is to be willing.\nWillin（老王）带你躺平养老。',
     blog: '博客',
+    offer: '我能为您做些什么？',
     social: '欢迎在以下社交媒体关注我',
     view_by_category: '按照【分类】筛选文章',
     view_by_tag: '按照【标签】筛选文章',

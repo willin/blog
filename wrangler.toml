@@ -6,5 +6,5 @@ kv_namespaces = [
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "v0"
-database_id = "d734a9d9-04b5-4fe8-bfd0-7c09d902857b"
+database_name = "wealth"
+database_id = "398984a7-aeca-4591-9ac1-5987833efe11"

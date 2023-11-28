@@ -3,7 +3,9 @@ import type { I18nDict } from 'remix-i18n';
 export const dict: I18nDict = {
   site: {
     title: 'Willin Wang (v0)',
+    subtitle: 'Full-time open source, travel, self-media, part-time consultant',
     desc: 'To be Willin is to be willing.\nNo one can change the past, just like no one can predict the feature.\nI prefer to write the history, rather than to record the history.',
+    offer: 'What can I do for you?',
     blog: 'Posts',
     social: 'Social Media',
     view_by_category: 'View posts by categories',
