@@ -11,10 +11,6 @@ export let EnvSchema = z.object({
       return 'development';
     }),
   COOKIE_SESSION_SECRET: z.string().min(1).optional().default('s3cret'),
-  GITHUB_TOKEN: z.string(),
-  GITHUB_REF: z.string().optional().default('main'),
-  GITHUB_OWNER: z.string().optional().default('willin'),
-  GITHUB_REPO: z.string(),
   SSO_ID: z.string().min(1),
   SSO_SECRET: z.string().min(1)
 });
