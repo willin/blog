@@ -1,0 +1,132 @@
+---
+title: remote-cloudflare-kv 在 Vercel 上使用 Cloudflare KV
+date: '2023-05-28'
+description: 最近我在做 Next.js 项目部署 Cloudflare Pages 时发现本地开发调试、登录鉴权等好多问题，所以又想要切回到 Vercel 中，便有了这么一个项目，可以在 Cloudflare 以外的环境上得到类似于 Worker Runtime 的 KV 使用体验。
+category: 技术
+tags: [全栈, 开源]
+---
+
+最近我在做 Next.js 项目部署 Cloudflare Pages 时发现本地开发调试、登录鉴权等好多问题，所以又想要切回到 Vercel 中，便有了这么一个项目，可以在 Cloudflare 以外的环境上得到类似于 Worker Runtime 的 KV 使用体验。
+
+废话不多说，直接进入正题。
+
+[![npm](https://img.shields.io/npm/v/remote-cloudflare-kv.svg?style=plastic)](https://npmjs.org/package/remote-cloudflare-kv) [![npm](https://img.shields.io/npm/dm/remote-cloudflare-kv.svg?style=plastic)](https://npmjs.org/package/remote-cloudflare-kv) [![npm](https://img.shields.io/npm/dt/remote-cloudflare-kv.svg?style=plastic)](https://npmjs.org/package/remote-cloudflare-kv)
+
+源码： https://github.com/willin/remote-cloudflare-kv
+
+## 安装
+
+```bash
+npm install --save remote-cloudflare-kv
+# or
+yarn add remote-cloudflare-kv
+# or
+pnpm install --save remote-cloudflare-kv
+```
+
+## 使用
+
+### 初始化
+
+```ts title="kv.ts"
+import CloudflareKV from 'remote-cloudflare-kv';
+
+export const NAMESPACE = new CloudflareKV({
+  account_id: process.env.CF_ACCOUNT_ID || '',
+  namespace_id: process.env.CF_NAMESPACE_ID || '',
+  // use bearer token
+  api_token: process.env.CF_API_TOKEN || '',
+  // or use email & api key
+  api_email: '',
+  api_key: ''
+});
+```
+
+### 写入 kv
+
+```ts
+await NAMESPACE.put(key, value);
+// void
+```
+
+设置超时：
+
+```ts
+// 传入 unix 时间戳
+await NAMESPACE.put(key, value, { expiration: secondsSinceEpoch });
+// 传入秒数
+await NAMESPACE.put(key, value, { expirationTtl: secondsFromNow });
+```
+
+设置 Metadata：
+
+```ts
+await NAMESPACE.put(key, value, {
+  metadata: { someMetadataKey: 'someMetadataValue' }
+});
+```
+
+### 读取 kv
+
+```ts
+// 替换 key & type
+const result = await NAMESPACE.get('key', { type: 'json' });
+console.log(result);
+// {"hello": 1}
+```
+
+支持的类型： `text`、`json`、`arrayBuffer`、`stream`。
+
+### 读取 kv 并带 Metadata
+
+```ts
+const result = await NAMESPACE.getWithMetadata(key, { type: 'json' });
+//  {"value": {"hello": 1}, "metadata": {"someKey": "someVal"}}
+```
+
+### 删除 kv
+
+```ts
+await NAMESPACE.delete(key);
+// void
+```
+
+### 列出 kv
+
+```ts
+const result = await NAMESPACE.list();
+console.log(result);
+```
+
+更多详细查询（在 Typescript 中）：
+
+```ts
+await NAMESPACE.list({ prefix: string, limit: number, cursor: string });
+```
+
+列表响应参考：
+
+```json
+{
+  "keys": [
+    {
+      "name": "foo",
+      "expiration": 1234,
+      "metadata": { "someMetadataKey": "someMetadataValue" }
+    }
+  ],
+  "list_complete": false,
+  "cursor": "6Ck1la0VxJ0djhidm1MdX2FyD"
+}
+```
+
+## 参考资料
+
+- Runtime API: https://developers.cloudflare.com/workers/runtime-apis/kv/
+- RESTful API: https://developers.cloudflare.com/api/operations/workers-kv-namespace-list-namespaces
+
+## 赞助
+
+- 关注我的 Github 账号：[@willin](https://github.com/willin)
+- 参与 [爱发电](https://afdian.net/@willin) 计划
+- 支付宝或微信[扫码打赏](https://user-images.githubusercontent.com/1890238/89126156-0f3eeb80-d516-11ea-9046-5a3a5d59b86b.png)

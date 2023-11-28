@@ -1,0 +1,257 @@
+---
+title: 【教女朋友 从 0 到 1 学编程系列】三、2048 前端游戏实战
+date: '2023-08-01'
+description:
+category: 技术
+tags: [全栈, js, 前端, 创意, 开源, 仅限粉丝]
+image: https://pica.zhimg.com/80/v2-1e55d337c6d1bc017b91126f9bbca487_1440w.png
+follow: false
+---
+
+从本章节起，内容将首发于 [CSDN 付费专栏](https://blog.csdn.net/jslygwx/category_12386016.html)。同时，视频教程也在筹备中。
+
+## 程序思想
+
+自定义游戏规则：
+
+- 自适应全屏，4x4 格子
+- 操作只能：上下左右 4 个动作
+- 空白处（非碰撞）随机出现一个 2 或 4
+- 操作一个方向进行相同数字合并相加
+- 游戏开局：随机放置两个数字，2 或 4
+- 失败条件：所有格子满了，并且不能操作合并
+- 胜利条件：当最大数字达到 2048 时胜利
+- 计分：屏幕上所有数字之和
+- 开始按钮：重新开局
+- 历史最高分：持久记录，如果当前积分大于历史最高则更新
+
+## 基本样式实现
+
+通过 CSS + HTML 先将游戏界面完整实现，然后再通过 JavaScript 来实现游戏逻辑。
+
+```html
+<main>
+  <div class="info">
+    <div class="score">Score: <span class="game-score">0</span></div>
+  </div>
+  <div class="game-container">
+    <!-- 重复 4x4=16 次 <div class="cell"></div> 可以用代码动态生成 -->
+  </div>
+</main>
+```
+
+这里可以手写 16 个重复的格子，然后去测试编写样式。测完样式之后把这段重复的代码删除（不够优雅），后续用 js 脚本来进行画布的重绘。
+
+样式的部分，可以先不考虑响应式先将基本的样式实现，然后再做进一步的优化。所有的程序实现都应该像搭积木一样，一层一层，一点一点，慢慢去添加。
+
+```css
+.game-container {
+  background-color: #bbada0;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background-color: #ccc0b3;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #776e65;
+}
+```
+
+这样，基本的格子就已经实现，然后对不同数字设置不同的背景色：
+
+```css
+.tile-2 {
+  background-color: #eee4da;
+}
+.tile-4 {
+  background-color: #ede0c8;
+}
+.tile-8 {
+  background-color: #f2b179;
+}
+.tile-16 {
+  background-color: #f59563;
+}
+.tile-32 {
+  background-color: #f67c5f;
+}
+.tile-64 {
+  background-color: #f65e3b;
+}
+.tile-128 {
+  background-color: #edcf72;
+}
+.tile-256 {
+  background-color: #edcc61;
+}
+.tile-512 {
+  background-color: #edc850;
+}
+.tile-1024 {
+  background-color: #edc53f;
+}
+.tile-2048 {
+  background-color: #edc22e;
+}
+```
+
+## JavaScript 游戏脚本
+
+通过实际项目来学习 JavaScript 语言，其标准内置对象参考文档： [https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects)
+
+- 初始化 4x4 数组
+- 添加随机的数字落点
+- 重新绘制游戏画布
+- 侦听键盘事件
+- 核心逻辑：移动格子
+
+```js
+const gameContainer = document.querySelector('.game-container');
+let gameBoard = [];
+let score = 0;
+
+// 初始化 4x4 的游戏格子数组
+function initializeGameBoard() {
+  for (let i = 0; i < 4; i++) {
+    gameBoard.push(new Array(4).fill(0));
+  }
+}
+
+function addRandomTile() {
+  const emptyCells = [];
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      if (gameBoard[row][col] === 0) {
+        emptyCells.push({ row, col });
+      }
+    }
+  }
+  if (emptyCells.length === 0) return;
+  const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  gameBoard[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function generateGameBoard() {
+  gameContainer.innerHTML = '';
+  let score = 0;
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = gameBoard[row][col] !== 0 ? gameBoard[row][col] : '';
+      cell.classList.add('tile-' + gameBoard[row][col]);
+      score += gameBoard[row][col];
+      gameContainer.appendChild(cell);
+    }
+  }
+  const scoreContainer = document.querySelector('.game-score');
+  scoreContainer.textContent = score;
+}
+
+function moveTiles(direction) {
+  // TODO: 根据方向移动格子，核心游戏逻辑
+}
+
+function handleKeyDown(event) {
+  if (event.key === 'ArrowUp' || event.key === 'w') {
+    moveTiles('up');
+  } else if (event.key === 'ArrowDown' || event.key === 's') {
+    moveTiles('down');
+  } else if (event.key === 'ArrowLeft' || event.key === 'a') {
+    moveTiles('left');
+  } else if (event.key === 'ArrowRight' || event.key === 'd') {
+    moveTiles('right');
+  }
+}
+
+function startGame() {
+  initializeGameBoard();
+  addRandomTile();
+  addRandomTile();
+  generateGameBoard();
+  document.removeEventListener('keydown', handleKeyDown, false);
+  document.addEventListener('keydown', handleKeyDown, false);
+}
+
+// Call the startGame function to initialize the game
+startGame();
+```
+
+先将初始代码完成。能够看到一个新游戏棋盘的界面，然后再开始做核心逻辑。
+
+```js
+function moveTiles(direction) {
+  let moved = false;
+
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 4; col++) {
+      if (gameBoard[row][col] === 0) continue;
+
+      let newRow = row;
+      let newCol = col;
+
+      // 寻找指定方向最远的空单元格
+      if (direction === 'up') {
+        while (newRow > 0 && (gameBoard[newRow - 1][col] === 0 || gameBoard[newRow - 1][col] === gameBoard[row][col])) {
+          newRow--;
+        }
+      } else if (direction === 'down') {
+        while (newRow < 3 && (gameBoard[newRow + 1][col] === 0 || gameBoard[newRow + 1][col] === gameBoard[row][col])) {
+          newRow++;
+        }
+      } else if (direction === 'left') {
+        while (newCol > 0 && (gameBoard[row][newCol - 1] === 0 || gameBoard[row][newCol - 1] === gameBoard[row][col])) {
+          newCol--;
+        }
+      } else if (direction === 'right') {
+        while (newCol < 3 && (gameBoard[row][newCol + 1] === 0 || gameBoard[row][newCol + 1] === gameBoard[row][col])) {
+          newCol++;
+        }
+      }
+
+      // 合并相同数字的格子
+      if (newRow !== row || newCol !== col) {
+        if (gameBoard[newRow][newCol] === 0) {
+          gameBoard[newRow][newCol] = gameBoard[row][col];
+          gameBoard[row][col] = 0;
+          moved = true;
+        } else if (gameBoard[newRow][newCol] === gameBoard[row][col]) {
+          gameBoard[newRow][newCol] *= 2;
+          score += gameBoard[newRow][newCol];
+          gameBoard[row][col] = 0;
+          moved = true;
+        }
+      }
+    }
+  }
+
+  if (moved) {
+    // 随机添加一个新的格子
+    addRandomTile();
+    // 重新绘制游戏画布
+    generateGameBoard();
+  }
+}
+```
+
+然后可以再添加重新开始的按钮及逻辑，进行游戏的优化。添加 Localstorage 存储游戏最高分。
+
+## 课后作业
+
+根据已经学习到的内容举一反三，完成以下的完善：
+
+- 响应式布局的样式
+- 添加重新开始游戏的按钮及逻辑
+- 添加记录历史最高分的逻辑

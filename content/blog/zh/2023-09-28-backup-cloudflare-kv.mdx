@@ -1,0 +1,146 @@
+---
+title: Cloudflare KV 备份及迁移
+date: '2023-09-28'
+description: 之前的项目一直都用的是免费的服务，后端 Vercel 托管，数据使用的 Cloudflare KV。 这其中就有一个很严重的问题：`延迟`。经常数据操作了，但是 KV 还是缓存的值。
+category: 闲聊
+tags: [技术, 全栈, node.js]
+follow: true
+---
+
+# 背景
+
+之前的项目一直都用的是免费的服务，后端 Vercel 托管，数据使用的 Cloudflare KV。 这其中就有一个很严重的问题：`延迟`。经常数据操作了，但是 KV 还是缓存的值。
+
+现在索性全部换成 Cloudflare 全家桶，虽然可以直接用 KV，但结构化的数据可以用免费的 D1 额度。
+
+从网上搜索了很多关于 Cloudflare KV 备份及迁移的文章，但是都不是很满意，所以自己写了一个。
+
+# 列出所有数据 Key
+
+这里用到了我之前发布的包 `remote-cloudflare-kv`，这样可以在本地进行 KV 的备份。
+
+> 可以参考我之前的文章来学习详细的使用： [https://willin.wang/zh/blog/remote-cloudflare-kv](https://willin.wang/zh/blog/remote-cloudflare-kv)
+
+列出所有数据 Keys 的代码很简单：
+
+```ts
+import CloudflareKV from 'remote-cloudflare-kv';
+
+const NAMESPACE = new CloudflareKV({
+  account_id: 'xxxx',
+  namespace_id: 'xxxx',
+  // use bearer token
+  api_token: 'xxxx'
+});
+
+async function main() {
+  const { keys } = await NAMESPACE.list({ limit: 1000 });
+  console.log(JSON.stringify(keys, null, 2));
+}
+
+main();
+```
+
+如果数据量比较大，需要进行分页的话，参考 GraphQL 的游标分页查询，示例代码如下：
+
+```ts
+await NAMESPACE.list({ prefix: string, limit: number, cursor: string });
+```
+
+# 备份数据
+
+这里以将数据全部备份到本地文件为例，根据实际需要，可以直接存储数据库或者转化为其他格式。
+
+```ts
+for (let i = 0; i < keys.length; i += 1) {
+  const key = keys[i];
+  const data = await kv.get(key.name);
+  fs.writeFileSync(`./data/${key.name}`, JSON.stringify(JSON.parse(data), null, 2), 'utf-8');
+}
+```
+
+就会将数据按照这样存储成文件：
+
+```bash
+└── data
+    ├── $$pending
+    ├── $$sites
+    ├── $$total
+    └── 其他文件
+```
+
+# 转 SQL 语句
+
+这里给出一个进阶点的实例，将我的 Cloudflare 免费域名记录从 KV 中迁移到 D1 数据库中。
+
+```ts
+for (let i = 0; i < keys.length; i += 1) {
+  const key = keys[i];
+  if (key.name.startsWith('$$')) {
+    continue;
+  }
+  const data = await kv.get(key.name);
+  let sql = '';
+  const check = [];
+  JSON.parse(data).forEach((item) => {
+    const {
+      pending,
+      purpose = '',
+      name,
+      content,
+      type,
+      zone_id,
+      zoneId,
+      ttl = 1,
+      proxiable,
+      proxied,
+      priority = 10
+    } = item;
+    if (check.findIndex(([$1, $2, $3]) => name === $1 && (zone_id ?? zoneId) === $2 && pending === $3) !== -1) {
+      return;
+    }
+    check.push([name, zone_id ?? zoneId, pending]);
+
+    const realName = name.includes('.') ? name.split('.')[0] : name;
+
+    sql += `INSERT INTO records (username, pending, purpose, name, content, type, zone_id, ttl, proxiable, priority, raw) VALUES ('${
+      key.name
+    }', ${pending ? 1 : 0},'${purpose}','${realName}','${content}','${type}','${zone_id ?? zoneId}',${ttl},${
+      proxiable ?? proxied
+    },${priority},'${JSON.stringify(item)}');\n`;
+  });
+  fs.appendFileSync('output.sql', sql, 'utf-8');
+}
+```
+
+由于之前没有注意命名的风格问题，所以做了很多打补丁的代码。将 KV 数据从 JSON 格式转换成对应的 `sqlite` 插入语句。
+
+D1 操作命令：
+
+```bash
+# init db
+npx wrangler d1 migrations apply RECORDS --local
+
+# optional import data
+npx wrangler d1 execute RECORDS --file /PATH/data.sql --local
+```
+
+# 最后的话
+
+免费域名申请：js.cool/sh.gg/憨憨.我爱你/kaiyuan.fund/log.lu/v0.chat 及其他，可以访问： [https://domain.willin.wang](https://domain.willin.wang)
+
+该项目的源码位于： [https://github.com/willin/domain](https://github.com/willin/domain)
+
+其中已经使用到的技术栈（如无特殊说明均为最新版本）：
+
+- Remix v2
+- Tailwind CSS 以及 DaisyUI
+- Remix Auth
+  - Github 登录策略
+  - TODO： 爱发电登录策略
+- Cloudflare 服务
+  - Pages 托管
+  - KV 缓存
+  - D1 核心数据库
+  - API 包括 GraphQL 分析接口及 RESTful 管理 DNS 记录接口封装
+- zod

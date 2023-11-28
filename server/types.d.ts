@@ -1,13 +1,11 @@
 import type { Env } from './env';
 import type { IAuthService } from './services/auth';
-import type { IContentService } from './services/content';
 import type { IViewsService } from './services/views';
 
 declare global {
   namespace RemixServer {
     export interface Services {
       auth: IAuthService;
-      content: IContentService;
       view: IViewsService;
     }
   }

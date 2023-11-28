@@ -1,0 +1,67 @@
+---
+title: 开篇：你好，世界！
+category: 技术
+date: '2018-09-16'
+tags: [vue, vuepress, nuxt, 前端]
+description: 不能免俗。第一篇文章依然是 “Hello World！”作为技术人的标配，前前后后 N 个博客也都是以此作为序章。
+image: https://user-images.githubusercontent.com/1890238/45592199-93773c80-b999-11e8-84ab-fa807929238c.png
+---
+
+不能免俗。
+
+第一篇文章依然是 “Hello World！”作为技术人的标配，前前后后 N 个博客也都是以此作为序章。
+
+## 简单介绍一下
+
+早就想在微信上倒腾一下了，之前有过一个 500 粉左右的订阅号“创意工场”，因为几年没有登录未通过实名认证被屏蔽了。
+
+注销了之后就重新注册了这个微信公众号，搜索`初瘦`或者`assholev0`，或者通过扫描下面的二维码可以订阅。
+
+![assholev0](https://user-images.githubusercontent.com/1890238/45592199-93773c80-b999-11e8-84ab-fa807929238c.png)
+
+为了这个公众号起名，也算是绞尽了脑汁。后面再开篇新文详细介绍“初瘦”的来历，本文以技术为主。
+
+专门为此公众号注册了一个域名： [https://v0.chat](https://v0.chat)
+
+同时，所有技术相关代码均开源在 Github 上： [https://github.com/assholev0](https://github.com/assholev0)
+
+## 技术选型
+
+经过了长达一个月的准备，“**初瘦**”才得以面世。其间，我在 Next.js、 Nuxt.js 等各种前端技术框架及静态化上下足了功夫，最终选择了 Vuepress。
+
+之所以选择 Vuepress 并不是因为它多高效，或者文档丰富，而是在有限的时间下，我希望将更多的精力放到专注于写作这件事上，而它（Vuepress）给了我一些 **_偷懒_** 的余地，仅此。
+
+### Next.js vs Nuxt.js
+
+简单的先说一下，Next.js 和 Nuxt.js 的选择。
+
+性能，不用想， 基于 React 的 Next.js 毫无疑问在性能方面是非常理想的。从新闻数据 v4 版本发布较之前版本提速 2.6 倍， v5 版本发布较之前版本提速 102 倍；及自己实际测试简单 Hello World 测试（限于环境及配置的影响，我的测试结果是 Next.js 渲染 7ms， Nuxt.js 渲染 600ms），都更倾向于 React。
+
+所以，最初我是打算用 Next.js 搭建这个网站的，在经过长达一天的荒废之后，我放弃了，因为我连一个简单的全局播放器都遇到了无数过不去的坑，而相关的文档，真的是少得可怜，以至于我不得不去对照着源码去理解。
+
+后来，我又试着用 Nuxt.js 去封装了一个相同的播放器，毫不夸张的说，对照着中文的文档，不到 10 分钟轻轻松松搞定。但后来我发现，中文的文档是落后了很多的，但关系不大，英文文档也是非常详细全面的。大多数时间对照着文档即可，看源码的时候就会比较烧脑了。
+
+### Nuxt.js vs Vuepress
+
+在使用 Nuxt.js 的时候，中文的文档是 v0.9.8，而英文的文档是 v1.4.1。除此之外，最新的 Edge 版本已经到了 v2.0。所以，只能放弃中文文档，对照着英文文档和源码进行摸索。
+
+确实有一些不错的资源可以参考，如 blog module、nuxtent module 等，但大多都很久没有更新了。像 Nuxtent 就如同让我发现了新大陆，但可惜的是，作者的兴趣点发生了变化。
+
+另外，Nuxt 本身有一些类似特性的理解和使用就比较费劲了，比如“Plugins”、“Modules”、“Middlewares”（可能是 v2.0 新增，文档中没有）。自己在实现的过程中确实有不少条不同的路可以通往想要的结果，但对于追求极致的我来说，必须得每种都要尝试一遍，得出最佳实践方案才肯罢休。所以在做了一周的尝试后，推翻了 3、4 套不同的代码方案。
+
+所以最终，采用了一个类似于 Hexo 的博客框架 Vuepress 进行懒人快速开发。
+
+已知的一些 Vuepress 缺陷：
+
+- 不支持分页（Pagination），哦痛！
+- 不支持自定义链接格式（Permalink Slug）
+
+最近在 Vuepress 项目中提的 Bug 和 PR：
+
+当然，如果你依然对 Vuepress 感兴趣，甚至对这个主题感兴趣，限于平时时间有限，我会后续抽时间整理一下使用的说明，请收藏该项目：
+
+[https://github.com/assholev0/vuepress-theme-asshole](https://github.com/assholev0/vuepress-theme-asshole)
+
+## 附加说明
+
+本站（公众号）所有文章均为原创，如无特殊情况不会出现整篇转载，采用 CC [BY-NC-SA-4.0](https://github.com/assholev0/v0.chat/blob/master/LICENSE) 协议进行许可。

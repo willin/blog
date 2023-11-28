@@ -1,0 +1,106 @@
+---
+title: Silver Bullet of Front-End
+date: '2021-05-28'
+description: Almost all data stuctures can be generated automatically, by using scripts among with MySQL, Graphql, OpenAPI etc. If you use all lowercase naming, you have no need worry about the casing issues.
+category: tech
+tags: [full-stack, front-end]
+---
+
+# File naming
+
+## Routing Slug
+
+Use `/folder/[slug]/index.jsx` instead of `/folder/[slug].jsx`.
+
+In `Next.js` project, folder tree may look like this:
+
+```plain
+.
+├── _app.tsx
+├── _document.tsx
+├── index.tsx
+└── posts
+    └── [slug].tsx
+```
+
+However, this way is not extendable, when we need to add a sub page like `/post/[slug]/comments`, you need to change the previous file name.
+
+The best practise is that:
+
+```plain
+ROOT/pages/
+├── _app.tsx
+├── _document.tsx
+├── index.tsx
+└── posts
+    └── [slug]
+        └── index.tsx
+```
+
+Similar, in `Nuxt.js` project, you may adapt it to this way:
+
+```plain
+ROOT/pages/
+├── index.vue
+└── posts
+    └── _slug
+        └── index.vue
+```
+
+## Do not use `UPPERCASE` in file names
+
+Especially in routing directories. It's wierd to see an URL like this:
+
+```plain
+https://example.com/SomePath/WithUppercase?Params=something
+```
+
+URL should be case insensitive.
+
+# Data Structure
+
+## Do not use `UPPERCASE` in data structure
+
+Almost all data stuctures can be generated automatically, by using scripts among with MySQL, Graphql, OpenAPI etc. If you use all lowercase naming, you have no need worry about the casing issues.
+
+BAD:
+
+```javascript
+{
+  "createdAt": "2021-05-22 16:00:00"
+}
+```
+
+GOOD:
+
+```javascript
+{
+  "created_at": "2021-05-22 16:00:00"
+}
+```
+
+#
+
+# Params, State or Storage
+
+## When to use params
+
+Unique IDs, such as:
+
+- `/post/:slug`
+- `/product/:id`
+- `/anything/detail/:id`
+
+Do not use paths like `/anything/detail` to show a single fetched data. When you share the link to others, they will get a `404 error`.
+
+## When to use states
+
+Such as dark mode status, localization config, page/component data to share.
+
+## When to use storage like LocalStorage
+
+Persistize a state, or offline data.
+
+---
+
+TBD.

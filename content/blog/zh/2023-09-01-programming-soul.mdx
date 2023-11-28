@@ -1,0 +1,453 @@
+---
+title: 代码灵魂——通过你的代码表达你的意图
+date: '2023-09-01'
+description: 但对于代码质量的好坏、阅读性的好坏，却没有一个有效的度量标准。每个人心中的一杆秤，是不同的。那么多年过去了，依然无法去统一所有人的编程思想。而什么样的代码，才是好的代码，渐渐地，在心中有了一部分标准的答案。
+category: 闲聊
+tags: [技术, 全栈, 工作, node.js]
+follow: false
+---
+
+> 曾经，我以为：“好的代码像首诗，烂的代码像坨屎。”
+
+但对于代码质量的好坏、阅读性的好坏，却没有一个有效的度量标准。每个人心中的一杆秤，是不同的。
+
+那么多年过去了，依然无法去统一所有人的编程思想。而什么样的代码，才是好的代码，渐渐地，在心中有了一部分标准的答案。
+
+在做一个项目时，通过以下几个方面因素来考虑代码架构的设计：
+
+- 提高开发的**人效**，不管是孤军奋战的项目，还是团队协作的。在造轮子的时候尤其需要注意，轮子造得好或者用得好，能够事半功倍
+- 代码具备**可扩展性**和**可移植性**。因为很多现实的原因，大部分的需求是不明确的技术选型是不固定的。所以最初的设计很关键，直接影响了后续的迭代维护成本
+- 要有**大局观**。条条大路通罗马，殊途同归。同一种问题，可能有多种解决方案。学会**变通**，并在项目中灵活运用。在做选择的时候，权衡取舍，不能捡了芝麻，丢了西瓜。不需要在某一个点上抓住不放，而是需要德智体**全面**发展。
+
+不管是在一个项目中，还是在一个人的开发生涯中，慢慢地积累沉淀下来，应该从代码中体现出编写者的思想来，融入代码灵魂。而不是东一榔头，西一棒槌，没有任何的特色；也不是某一方面深钻到了极致，像偏科严重，忽略了其他的方面。
+
+对于个人来说，最终应当变成“**一精多专**”，在某一个核心领域范围称为领袖，在其他各个方面均有涉猎。对于项目来说，最终应当变成，输出核心技术价值，产品各方面挑不出太大毛病。
+
+# 最佳实践
+
+> 没有银弹。
+
+所有的最佳实践可能都是阶段性的，或者针对某个领域范围内的。不用刻意魔化某几类技术、语言、工具、方案之类。
+
+写代码从新手到入门，却必须需要养成良好的习惯。比如如下几点，是无论在任何语言、项目中，都可以推行的：
+
+- [EditorConfig](https://editorconfig.org/)： 用户约束 IDE 中各类型文件的字符集、缩进风格、换行风格等
+- Git Config：大小写敏感、换行风格、no-ff 方式提交等一些通用配置习惯
+- 代码规范及美化插件：这里以 js/ts 为例，推荐 ESLint 代码规范插件和 Prettier 代码美化插件配合使用。在各项目初始化的时候配置规则
+- 搭建测试框架。这算是初窥门径的最佳判断标准，不会使用 TDD（单元测试驱动开发）/BDD （行为测试驱动开发） 之前，不算会写代码。测试也是用来衡量代码质量、代码运行效率等一系列的前提基础。
+
+> 另外需要明确说明一点：在没有覆盖测试用例之前，所有的**安全**、**质量**都是空谈。
+
+与时俱进，保持学习者的心态即可。建议是关注新技术、新框架及语言的新特性，并尝试去用一用。当这些新的技术、方案成熟或者能够稳定时，运用到已有项目中进行优化。要明白一点，再好的东西，总有被淘汰的一天（就比如我学习的第三个语言 Pascal，包括它母公司及产品 Delphi）。
+
+以下要具体展开的几个方面互为关联，有可能会有重叠。必读代码的可维护性高，那么代码开发效率不会低到哪里，代码的阅读性也是。
+
+# 代码可维护性
+
+常见的问题：
+
+- 是否具备**扩展能力**，比如添加一个新的参数，减少一个参数时，对其他地方代码的影响范围是否过大
+- 代码是否能够**方便**地使用和**注入**到其他需要的地方，很多时候，封装的代码大部分没有复用的空间，或者，用起来很麻烦，以至于项目中会有很多类似的、重复的代码
+- 代码**过度封装**，这个问题不仅影响了代码的可维护性，也会影响代码质量、代码效率、代码阅读性
+
+## 扩展能力
+
+先从一段简单的代码开始：
+
+```ts
+function func1(arg1 = 'sth') {
+  // ...
+  return 'sth';
+}
+
+function func2(args) {
+  const { arg1 = 'sth' } = args || {};
+  // ...
+  return 'sth';
+}
+```
+
+好像都没什么问题。那么，复杂一点：
+
+```ts
+function func1(arg1 = 'sth1', arg2 = false, arg3 = 3) {
+  // ...
+  return 'sth';
+}
+
+function func2(args) {
+  const { arg1 = 'sth', arg2 = false, arg3 = 3 } = args || {};
+  // ...
+  return 'sth';
+}
+```
+
+这时候，就能够发现一些端倪，比如其他都用默认值，`arg3` 用 `10`：
+
+```ts
+func1('sth', false, 10);
+
+func2({ arg3 = 10 });
+```
+
+同时，在不借助第三方 IDE 插件情况下，`func2` 的代码阅读性也比 `func1` 高很多。这样，也更加方便进行 Code Review。
+
+## 过度封装
+
+接下来再说一个例子：
+
+```ts
+/**
+ * 时间
+ */
+export type Time = {
+  [value]: moment.Moment;
+};
+
+/**
+ * 增加一天
+ */
+export function addDay(a: Time): Time {
+  return {
+    [value]: a[value].clone().add(1, 'd')
+  };
+}
+/**
+ * 减少一天
+ */
+export function subDay(a: Time): Time {
+  return {
+    [value]: a[value].clone().subtract(1, 'd')
+  };
+}
+```
+
+- Moment.js 中已经封装好了对应的方法，本身用起来已经足够方便
+- 加一天，减一天这种方法不够灵活，如果要加加五天或者加一周呢？
+
+## 方便使用和方便注入
+
+依然是对上面的方法进行衍生：
+
+```ts
+/**
+ * 格式化
+ */
+export function format(a: Time, 形式: string): string {
+  return a[value].format(形式);
+}
+```
+
+此时，已经有三个方法名了 `format`、`addDay` 和 `subDay`，如果 IDE 有引入提示的话，已经需要记住 3 个了。同时，这里是时间的格式化，方法名叫 `format`。后面可能还会有 SQL 语句的格式化、GraphQL 语句的格式化等等叫 `format` 的重名方法。在选择和使用的时候，就会麻烦。
+
+如果以 DateTime 封装为例：
+
+```ts
+/**
+ * 时间
+ */
+export class Time {
+  #value: moment.Moment;
+  // 看情况，这里其实允许给 any 的话，对于使用该 Class 开发的人来说是一件非常省心省力的事情
+  constructor(a?: moment.MomentInput) {
+    // 只需要在构建器里做好判断和异常的抛出即可
+    const _data = moment(a);
+    if (isNaN(_data.unix())) throw new Error(`输入时间无法解析: ${a}`);
+    this.#value = _data;
+  }
+  // 可以注入验证器，验证输入参数是否为合法类型
+  // @validatePattern()
+  format(pattern = 'YYYY-MM-DD') {
+    return this.#value.format(pattern);
+  }
+  toString() {
+    return this.#value.toString();
+  }
+  get value() {
+    return this.#value.unix();
+  }
+}
+const demo = new Time(new Date());
+console.log(demo.format());
+// 2023-08-31
+console.log(demo.toString());
+// Thu Aug 31 2023 15:52:30 GMT+0800
+console.log(demo.value);
+// 1693468350
+// console.log(demo.#value)
+// 报错
+```
+
+## 使用类和接口实现面向对象编程
+
+在 TypeScript 中，使用类和接口可以实现面向对象编程的封装、继承和多态特性，提高代码的可维护性和可扩展性。
+
+```ts
+// 使用类和接口实现面向对象编程
+// 如果有一些通用方法，也可以用 Class + extends 方式
+interface PostInterface {
+  save(): void;
+}
+
+class MySQLProvider implements PostInterface {
+  save() {
+    // 将日志存入 MySQL 数据库
+    console.log('hello');
+  }
+}
+
+class PostService {
+  constructor(@Inject(MySQLProvider) provider) {}
+
+  save() {
+    //
+  }
+}
+```
+
+这样，只需要将各个存储 Store 使用相同的 interface 进行实现，即可替换存储源从 MySQL 到 MongoDB、File System 等其他地方。
+
+## 使用装饰器
+
+装饰器是一种使用简单语法来为类、方法或属性添加额外功能的方式。它们是一种增强类的行为而不修改其实现的方式。
+
+例如，可以使用装饰器为方法添加日志记录：
+
+```typescript
+function logMethod(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let originalMethod = descriptor.value;
+  descriptor.value = function(…args: any[]) {
+    console.log(Calling ${propertyKey} with args: ${JSON.stringify(args)});
+    let result = originalMethod.apply(this, args);
+    console.log(Called ${propertyKey}, result: ${result});
+  	return result;
+  }
+}
+
+class Calculator {
+  @logMethod
+  add(x: number, y: number): number {
+    return x + y;
+  }
+}
+```
+
+还可以使用装饰器为类、方法或属性添加元数据，这些元数据可以在运行时使用。
+
+```typescript
+function setApiPath(path: string) {
+  return function (target: any) {
+    target.prototype.apiPath = path;
+  };
+}
+
+@setApiPath('/users')
+class UserService {
+  // …
+}
+console.log(new UserService().apiPath); // "/users"
+```
+
+# 代码质量
+
+> 一只水桶能装多少水取决于它最短的那块木板。
+
+可以提高代码质量的方式有很多。以下几个方面常来综合评定代码质量：
+
+- 测试覆盖率，通过最少的测试用例完整覆盖所有代码分支。一般要求整体覆盖率 95% 以上。Branch 覆盖率 100%（所有 if、switch 的分支均需要跑到）。
+- Benchmark：比如循环，在不需要赋值的情况下，可以用 `arr.forEach` 会比 `arr.map` 性能更高。但 `for` 语句一定是最高的
+- 避免递归调用、可能出现死循环的场景
+- 连接使用后要释放，断线重连机制及超时机制
+- 内存释放，避免内存溢出
+- Validation： 输入参数校验，输入可容错范围宽
+- Transform： 输出参数格式化，返回类型明确定义
+- 依赖注入：避免循环引用
+
+在 js/ts 中，常用如下几种方式提高代码编写的质量。
+
+## 测试驱动开发
+
+可以参考我以前的几篇文章：
+
+- TDD、BDD： [https://leader.js.cool/basic/node/test](https://leader.js.cool/basic/node/test)
+- BDD——行为驱动开发实践： [https://leader.js.cool/experience/project/user/bdd](https://leader.js.cool/experience/project/user/bdd)
+- BDD——像盖房子一样写代码： [https://leader.js.cool/experience/advanced/coding-as-building](https://leader.js.cool/experience/advanced/coding-as-building)
+
+## 始终开启严格模式
+
+在 TypeScript 中，严格模式可以提供更严格的类型检查和错误检测，帮助开发者在开发过程中发现潜在的错误和类型问题。
+
+```ts
+// 在 tsconfig.json 中开启严格模式
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+> 在开启严格模式时，需要注意一些语言特性的变化和规范，比如不能隐式地将 `null` 或 `undefined` 赋值给非空类型，不能在类定义之外使用 `private` 和 `protected` 等等。
+
+## 使用枚举类型定义常量
+
+在 TypeScript 中，使用枚举类型可以方便地定义常量和枚举值，提高代码的可读性和可维护性。
+
+```ts
+// 使用枚举类型定义常量
+enum MyEnum {
+  Foo = 'foo',
+  Bar = 'bar',
+  Baz = 'baz'
+}
+
+function doSomething(value: MyEnum) {
+  console.log(value);
+}
+
+doSomething(MyEnum.Foo);
+```
+
+> 在使用枚举类型时，需要注意枚举值的正确性和可读性，避免出现歧义或冲突。
+
+## 使用 unknown 类型
+
+有时，我们可能没有有关变量类型的所有信息，但仍然需要在代码中使用它。在这种情况下，我们可以利用 `any` 类型。但是，像任何强大的工具一样，使用 `any` 应该谨慎和有目的地使用。而 `unknown` 类型是 TypeScript 3.0 中引入的一种强大且限制性更强的类型。它比 `any` 类型更具限制性，并可以帮助你防止意外的类型错误。
+
+与 `any` 不同的是，当你使用 `unknown` 类型时，除非你首先检查其类型，否则 TypeScript 不允许你对值执行任何操作。这可以帮助你在编译时捕捉到类型错误，而不是在运行时。
+
+例如，你可以使用 `unknown` 类型创建一个更加类型安全的函数：
+
+```ts
+function printValue(value: unknown) {
+  if (typeof value === 'string') {
+    console.log(value);
+  } else {
+    console.log('Not a string');
+  }
+}
+```
+
+## “只读”和“只读数组”
+
+当在 TypeScript 中处理数据时，你可能希望确保某些值无法更改。这就是“只读”和“只读数组”的用武之地。
+
+“只读”关键字用于使对象的属性只读，意味着在创建后它们无法被修改。例如，在处理配置或常量值时，这非常有用。
+
+```ts
+interface Point {
+  x: number;
+  y: number;
+}
+let point: Readonly<Point> = { x: 0, y: 0 };
+point.x = 1; // TypeScript会报错，因为“point.x”是只读的
+```
+
+“只读数组”与“只读”类似，但是用于数组。它使一个数组变成只读状态，在创建后不能被修改。
+
+```ts
+let numbers: ReadonlyArray<number> = [1, 2, 3];
+numbers.push(4); // TypeScript会报错，因为“numbers”是只读的
+```
+
+# 代码效率
+
+包括两个部分，代码运行效率，和代码开发效率。这两者没什么实际关联，但却又避不开问题同时出现。
+
+## 运行效率
+
+### Javascript
+
+参考：[https://github.com/alsotang/fast-js](https://github.com/alsotang/fast-js)
+
+- 传统 for 循环比 forEach 性能高出 15 倍
+- forEach 循环比 map 性能高出 1 倍
+- loadash 在大部分情况下比原生性能差很多很多
+- 新建数据数组用 `new Array(arr.length)` 性能最高
+
+常见的一些特性都会有现成的性能测试用例。如果不确定的情况下，可以写两个方法对比一下，自己跑一个 Benchmark 脚本。
+
+### MySQL
+
+参考： [https://github.com/js-benchmark/mysql](https://github.com/js-benchmark/mysql)
+
+- 时间类型：使用 `timestamp` (`uint(10)`) 比 `DateTime` 类型读写性能均会高
+- 字符串类型： 使用 `char` 会比 `varchar` 类型读写性能均会高
+- 长字符串： `text` 与 `blob` 读写速度接近， `blob` 略高不多可忽略，但 `blob` 存储更推荐
+
+### 小结
+
+这部分没有什么实际的参考经验，因为往往需要比较，不确定的两种方案，不一定会有现成的性能测试结果。运行效率需要通过跑 Benchmark 来确定。
+
+## 开发效率
+
+无为而治，是开发的最高境界。
+
+> 无为不是无所作为，不是无所事事，而是不做无效的工作。
+>
+> 道家的第一原则是“道法自然”。顺应自然，不要过于刻意，“去甚，去奢，去泰”。人要以自然的态度对待自然，对待他人，对待自我。所以会有“自然——释然——当然——怡然”。
+
+### 合适的脚手架及工具
+
+温馨建议 1：避免 GUI 依赖，图形界面的戳戳点点是非常低效的。比如画流程图，你的手速可能跟不上你的思维，那么这时候需要两点：
+
+- 提高打字速度：工欲善其事必先利其器，首先是物理外挂——一个好的键盘，比如 HHKB Type-S 等静电容键盘（我个人用的是无刻字的版本）、银轴或者光轴的机械键盘（实践证明其他轴体很难达到高速、准确地敲代码），然后就是练习打字速度，拒绝一阳指低头看键盘等坏习惯。我个人的成绩一般在每分钟敲击键盘 600 次。
+- 使用文字化图形工具，比如 Mermaid，通过 Markdown 代码块来生成图。
+
+以此为例，在选择脚手架工具的时候，以下几点建议：
+
+- 开发脚手架 CLI 支持 watch 、hot-reload。各类工具需要避免复杂的配置
+- 减少自己维护脚本及重复造轮子。时间、精力专注于业务本身
+- 避免使用长期不维护、用户使用量较少的第三方库及工具。合适很重要，但流行、稳定更重要
+
+温馨建议 2：避免工具依赖，比如：
+
+- IDE 中集成了 Git 就不会操作命令
+- 有了代码美化插件和代码规范插件，就记不住语法、函数规则、缩进换行等细节
+- 依赖智能提示和代码生成器，以及复制、粘贴大法
+
+### 自动化生成
+
+依然以上面 `class Time`为例，我没有额外去定义类型声明，但会自动生成如下：
+
+```tsx
+// out.d.ts
+/**
+ * 时间
+ */
+declare class Time {
+  #private;
+  constructor(a?: moment.MomentInput);
+  format(pattern?: string): string;
+  toString(): string;
+  get value(): number;
+}
+
+export { Time };
+```
+
+同理，能够自动完成的工作不要人为参与。类型的定义声明、Open API 的文档 Schema、GraphQL 的 Schema 等，都是。同时，也可以借助工具进行自动化流程。比如自动化测试、CI/CD 等，进一步充分提高人效。
+
+### 小结
+
+> 勤能补拙。最好的工具是机械记忆。写代码这东西，想得心应手，还是得多写。哪怕就是一句很简单的 `console.log`，有的人打这么多个字符，也比用一个用插件 `C+L+空格` 敲三个键更飘逸更流畅。
+
+提升开发效率，运行效率，以及降低代码错误率这些很多问题，不能够去依赖工具和框架。
+
+# 代码阅读性
+
+在不借助第三方工具，比如直接在 Github 上进行 Code Review 时，能够清晰看懂代码的逻辑。常见的问题有：
+
+- 代码**过度封装**，全是各种函数的嵌套，并且即便命名容易理解，不确定内部是否有问题。在调试过程中要不断打断点跳入的，会浪费很多时间在排查和调试上
+- `正则表达式`的使用：代码人都应该会写正则表达式，至少能看懂。所以正则表达式的可阅读性暂时不去具体讨论
+- 一些骚套路实现，代码不确定 Side-Effect 的
+- 一些摒弃的方式方法，显得代码臃肿冗长
+- 没有 [使用更具可读性的方式定义类型](https://juejin.cn/post/6973859731863207966) （以及后来常见的 `infer` 推导等）
+- 代码不够整洁（可以从 [Typescript 代码整洁之道](https://github.com/pipiliang/clean-code-typescript) 中参考学习部分有用信息）
+
+> 大部分情况下仁者见仁智者见智，当不太懂的小白也能大概看懂代码的意思时，阅读性就算可以了。类似于白居易写诗先问老妪是否听懂。
+>
+> 而有的时候，你会发现，在读一段代码的时候，会有这样一种感慨——“小学生的心思像星空，我看得见却完全看不懂。”这种情况，就非常尴尬了。写代码追求的不是逼逼仄仄的东西拿来炫技，而是在满足需求的前提下，高效，易于团队的协同。
+
+# 其他
+
+下期分解。

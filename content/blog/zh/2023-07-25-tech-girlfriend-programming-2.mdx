@@ -1,0 +1,399 @@
+---
+title: 【教女朋友 从 0 到 1 学编程系列】二、快速掌握前端基础
+date: '2023-07-25'
+description: 首先明确一点学习的最根本原则：预习是不可能预习的，复习是不可能复习的。那么如何能够教女朋友快速从零基础上手写代码，将成为本课时的最关键内容。
+category: 技术
+tags: [全栈, js, 前端, 创意, 开源, 仅限粉丝]
+image: https://pica.zhimg.com/80/v2-1e55d337c6d1bc017b91126f9bbca487_1440w.png
+follow: true
+---
+
+首先明确一点学习的最根本原则：
+
+- 预习：是不可能预习的
+- 复习：是不可能复习的
+
+那么如何能够教女朋友快速从零基础上手写代码，将成为本课时的最关键内容。
+
+前端的基础主要包括三个部分，HTML、CSS、JS，其中 HTML 和 CSS 是前端的基础，JS 是前端的核心。本课时主要讲解 HTML 和 CSS，JS 将在下一阶段重点讲解。
+
+简单来说，HTML 是网页的骨架，CSS 是网页的皮肤，JS 是网页的灵魂。
+
+## HTML
+
+HTML 指的是超文本标记语言: **H**yper**T**ext **M**arkup **L**anguage
+
+![](https://www.runoob.com/wp-content/uploads/2013/06/02A7DD95-22B4-4FB9-B994-DDB5393F7F03.jpg)
+
+> 图片来自 [Runoob.com](https://www.runoob.com/html/html-intro.html)
+
+### 通用声明
+
+HTML 5：
+
+```html
+<!doctype html>
+```
+
+目前最常见的也是最简单的声明方式，其他还有 html 4.01、 xhtml 1.0 等，具体可以参考： [https://www.runoob.com/tags/tag-doctype.html](https://www.runoob.com/tags/tag-doctype.html) （`可以忽略不看`）
+
+目前在大部分浏览器中，直接输出中文会出现中文乱码的情况，这时候我们就需要在头部将字符声明为 `UTF-8` 或 `GBK`。
+
+整体页面结构：
+
+- `DOCTYPE` 声明
+- `<html>` 页面元素
+  - `<head>` 头部信息元素（不会显示，内部元素顺序可以随意调整）
+    - `<title>` 页面标题
+    - `<meta>` 元数据
+    - 其他头部信息
+  - `<body>` 网页主体
+    - 各元素内容
+
+示例代码：
+
+```html
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>页面标题</title>
+  </head>
+  <body>
+    <h1>我的第一个标题</h1>
+
+    <p>我的第一个段落。</p>
+
+    <!-- 这是一段注释，不会显示到页面中 -->
+  </body>
+</html>
+```
+
+> [在线体验](https://www.runoob.com/try/try.php?filename=tryhtml_headers)
+
+### head 元素
+
+| 标签       | 描述                                                |
+| :--------- | :-------------------------------------------------- |
+| `<head>`   | 定义了文档的信息                                    |
+| `<title>`  | 定义了文档的标题                                    |
+| `<base>`   | 定义了页面链接标签的默认链接地址                    |
+| `<link>`   | 定义了一个文档和外部资源之间的关系                  |
+| `<meta>`   | 定义了 HTML 文档中的元数据                          |
+| `<script>` | 定义了客户端的脚本文件 (也可以放在 `<body>` 中)     |
+| `<style>`  | 定义了 HTML 文档的样式文件 (也可以放在 `<body>` 中) |
+
+### body 元素
+
+#### 常见元素
+
+| 标签                            | 描述                                        |
+| :------------------------------ | :------------------------------------------ |
+| `<h1>`,`<h2>`,`<h3>` ... `<h6>` | 定义 HTML 标题                              |
+| `<p>`                           | 定义一个段落                                |
+| `<br>`                          | 插入单个折行（换行）                        |
+| `<a>`                           | 定义一个超级链接                            |
+| `<div>`                         | 定义了文档的区域，块级 (block-level)        |
+| `<span>`                        | 用来组合文档中的行内元素， 内联元素(inline) |
+
+除此之外，常见元素还有表格、列表、HTML 5 新增标签等。
+
+#### 表格 Table
+
+| 标签         | 描述                 |
+| :----------- | :------------------- |
+| `<table>`    | 定义表格             |
+| `<tr>`       | 定义表格的行         |
+| `<th>`       | 定义表格的表头       |
+| `<td>`       | 定义表格单元         |
+| `<thead>`    | 定义表格的页眉       |
+| `<tbody>`    | 定义表格的主体       |
+| `<tfoot>`    | 定义表格的页脚       |
+| `<caption>`  | 定义表格标题         |
+| `<colgroup>` | 定义表格列的组       |
+| `<col>`      | 定义用于表格列的属性 |
+
+示例代码：
+
+```html
+<table border="1">
+  <!-- 定义表头 -->
+  <thead>
+    <tr>
+      <th>标题 1</th>
+      <th>标题 2</th>
+      <th>标题 3</th>
+    </tr>
+  </thead>
+  <!-- 定义内容 -->
+  <tbody>
+    <tr>
+      <td>100</td>
+      <td>200</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <td>400</td>
+      <td>500</td>
+      <td>600</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+> [在线体验](https://www.runoob.com/try/try.php?filename=tryhtml_table_headers)
+
+### 有序列表 ol 和无序列表 ul
+
+| 标签   | 描述                 |
+| :----- | :------------------- |
+| `<ol>` | 定义有序列表         |
+| `<ul>` | 定义无序列表         |
+| `<li>` | 定义列表项           |
+| `<dl>` | 定义列表             |
+| `<dt>` | 自定义列表项目       |
+| `<dd>` | 定义自定列表项的描述 |
+
+示例代码：
+
+```html
+<h4>有序列表：</h4>
+<ol>
+  <li>Apples</li>
+  <li>Bananas</li>
+  <li>Lemons</li>
+  <li>Oranges</li>
+</ol>
+
+<h4>无序列表：</h4>
+<ul>
+  <li>Apples</li>
+  <li>Bananas</li>
+  <li>Lemons</li>
+  <li>Oranges</li>
+</ul>
+
+<h4>嵌套列表：</h4>
+<ul>
+  <li>Coffee</li>
+  <li>
+    Tea
+    <ul>
+      <li>Black tea</li>
+      <li>Green tea</li>
+    </ul>
+  </li>
+  <li>Milk</li>
+</ul>
+
+<h4>一个自定义列表：</h4>
+<dl>
+  <dt>Coffee</dt>
+  <dd>- black hot drink</dd>
+  <dt>Milk</dt>
+  <dd>- white cold drink</dd>
+</dl>
+```
+
+> [在线体验](https://www.runoob.com/try/try.php?filename=tryhtml_lists_ordered)
+
+---
+
+更多 HTML 元素参考清单： [https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element) （`放到收藏夹，在开发过程中可以参考`）
+
+### 理解区块元素（block-level）和内联元素（inline）
+
+大多数 HTML 元素被定义为**块级元素**或**内联元素**。
+
+- 块级元素在浏览器显示时，通常会以新行来开始（和结束）。实例: `<h1>`, `<p>`, `<ul>`, `<table>`, `<div>`
+- 内联元素在显示时通常不会以新行开始。实例: `<td>`, `<a>`, `<img>`, `<span>`
+
+示例代码：
+
+```html
+<h1>标题</h1>
+<!-- h1 和 p 分别显示成两块（上下分开） -->
+<p>
+  这是一个段落。
+  <!-- 这个 a 显示在行内 -->
+  <a href="https://www.runoob.com">这是一个链接</a>。
+  <!-- 这个 span 显示在行内 -->
+  这是一个<span style="color:red">内联元素</span>。
+</p>
+```
+
+显示效果如下：
+
+![](https://pic1.zhimg.com/80/v2-602c16bb2771f5009f3a2615b4d41e43_1440w.png)
+
+### 进阶使用
+
+HTML5 添加了很多语义元素，用于代替 `<div>` 元素，比如 `<header>`、`<footer>`、`<nav>`、`<section>` 等。
+
+| 标签        | 描述                              |
+| :---------- | :-------------------------------- |
+| `<article>` | 定义页面独立的内容区域。          |
+| `<aside>`   | 定义页面的侧边栏内容。            |
+| `<footer>`  | 定义 section 或 document 的页脚。 |
+| `<header>`  | 定义了文档的头部区域              |
+| `<nav>`     | 定义导航链接的部分。              |
+| `<section>` | 定义文档中的节（section、区段）。 |
+
+示例代码：
+
+```html
+<article>
+  <header>
+    <h1>标题</h1>
+    <p>作者：张三</p>
+    <p>日期：2023-07-25</p>
+  </header>
+  <section>
+    <p>这是一篇文章。</p>
+    <p>这是一篇文章。</p>
+    <p>这是一篇文章。</p>
+  </section>
+  <!-- 其他 section -->
+  <footer>
+    <p>版权所有：张三</p>
+    <p>联系方式：123456789</p>
+    <nav>
+      <!-- 上一篇、下一篇的链接等 -->
+    </nav>
+  </footer>
+</article>
+```
+
+配合后续的 CSS 部分进行详细的讲解。
+
+## CSS
+
+层叠样式表（Cascading Stylesheet，简称 CSS）。
+
+### 基本语法
+
+![](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Syntax/ruleset.png)
+
+示例代码：
+
+```css
+p {
+  color: red;
+}
+```
+
+### 选择器
+
+- [通配选择器](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Universal_selectors) `*`
+- [元素选择器](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Type_selectors) `elementname`（元素名称）
+- [类选择器](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Class_selectors) `.classname`（类名）
+- [ID 选择器](https://developer.mozilla.org/zh-CN/docs/Web/CSS/ID_selectors) `#idname`（ID 名）
+- [属性选择器](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Attribute_selectors) `[attr=value]`（属性=值）
+
+CSS 参考手册：[https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference#索引](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference#%E7%B4%A2%E5%BC%95) （`放到收藏夹，在开发过程中可以参考`）
+
+每个 CSS 规则都以一个选择器或一组选择器为开始，去告诉浏览器这些规则应该应用到哪些元素上。以下都是有效的选择器或组合选择器的示例：
+
+```css
+h1
+a:hover
+.manythings
+#onething
+*
+.box p
+.box p:first-child
+h1, h2, .intro
+
+```
+
+你可能会遇到两个选择器选择同一个 `HTML` 元素的情况。考虑下面的样式表，有一个 `p` 选择器，将段落文本设置为蓝色。然而，也有一个类将所选元素的文本设置为红色。
+
+```css
+.special {
+  color: red;
+}
+
+p {
+  color: blue;
+}
+```
+
+假如在我们的 HTML 文档中，我们有一个带有 `special` 类的段落。这两条规则都适用，那么到底哪种选择器会占优势？我们的段落会变成蓝色还是红色？
+
+```html
+<p class="special">我是什么颜色的？</p>
+```
+
+### 样式基础
+
+常见的样式基础包括不限于：
+
+- 定位（`position`）、浮动（`float`）、布局（`block`，`grid`，`flex`，`inline` 等）
+- 尺寸（`width`、`height`）、边距（`margin`）、内边距（`padding`）
+- 字体（`font-family`）、字号（`font-size`）、字重
+- 颜色（`color`）、背景（`background`）
+- 边框（`border`）、圆角（`border-radius`）、阴影（`box-shadow`、`text-shadow`）
+- 其他（`display`、`overflow`、`opacity`、`z-index`、`cursor`、`transition`、`animation` 等参考文档用的时候检索）
+
+简单的示例代码：
+
+```html
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>我的 CSS 测试</title>
+    <style>
+      h1 {
+        color: blue;
+        background-color: yellow;
+        border: 1px solid black;
+      }
+      p {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <p>这是我的第一个 CSS 示例</p>
+  </body>
+</html>
+```
+
+在此示例上完善，对照着参考手册，分别实践操作尝试以下内容：
+
+- 选择器的使用
+- 基本的样式属性使用
+- 相对定位、绝对定位
+- 分栏布局（通过 `float` 浮动、`flex` 等方式实现）
+- CSS 动画
+- 命名、代码结构等建议
+
+## JS
+
+简单的 JS 基础语法。 JavaScript 参考手册： [https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects)
+
+基础内容：
+
+- 变量类型
+- 基本运算
+
+示例代码：
+
+```js
+function add(a, b) {
+  var result = a + b;
+  return result;
+}
+
+console.log(add(3, 5));
+```
+
+## 参考文档
+
+- 浏览器兼容性查询：[https://caniuse.com/](https://caniuse.com/)
+
+---
+
+下一课时，从一个前端 2048 的小游戏进行实战教学。

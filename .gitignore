@@ -1,6 +1,7 @@
 node_modules
 
 /demo
+/.contentlayer
 /.wrangler
 /.cache
 /functions/\[\[path\]\].js

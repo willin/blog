@@ -39,8 +39,6 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
     return redirect('/');
   }
   removeTrailingSlash(new URL(request.url));
-  const demo = await context.services.content.getContents('page', 'zh');
-  console.log(JSON.stringify(demo, null, 2));
 
   const theme = (await themeCookie.parse(request.headers.get('Cookie'))) || defaultLightTheme;
 

@@ -31,7 +31,9 @@ export const dict: I18nDict = {
     category_by: 'Categoried by ',
     tags_by: 'Tagged by ',
     wordcount: 'Wordcount: {{wordcount}}',
-    reading_time: 'Reading time: {{time}}'
+    reading_time: 'Reading time: {{time}}',
+    adblock: 'Adblock Detected',
+    adblock_message: 'Please disable adblock to continue using this site.'
   },
   components: {
     income: '⚡ Income',

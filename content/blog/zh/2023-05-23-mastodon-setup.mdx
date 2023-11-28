@@ -1,0 +1,143 @@
+---
+title: 安装部署 Mastodon 长毛象去中心化微博系统
+date: '2023-05-23'
+description: 如果您想要一个属于自己的账号别名，但没有服务器的话，可以参考一下我的发电计划： https://afdian.net/a/willin
+category: 技术
+tags: [全栈, activitypub, mastodon, 仅限粉丝]
+image: https://pic2.zhimg.com/80/v2-10bb1f904c6869c62662c91e1310a6a9_1440w.webp
+follow: true
+---
+
+> 注意：本文采用的为 Docker Compose 方式安装部署。
+
+![在这里插入图片描述](https://pic2.zhimg.com/80/v2-10bb1f904c6869c62662c91e1310a6a9_1440w.webp)
+
+首先选择你安装的版本，有以下两种推荐：
+
+- 官方版本： https://github.com/mastodon/mastodon
+- Glitch 版本： https://github.com/glitch-soc/mastodon
+
+项目包含一个 `Dockerfile` 和一个 `docker-compose.yml` 文件(需要至少 `docker-compose` 版本 1.10.0)。
+
+## 前提条件
+
+- 工作的基本(Linux)服务器,带有 Nginx(或 Apache2;不正式支持)。
+- 最近的稳定版本的 [Docker](https://www.docker.com/community-edition)。
+- 最近的稳定版本的 [Docker-compose](https://github.com/docker/compose/releases/latest)。
+
+## 下载源码
+
+克隆 Mastodon 仓库。
+
+```bash
+    git clone https://github.com/glitch-soc/mastodon
+    cd mastodon
+```
+
+## 构建镜像
+
+- 运行 `docker-compose build`。它会从 Docker Hub 中拉取正确的镜像。
+- 运行 `chown -R 991:991 public` 设置正确的文件所有者。
+- 运行 `cp .env.production.sample .env.production` 复制配置。您需要后续编辑此文件。
+
+## 初始化
+
+现在可以使用该命令生成配置:
+
+```bash
+docker-compose run --rm web rake mastodon:setup
+```
+
+这是一个交互式向导,将引导您完成基本和必要的选项,并生成新的应用程序密钥。在某一点,它将输出您的配置,请复制并粘贴该配置到 `.env.production` 文件中（注意将原来示例中默认的空值给删除）。
+
+该向导将设置数据库模式和预先编译。完成后，您可以使用以下命令启动 Mastodon:
+
+```bash
+docker-compose up -d
+```
+
+## 配置 Nginx
+
+由于使用 Cloudflare 可以不用本地开 443，可以用如下配置：
+
+```nginx
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  ''      close;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name log.lu www.log.lu;
+  root /root/mastodon/public;
+  # Useful for Let's Encrypt
+  # location /.well-known/acme-challenge/ { allow all; }
+
+  gzip on;
+  gzip_disable "msie6";
+  gzip_vary on;
+  gzip_proxied any;
+  gzip_comp_level 6;
+  gzip_buffers 16 8k;
+  gzip_http_version 1.1;
+  gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+  client_max_body_size 64M;
+
+
+  add_header Strict-Transport-Security "max-age=31536000";
+
+  location / {
+    try_files $uri @proxy;
+  }
+
+  location ~ ^/(emoji|packs|system/accounts/avatars|system/media_attachments/files) {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    try_files $uri @proxy;
+  }
+
+  location /sw.js {
+    add_header Cache-Control "public, max-age=0";
+    try_files $uri @proxy;
+  }
+
+  location @proxy {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Proxy "";
+    proxy_pass_header Server;
+
+    proxy_pass http://web:3000;
+    proxy_buffering off;
+    proxy_redirect off;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+
+    tcp_nodelay on;
+  }
+
+  location /api/v1/streaming {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Proxy "";
+
+    proxy_pass http://web:4000;
+    proxy_buffering off;
+    proxy_redirect off;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+
+    tcp_nodelay on;
+  }
+
+  error_page 500 501 502 503 504 /500.html;
+}
+```
+
+如果需要本地 SSL，可以参考这个配置： https://github.com/felx/mastodon-documentation/blob/master/Running-Mastodon/Production-guide.md#nginx-configuration

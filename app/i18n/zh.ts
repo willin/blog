@@ -31,7 +31,9 @@ export const dict: I18nDict = {
     category_by: '所属目录：',
     tags_by: '相关标签：',
     wordcount: '文章字数： {{wordcount}}',
-    reading_time: '阅读时长： {{time}} 分钟'
+    reading_time: '阅读时长： {{time}} 分钟',
+    adblock: '发现广告拦截插件',
+    adblock_message: '请关闭广告拦截插件或订阅 VIP 以继续使用本站服务。'
   },
   components: {
     income: '充 ⚡ 收入',
