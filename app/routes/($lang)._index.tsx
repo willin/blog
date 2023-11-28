@@ -1,7 +1,6 @@
 import { useI18n } from 'remix-i18n';
 import { LocaleLink } from '~/components/link';
-import type { LoaderFunction } from '@remix-run/cloudflare';
-import { json } from 'stream/consumers';
+import { json, type LoaderFunction } from '@remix-run/cloudflare';
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   return json({});

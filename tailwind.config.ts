@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import daisyui from 'daisyui';
+import typography from '@tailwindcss/typography';
 
 export default {
   content: ['./app/**/*.{js,jsx,ts,tsx}'],
@@ -11,7 +12,7 @@ export default {
       }
     }
   },
-  plugins: [daisyui],
+  plugins: [daisyui, typography],
   daisyui: {
     themes: true
   }

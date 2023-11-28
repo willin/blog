@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           'container max-w-full shadow bg-base-100/90 rounded':
             pathname !== '/' && pathname !== '/zh' && pathname !== '/en'
         })}>
-        <article className='prose'>{children}</article>
+        {children}
         <Bootstrap />
         <footer className='text-center text-sm mt-4'>
           <p>

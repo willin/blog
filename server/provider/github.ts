@@ -4,7 +4,7 @@ import { throttling } from '@octokit/plugin-throttling';
 import { Octokit as createOctokit } from '@octokit/rest';
 import { type Env } from '../env';
 
-type GithubFile = { path: string; content: string };
+export type GithubFile = { path: string; content: string };
 
 const safePath = (s: string) => s.replace(/\\/g, '/');
 
@@ -72,7 +72,20 @@ export class GithubProvider {
     return { entry, files };
   }
 
-  async downloadDirList(path: string) {
+  async downloadDirList(path: string): Promise<
+    {
+      name: string;
+      path: string;
+      sha: string;
+      size: number;
+      url: string;
+      html_url: string;
+      git_url: string;
+      download_url: string;
+      type: string;
+      _links: { self: string; git: string; html: string };
+    }[]
+  > {
     const resp = await this.#octokit.repos.getContent({
       owner: this.#owner,
       repo: this.#repo,
