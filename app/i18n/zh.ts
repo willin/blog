@@ -16,7 +16,7 @@ export const dict: I18nDict = {
   common: {
     donate: '⚡ 为老王充电',
     donate_tip: '感谢您的慷慨赞助 ❤️',
-    login_and_follow: '您需要登录并且在 Github 上关注 {{username}} 后才能继续阅读本文。',
+    login_and_follow: '您需要登录并且在 Github 上关注 willin 后才能继续阅读本文。',
     login: '登录',
     fans_login: 'Github 粉丝登录免广告',
     logout: '退出',

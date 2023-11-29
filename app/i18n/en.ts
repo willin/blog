@@ -16,7 +16,7 @@ export const dict: I18nDict = {
   common: {
     donate: '⚡ Sponsor Willin',
     donate_tip: 'Thank you, my boss ❤️',
-    login_and_follow: 'You need to login and follow github {{username}} first.',
+    login_and_follow: 'You need to login and follow github willin first.',
     login: 'Login',
     fans_login: 'Github Fans Remove Ads',
     logout: 'Logout',

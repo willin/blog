@@ -6,7 +6,7 @@ export function useLoginInfo() {
   const [following, setFollowing] = useState(false);
 
   useEffect(() => {
-    fetch(`https://api.github.com/users/${username}/following/${AdminId}`)
+    fetch(`https://api.github.com/users/${user.username}/following/willin`)
       .then((res) => {
         if (res.status === 204) {
           setFollowing(true);
