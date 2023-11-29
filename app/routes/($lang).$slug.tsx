@@ -2,25 +2,25 @@ import { allPages } from 'contentlayer/generated';
 import { json, type LoaderFunction } from '@remix-run/cloudflare';
 import { PostDetail } from '~/components/atom/detail';
 import { NotTranslated } from '~/components/atom/not-translated';
-import { useI18n } from 'remix-i18n';
-import { useParams } from '@remix-run/react';
+import { i18nConfig } from '~/i18n';
+import { useLoaderData } from '@remix-run/react';
+import E404 from '~/components/atom/404';
 
 export const loader: LoaderFunction = async ({ context, params }) => {
   const views = await context.services.view.view(params.slug);
-  return json({ views });
+  const posts = allPages.filter((post) => post.slug === params.slug);
+  const post = posts.find((post) => post.lang === (params.lang || i18nConfig.fallbackLng));
+  return json({ views, post, posts });
 };
 
 export default function PagePage() {
-  const { locale } = useI18n();
-  const params = useParams();
+  const { post, posts } = useLoaderData<typeof loader>();
 
-  const posts = allPages.filter((post) => post.slug === params.slug);
-  const post = posts.find((post) => post.lang === locale());
   if (!post) {
     if (posts.length > 0) {
       return <NotTranslated post={posts[0]} type='page' />;
     }
-    redirect('/');
+    return <E404 />;
   }
   return <PostDetail post={post} type='page' />;
 }

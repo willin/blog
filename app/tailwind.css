@@ -50,6 +50,9 @@
 }
 
 @layer components {
+  a.btn {
+    text-decoration: none;
+  }
   .navbar-center a {
     line-height: 2rem;
   }
