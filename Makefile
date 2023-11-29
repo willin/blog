@@ -10,5 +10,5 @@ dev:
 
 build:
 	cd scripts && npm install
-	node scripts/content.mjs
+	NODE_ENV=production node scripts/content.mjs
 	NODE_ENV=production npx remix build
