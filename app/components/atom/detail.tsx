@@ -7,7 +7,7 @@ import { Form, useLoaderData, useRouteLoaderData } from '@remix-run/react';
 import { useLoginInfo } from './use-login';
 import { i18nConfig } from '~/i18n';
 import { Mdx } from './mdx';
-import type { Content} from '~/server/services/content';
+import type { Content } from '~/server/services/content';
 import { ContentType } from '~/server/services/content';
 
 function getUrl(type: string, slug: string, lang: string) {
@@ -173,7 +173,7 @@ export function PostDetail({ post, type }: { post: Content; type: ContentType })
     <main>
       <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.frontmatter.title}</h1>
       <aside className='text-center mb-8'>
-        {type === 'page' && (
+        {type === ContentType.PAGE && (
           <span className='badge mr-4'>
             {t('common.publish_at')} {post.frontmatter.date}
           </span>
@@ -181,7 +181,7 @@ export function PostDetail({ post, type }: { post: Content; type: ContentType })
         <span className='badge'>
           {views} {t('common.views')}
         </span>
-        {type === 'post' && (
+        {type === ContentType.BLOG && (
           <>
             <span className='badge mx-4'>
               {t('common.wordcount', { wordcount: readingTime.words.toLocaleString() })}
