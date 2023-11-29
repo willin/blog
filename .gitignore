@@ -1,13 +1,13 @@
 node_modules
 
 /demo
-/.contentlayer
 /.wrangler
 /.cache
 /functions/\[\[path\]\].js
 /functions/\[\[path\]\].js.map
 /functions/metafile.*
 /public/build
+/public/_content
 .dev.vars
 *.log
 *.log*
