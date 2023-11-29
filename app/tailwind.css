@@ -50,6 +50,9 @@
 }
 
 @layer components {
+  .navbar-center a {
+    line-height: 2rem;
+  }
   #background {
     @apply fixed inset-0 saturate-150 z-[-1];
     background: url('/images/bg.jpg') no-repeat center center fixed;

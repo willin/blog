@@ -73,6 +73,10 @@ export const Blog = defineDocumentType(() => ({
     follow: {
       type: 'boolean',
       default: false
+    },
+    vip: {
+      type: 'boolean',
+      default: false
     }
   },
   computedFields: computedFields('blog')
@@ -92,6 +96,10 @@ export const Page = defineDocumentType(() => ({
       required: true
     },
     follow: {
+      type: 'boolean',
+      default: false
+    },
+    vip: {
       type: 'boolean',
       default: false
     }

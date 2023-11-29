@@ -36,7 +36,7 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   if (params.lang && !i18nConfig.supportedLanguages.includes(params.lang)) {
-    return redirect('/');
+    return redirect(`/${i18nConfig.fallbackLng}/${params.lang}`);
   }
   removeTrailingSlash(new URL(request.url));
 

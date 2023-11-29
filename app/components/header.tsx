@@ -1,17 +1,19 @@
 import { useI18n } from 'remix-i18n';
-import { LocaleLink } from './link';
+import { Link } from '@remix-run/react';
+import { allPages } from 'contentlayer/generated';
 import LocaleSwitch from './locale-switch';
 import ThemeSwitch from './theme-switch';
 import UserPanel from './user-panel';
+import { LocaleLink } from './link';
 
 function PageLinks({ items }: { items: { href: string; label: string }[] }) {
   return (
     <>
       {items.map((item) => (
         <li key={item.href}>
-          <LocaleLink to={item.href} className='btn btn-ghost normal-case'>
+          <Link to={item.href} className='btn btn-ghost normal-case'>
             {item.label}
-          </LocaleLink>
+          </Link>
         </li>
       ))}
     </>
@@ -19,8 +21,17 @@ function PageLinks({ items }: { items: { href: string; label: string }[] }) {
 }
 
 export default function MainHeader() {
-  const { t } = useI18n();
-  const items = [];
+  const { t, locale } = useI18n();
+  const items = allPages
+    .filter((p) => p.lang === locale())
+    .map((page) => ({
+      href: `/${locale()}/${page.slug}`,
+      label: page.title
+    }));
+  items.unshift({
+    href: `/blog`,
+    label: t('site.blog')
+  });
 
   return (
     <header className='sticky top-0 flex justify-center w-full z-[9999] opacity-90 hover:opacity-100 bg-base-100 mb-4'>
@@ -48,7 +59,7 @@ export default function MainHeader() {
           </LocaleLink>
         </div>
         <div className='navbar-center hidden lg:flex'>
-          <ul className='menu menu-horizontal px-1'>
+          <ul className='menu menu-horizontal px-1 py-0'>
             <PageLinks items={items} />
           </ul>
         </div>
