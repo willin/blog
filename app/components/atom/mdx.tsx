@@ -1,80 +1,43 @@
-import * as _jsx_runtime from 'react/jsx-runtime';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { LocaleLink } from '../link';
-import { Donate } from './donate';
+import * as mdxBundler from 'mdx-bundler/client';
+import { useMemo } from 'react';
+import { components as mdxComponents } from './custom-components';
 
-const CustomLink = (props: { [k: string]: string }) => {
-  const href = props.href;
-
-  if (href.startsWith('/')) {
+function getMdxComponent(code: string) {
+  const Component = mdxBundler.getMDXComponent(code);
+  function WMdxComponent({ components, ...rest }: Parameters<typeof Component>['0']) {
     return (
-      <LocaleLink className='link link-primary' to={href} {...props}>
-        {props.children}
-      </LocaleLink>
+      // @ts-expect-error the types are wrong here
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      <Component components={{ ...mdxComponents, ...components }} {...rest} />
     );
   }
+  return WMdxComponent;
+}
 
-  if (href.startsWith('#')) {
-    // eslint-disable-next-line jsx-a11y/anchor-has-content
-    return <a className='link' {...props} />;
+function useMdxComponent(code: string, globals: Record<string, unknown> = {}) {
+  return useMemo(() => getMdxComponent(code, globals), [code, globals]);
+}
+
+export function Mdx({ code, html }: { code: string; html: string }) {
+  let Component = null;
+  if (typeof window !== 'undefined' && code) {
+    // eslint-disable-next-line
+    Component = useMdxComponent(code);
   }
 
-  // eslint-disable-next-line jsx-a11y/anchor-has-content
-  return <a className='link link-secondary' target='_blank' rel='noopener noreferrer' {...props} />;
-};
-
-function RoundedImage(props: { [k: string]: string }) {
-  // @ts-ignore
-  return <img alt={props.alt} className='rounded-lg shadow max-h-[80vh] max-w-[90%]' {...props} />;
-}
-
-function DefaultImage(props: { [k: string]: string }) {
   return (
-    <span className='flex justify-center my-4'>
-      <img alt={props.alt} className='rounded-lg shadow max-h-[80vh] max-w-[90%]' {...props} />
-    </span>
-  );
-}
-
-function CustomTable(props: { [k: string]: string }) {
-  return (
-    <div className='overflow-x-auto'>
-      <table {...props} />
-    </div>
-  );
-}
-
-const components = {
-  // pre: Codeblock,
-  Image: RoundedImage,
-  img: DefaultImage,
-  a: CustomLink,
-  table: CustomTable,
-  // Invoices: Invoices,
-  Donate: Donate
-  // InvoiceDetail: InvoiceDetail
-};
-
-function getMDXComponent(code: string, globals: Record<string, unknown> = {}): React.FC<MDXContentProps> {
-  const scope = { React, ReactDOM, _jsx_runtime, ...globals };
-  // eslint-disable-next-line no-new-func
-  const fn = new Function(...Object.keys(scope), code);
-
-  return fn(...Object.values(scope)).default;
-}
-
-function useMDXComponent(code: string, globals: Record<string, unknown> = {}) {
-  return React.useMemo(() => getMDXComponent(code, globals), [code, globals]);
-}
-
-export function Mdx({ code }: { code: string }) {
-  const Component = useMDXComponent(code);
-
-  return (
-    <article className='prose prose-quoteless prose-neutral min-w-full my-10'>
-      {/* @ts-ignore */}
-      <Component components={{ ...components }} />
-    </article>
+    <>
+      {Component ? (
+        <article className='prose prose-quoteless prose-neutral min-w-full my-10'>
+          <Component />
+        </article>
+      ) : (
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        <article
+          className='prose prose-quoteless prose-neutral min-w-full my-10'
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
+    </>
   );
 }

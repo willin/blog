@@ -3,7 +3,7 @@ import daisyui from 'daisyui';
 import typography from '@tailwindcss/typography';
 
 export default {
-  content: ['./app/**/*.{js,jsx,ts,tsx}'],
+  content: ['./app/**/*.{js,jsx,ts,tsx}', './content/**/*.{md,mdx}'],
   theme: {
     extend: {
       backgroundImage: {

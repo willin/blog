@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <MainHeader />
       <main
         className={clsx('p-2 sm:p-4 mb-20 mx-auto', {
-          'container max-w-full shadow bg-base-100/90 rounded':
+          'container max-w-[1920px] shadow bg-base-100/90 rounded':
             pathname !== '/' && pathname !== '/zh' && pathname !== '/en'
         })}>
         {children}

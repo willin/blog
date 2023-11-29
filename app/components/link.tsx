@@ -1,6 +1,6 @@
 import { Link, NavLink, type LinkProps, type NavLinkProps } from '@remix-run/react';
 import { useI18n } from 'remix-i18n';
-import { i18nConfig } from '~/i18n';
+import { i18nConfig } from '../i18n';
 
 export function LocaleLink({ to, children, ...props }: LinkProps & { to: string }) {
   const { locale } = useI18n();

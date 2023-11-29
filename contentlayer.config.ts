@@ -2,18 +2,30 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { type ComputedFields, type LocalDocument, defineDocumentType, makeSource } from 'contentlayer/source-files';
 import readingTime from 'reading-time';
+import { bundleMDX } from 'mdx-bundler';
+import * as ReactDOMServer from 'react-dom/server';
+import { getMDXComponent } from 'mdx-bundler/client/index.js';
 import remarkGfm from 'remark-gfm';
 import remarkGithub from 'remark-github';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 // import rehypePrettyCode from 'rehype-pretty-code';
 import { i18nConfig } from './app/i18n';
+import { components } from './app/components/atom/custom-components';
+
+const mdxToHtml = async (mdxSource: string) => {
+  const { code } = await bundleMDX({ source: mdxSource });
+  const MDXLayout = getMDXComponent(code);
+  const element = MDXLayout({ components: { ...components } })!;
+  const html = ReactDOMServer.renderToString(element);
+  return html;
+};
 
 const getSlug = (doc: LocalDocument) =>
   doc._raw.sourceFileName.replace(/^\d{4}-\d{1,2}-\d{1,2}-/, '').replace(/\.mdx$/, '');
 
 const getLang = (doc: LocalDocument) =>
-  i18nConfig.supportedLanguages.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}`)) || i18n.defaultLocale;
+  i18nConfig.supportedLanguages.find((lang) => doc._raw.sourceFileDir.includes(`/${lang}`)) || i18nConfig.fallbackLng;
 
 const computedFields = (type: string): ComputedFields => ({
   slug: {
@@ -27,6 +39,10 @@ const computedFields = (type: string): ComputedFields => ({
   readingTime: {
     type: 'json',
     resolve: (doc) => readingTime(doc.body.raw as string)
+  },
+  html: {
+    type: 'string',
+    resolve: (doc) => mdxToHtml(doc.body.raw)
   },
   structuredData: {
     type: 'json',
@@ -64,11 +80,11 @@ export const Blog = defineDocumentType(() => ({
     category: { type: 'string', default: false },
     description: {
       type: 'string',
-      default: false
+      default: ''
     },
     image: {
       type: 'string',
-      default: false
+      default: ''
     },
     follow: {
       type: 'boolean',

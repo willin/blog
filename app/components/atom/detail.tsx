@@ -140,7 +140,7 @@ function PostContent({ post }: { post: Blog | Page }) {
   const { following, vip } = useLoginInfo();
 
   if (!post.follow && !post.vip) {
-    return <Mdx code={post.body.code} />;
+    return <Mdx code={post.body.code} html={post.html} />;
   }
 
   if (post.follow && !following) {
@@ -159,7 +159,7 @@ function PostContent({ post }: { post: Blog | Page }) {
       </>
     );
   }
-  return <Mdx code={post.body.code} />;
+  return <Mdx code={post.body.code} html={post.html} />;
 }
 
 export function PostDetail({ post, type }: { post: Blog | Page; type: string }) {
