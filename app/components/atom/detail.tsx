@@ -1,4 +1,3 @@
-import type { Blog, Page } from 'contentlayer/generated';
 import type { ReadTimeResults } from 'reading-time';
 import { LocaleLink } from '../link';
 import { useI18n } from 'remix-i18n';
@@ -8,6 +7,8 @@ import { Form, useLoaderData, useRouteLoaderData } from '@remix-run/react';
 import { useLoginInfo } from './use-login';
 import { i18nConfig } from '~/i18n';
 import { Mdx } from './mdx';
+import type { Content} from '~/server/services/content';
+import { ContentType } from '~/server/services/content';
 
 function getUrl(type: string, slug: string, lang: string) {
   let url = `https://willin.wang/`;
@@ -21,26 +22,26 @@ function getUrl(type: string, slug: string, lang: string) {
   return url;
 }
 
-function PostCategory({ post }: { post: Blog }) {
+function PostCategory({ post }: { post: Content }) {
   const { t } = useI18n();
 
   return (
     <span className='badge mr-4'>
       {t('common.category_by')}
-      <LocaleLink className='link-accent decoration-transparent' href={`/category/${post.category}`}>
-        {post.category}
+      <LocaleLink className='link-accent decoration-transparent' href={`/category/${post.frontmatter.category}`}>
+        {post.frontmatter.category}
       </LocaleLink>
     </span>
   );
 }
 
-function PostTags({ post, lang }: { post: Blog; lang: Locale }) {
+function PostTags({ post }: { post: Content }) {
   const { t } = useI18n();
 
   return (
     <span className='badge mr-4'>
       {t('common.tags_by')}
-      {(post.tags as string[]).map((tag) => (
+      {(post.frontmatter.tags as string[]).map((tag) => (
         <LocaleLink key={tag} className='link-accent decoration-transparent mr-2' href={`/tag/${tag}`}>
           {tag}
         </LocaleLink>
@@ -49,7 +50,7 @@ function PostTags({ post, lang }: { post: Blog; lang: Locale }) {
   );
 }
 
-function PostCopyright({ post, type }: { post: Blog | Page; type: string }) {
+function PostCopyright({ post, type }: { post: Content; type: ContentType }) {
   const { locale } = useI18n();
 
   return (
@@ -68,12 +69,13 @@ function PostCopyright({ post, type }: { post: Blog | Page; type: string }) {
         </svg>
         <label>
           <h4 className='mb-2'>版权信息</h4>
-          <p className='text-sm mb-1'>文章标题： {post.title}</p>
+          <p className='text-sm mb-1'>文章标题： {post.frontmatter.title}</p>
           <p className='text-sm mb-1'>
             文章作者： <a href='https://willin.wang'>Willin Wang</a>
           </p>
           <p className='text-sm mb-1'>
-            本文链接： <a href={getUrl(type, post.slug, locale())}>{getUrl(type, post.slug, locale())}</a>
+            本文链接：{' '}
+            <a href={getUrl(type, post.frontmatter.slug, locale())}>{getUrl(type, post.frontmatter.slug, locale())}</a>
           </p>
           <p className='text-sm  mt-1'>
             本博客所有文章除特别声明外，均为原创，采用{' '}
@@ -136,44 +138,44 @@ function LoginAndFollow() {
   );
 }
 
-function PostContent({ post }: { post: Blog | Page }) {
+function PostContent({ post }: { post: Content }) {
   const { following, vip } = useLoginInfo();
 
-  if (!post.follow && !post.vip) {
-    return <Mdx code={post.body.code} html={post.html} />;
+  if (!post.frontmatter.follow && !post.frontmatter.vip) {
+    return <Mdx code={post.code} html={post.html} />;
   }
 
-  if (post.follow && !following) {
+  if (post.frontmatter.follow && !following) {
     return (
       <>
-        <div className='my-10'>{(post as Blog).description || ' '}</div>
+        <div className='my-10'>{post.frontmatter.description || ' '}</div>
         <LoginAndFollow />
       </>
     );
   }
-  if (post.vip && !vip) {
+  if (post.frontmatter.vip && !vip) {
     return (
       <>
-        <div className='my-10'>{(post as Blog).description || ' '}</div>
+        <div className='my-10'>{post.frontmatter.description || ' '}</div>
         <LoginAndFollow />
       </>
     );
   }
-  return <Mdx code={post.body.code} html={post.html} />;
+  return <Mdx code={post.code} html={post.html} />;
 }
 
-export function PostDetail({ post, type }: { post: Blog | Page; type: string }) {
+export function PostDetail({ post, type }: { post: Content; type: ContentType }) {
   const { views = 0 } = useLoaderData();
   const { t, locale } = useI18n();
-  const readingTime = post.readingTime as ReadTimeResults;
+  const readingTime = post.frontmatter.readtime as ReadTimeResults;
 
   return (
     <main>
-      <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.title}</h1>
+      <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.frontmatter.title}</h1>
       <aside className='text-center mb-8'>
         {type === 'page' && (
           <span className='badge mr-4'>
-            {t('common.publish_at')} {post.date}
+            {t('common.publish_at')} {post.frontmatter.date}
           </span>
         )}
         <span className='badge'>
@@ -202,13 +204,13 @@ export function PostDetail({ post, type }: { post: Blog | Page; type: string }) 
       <aside className='my-4'>
         <Donate />
 
-        {type === 'post' && (
+        {type === ContentType.BLOG && (
           <div className='text-center'>
             <span className='badge mr-4'>
-              {t('common.publish_at')} {post.date}
+              {t('common.publish_at')} {post.frontmatter.date}
             </span>
-            {post.category && <PostCategory post={post as Blog} />}
-            {post.tags && <PostTags post={post as Blog} />}
+            {post.frontmatter.category && <PostCategory post={post} />}
+            {post.frontmatter.tags && <PostTags post={post} />}
           </div>
         )}
 

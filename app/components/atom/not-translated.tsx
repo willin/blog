@@ -1,14 +1,16 @@
-import type { Blog, Page } from 'contentlayer/generated';
+import { ContentType, type Content } from '~/server/services/content';
 import { LocaleLink } from '../link';
 
-export function NotTranslated({ post }: { post: Blog | Page; type: string }) {
+export function NotTranslated({ post, type }: { post: Content; type: ContentType }) {
   return (
     <div className='prose'>
       <h1>Not translated</h1>
       <p>This page is not translated to your language.</p>
       <p>
         Go back:
-        <LocaleLink to={`${type === 'page' ? '' : `/${type}`}/${post.slug}`}>{post.title}</LocaleLink>
+        <LocaleLink to={`${type === ContentType.PAGE ? '' : `/${type}`}/${post.frontmatter.slug}`}>
+          {post.frontmatter.title}
+        </LocaleLink>
       </p>
     </div>
   );

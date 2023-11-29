@@ -74,8 +74,8 @@ const getAllFiles = async () => {
       // 下面第三层目录为文章或页面的内容，可能是文件夹或单一文件
       // then third folders are contents of posts or pages
       const list = await listFiles(path.join(CONTENT, type, lang));
-      for (let l = 0; l < list.length; l += 1) {
-        const item = list[l];
+      for (let f = 0; f < list.length; f += 1) {
+        const item = list[f];
         const slug = item.name.replace(/^\d{4}-\d{1,2}-\d{1,2}-/, '').replace(/\.mdx$/, '');
         if (item.type === 'file') {
           fileList.push({
@@ -86,9 +86,9 @@ const getAllFiles = async () => {
           });
         } else {
           const files = await fsp.readdir(path.join(CONTENT, type, lang, item.name));
-          const source = files.filter((f) => !f.endsWith('.mdx'));
+          const source = files.filter((x) => !x.endsWith('.mdx'));
           files
-            .filter((f) => f.endsWith('.mdx'))
+            .filter((x) => x.endsWith('.mdx'))
             .forEach((file) => {
               // .mdx 文件名为语言代码， 如 en、 zh
               // content .mdx named with locale like en, zh
@@ -194,27 +194,35 @@ const main = async () => {
         code: sourceFiles ? code : undefined
       })
     );
-    const { tags = [], category } = frontmatter;
+    const { tags = [], category, readtime } = frontmatter;
     if (totalWords[locale]) {
-      totalWords[locale] += frontmatter.readtime.words;
+      totalWords[locale] += readtime.words;
     } else {
-      totalWords[locale] = frontmatter.readtime.words;
+      totalWords[locale] = readtime.words;
     }
     if (totalReadtime[locale]) {
-      totalReadtime[locale] += frontmatter.readtime.minutes;
+      totalReadtime[locale] += readtime.minutes;
     } else {
-      totalReadtime[locale] = frontmatter.readtime.minutes;
+      totalReadtime[locale] = readtime.minutes;
     }
-    if (totalTags[locale]) {
-      totalTags[locale].push(...tags);
+    if (totalTags[type]) {
+      if (totalTags[type][locale]) {
+        totalTags[type][locale].push(...tags);
+      } else {
+        totalTags[type][locale] = tags;
+      }
     } else {
-      totalTags[locale] = tags;
+      totalTags[type] = { [locale]: tags };
     }
     if (category) {
-      if (totalCategories[locale]) {
-        totalCategories[locale].push(category);
+      if (totalCategories[type]) {
+        if (totalCategories[type][locale]) {
+          totalCategories[type][locale].push(category);
+        } else {
+          totalCategories[type][locale] = [category];
+        }
       } else {
-        totalCategories[locale] = [category];
+        totalCategories[type] = { [locale]: [category] };
       }
     }
     if (totalPosts[locale]) {
@@ -225,47 +233,54 @@ const main = async () => {
   }
   // Statistics
   const arr = Object.entries(totalWords);
+  const result = {};
   for (let i = 0; i < arr.length; i += 1) {
     const [locale, words] = arr[i];
-    const tags = Object.entries(
-      totalTags[locale].reduce((r, c) => {
-        // {[tag]:count}
-        if (r[c]) {
-          // eslint-disable-next-line no-param-reassign
-          r[c] += 1;
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          r[c] = 1;
-        }
-        return r;
-      }, {})
-    ).sort((a, b) => (a[1] < b[1] ? 1 : -1));
+    const types = [...new Set([...Object.keys(totalTags), ...Object.keys(totalCategories)])];
+    const meta = types.map((type) => {
+      const tags = totalTags?.[type]?.[locale]
+        ? Object.entries(
+            totalTags[type][locale].reduce((r, c) => {
+              // {[tag]:count}
+              if (r[c]) {
+                // eslint-disable-next-line no-param-reassign
+                r[c] += 1;
+              } else {
+                // eslint-disable-next-line no-param-reassign
+                r[c] = 1;
+              }
+              return r;
+            }, {})
+          ).sort((a, b) => (a[1] < b[1] ? 1 : -1))
+        : [];
 
-    const categories = Object.entries(
-      totalCategories[locale].reduce((r, c) => {
-        // {[tag]:count}
-        if (r[c]) {
-          // eslint-disable-next-line no-param-reassign
-          r[c] += 1;
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          r[c] = 1;
-        }
-        return r;
-      }, {})
-    ).sort((a, b) => (a[1] < b[1] ? 1 : -1));
+      const categories = totalCategories?.[type]?.[locale]
+        ? Object.entries(
+            totalCategories[type][locale].reduce((r, c) => {
+              // {[tag]:count}
+              if (r[c]) {
+                // eslint-disable-next-line no-param-reassign
+                r[c] += 1;
+              } else {
+                // eslint-disable-next-line no-param-reassign
+                r[c] = 1;
+              }
+              return r;
+            }, {})
+          ).sort((a, b) => (a[1] < b[1] ? 1 : -1))
+        : [];
 
-    await writeFile(
-      path.resolve(OUTPUT, `${locale}.json`),
-      JSON.stringify({
-        words,
-        readtime: totalReadtime[locale],
-        posts: totalPosts[locale].sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1)),
-        tags,
-        categories
-      })
-    );
+      return [type, { tags, categories }];
+    });
+
+    result[locale] = {
+      words,
+      readtime: totalReadtime[locale],
+      contents: totalPosts[locale].sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : 1)),
+      ...Object.fromEntries(meta)
+    };
   }
+  await writeFile(path.resolve(OUTPUT, 'meta.json'), JSON.stringify(result));
   const n2 = new Date();
   console.log(`Done, used ${n2 - n} ms`);
 };

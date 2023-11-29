@@ -1,10 +1,10 @@
 import { useI18n } from 'remix-i18n';
-import { Link } from '@remix-run/react';
-import { allPages } from 'contentlayer/generated';
+import { Link, useRouteLoaderData } from '@remix-run/react';
 import LocaleSwitch from './locale-switch';
 import ThemeSwitch from './theme-switch';
 import UserPanel from './user-panel';
 import { LocaleLink } from './link';
+import { ContentType } from '~/server/services/content';
 
 function PageLinks({ items }: { items: { href: string; label: string }[] }) {
   return (
@@ -22,8 +22,11 @@ function PageLinks({ items }: { items: { href: string; label: string }[] }) {
 
 export default function MainHeader() {
   const { t, locale } = useI18n();
-  const items = allPages
-    .filter((p) => p.lang === locale())
+  const { meta } = useRouteLoaderData('root');
+  const data = meta[locale()];
+
+  const items = data?.contents
+    ?.filter((p) => p.type === ContentType.PAGE)
     .map((page) => ({
       href: `/${locale()}/${page.slug}`,
       label: page.title

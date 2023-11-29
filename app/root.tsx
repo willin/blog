@@ -1,5 +1,5 @@
 import styles from './tailwind.css';
-import { json, redirect, type LinksFunction, type LoaderFunction } from '@remix-run/cloudflare';
+import { json, type LinksFunction, type LoaderFunction } from '@remix-run/cloudflare';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react';
 import DetectLanguage from './components/detect-lang';
 import Layout from './components/layout';
@@ -7,7 +7,6 @@ import { ThemeProvider } from './components/use-theme';
 import { defaultLightTheme } from './themes';
 import { useI18n } from 'remix-i18n';
 import { themeCookie } from './cookie.server';
-import { i18nConfig } from './i18n';
 import { removeTrailingSlash } from './utils/trailing-slash';
 
 export const links: LinksFunction = () => [
@@ -35,15 +34,13 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
-  if (params.lang && !i18nConfig.supportedLanguages.includes(params.lang)) {
-    return redirect(`/${i18nConfig.fallbackLng}/${params.lang}`);
-  }
   removeTrailingSlash(new URL(request.url));
 
   const theme = (await themeCookie.parse(request.headers.get('Cookie'))) || defaultLightTheme;
 
   const user = await context.services.auth.authenticator.isAuthenticated(request);
-  return json({ theme, user });
+  const meta = await context.services.content.getMeta();
+  return json({ theme, user, meta });
 };
 
 export default function App() {

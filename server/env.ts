@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export let EnvSchema = z.object({
-  // BASE_URL: z.string().min(1).url(),
+  // BASE_URL: z.string().min(1).url().optional().default('https://willin.wang'),
   CF_PAGES: z
     .literal('1')
     .optional()
