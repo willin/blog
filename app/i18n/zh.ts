@@ -6,6 +6,7 @@ export const dict: I18nDict = {
     subtitle: '全职开源、旅居、自媒体、兼职顾问',
     desc: 'To be Willin is to be willing.\nWillin（老王）带你躺平养老。',
     blog: '博客',
+    home: '首页',
     offer: '我能为您做些什么？',
     social: '欢迎在以下社交媒体关注我',
     view_by_category: '按照【分类】筛选文章',

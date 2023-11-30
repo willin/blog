@@ -4,6 +4,7 @@ import { useI18n } from 'remix-i18n';
 import { PostCard } from '~/components/atom/post-card';
 import { TagList } from '~/components/atom/tag-list';
 import { ContentType, type MetaIndex } from '~/server/services/content';
+import { tagMeta } from '~/utils/meta';
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const totalViews = await context.services.view.getTotalViews();
@@ -11,7 +12,9 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   return json({ totalViews, views });
 };
 
-export default function BlogIndexPage() {
+export const meta = tagMeta;
+
+export default function BlogCategoryPage() {
   const { t, locale } = useI18n();
   const { slug } = useParams();
   const { totalViews, views } = useLoaderData<typeof loader>();

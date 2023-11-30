@@ -3,6 +3,7 @@ import { PostDetail } from '~/components/atom/detail';
 import { i18nConfig } from '~/i18n';
 import { useLoaderData } from '@remix-run/react';
 import { ContentType } from '~/server/services/content';
+import { pageMeta } from '~/utils/meta';
 // import { NotTranslated } from '~/components/atom/not-translated';
 
 export const loader: LoaderFunction = async ({ context, params }) => {
@@ -16,6 +17,8 @@ export const loader: LoaderFunction = async ({ context, params }) => {
 
   return json({ views, post });
 };
+
+export const meta = pageMeta;
 
 export default function PagePage() {
   const { post } = useLoaderData<typeof loader>();

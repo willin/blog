@@ -1,6 +1,15 @@
 import styles from './tailwind.css';
 import { json, type LinksFunction, type LoaderFunction } from '@remix-run/cloudflare';
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react';
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  useRouteLoaderData
+} from '@remix-run/react';
 import DetectLanguage from './components/detect-lang';
 import Layout from './components/layout';
 import { ThemeProvider } from './components/use-theme';
@@ -8,6 +17,7 @@ import { defaultLightTheme } from './themes';
 import { useI18n } from 'remix-i18n';
 import { themeCookie } from './cookie.server';
 import { removeTrailingSlash } from './utils/trailing-slash';
+import E404 from './components/atom/404';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: styles },
@@ -57,6 +67,31 @@ export default function App() {
         <body>
           <Layout>
             <Outlet />
+          </Layout>
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+          <DetectLanguage />
+        </body>
+      </html>
+    </ThemeProvider>
+  );
+}
+
+export function ErrorBoundary() {
+  const { theme } = useRouteLoaderData('root');
+  const i18n = useI18n();
+
+  return (
+    <ThemeProvider specifiedTheme={theme}>
+      <html lang={i18n.locale()} data-theme={theme}>
+        <head>
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <Layout>
+            <E404 />
           </Layout>
           <ScrollRestoration />
           <Scripts />

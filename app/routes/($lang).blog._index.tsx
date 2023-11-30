@@ -1,4 +1,4 @@
-import { json, type LoaderFunction } from '@remix-run/cloudflare';
+import { json, type MetaFunction, type LoaderFunction } from '@remix-run/cloudflare';
 import { useLoaderData, useRouteLoaderData } from '@remix-run/react';
 import { useI18n } from 'remix-i18n';
 import { PostCard } from '~/components/atom/post-card';
@@ -63,3 +63,14 @@ export default function BlogIndexPage() {
     </article>
   );
 }
+
+export const meta: MetaFunction = ({ matches, data }) => {
+  const title = matches[0].meta.find((x) => x.title)?.title;
+  const parentMeta = matches.flatMap((match) => match.meta ?? []).filter((meta) => !('title' in meta));
+  return [
+    ...parentMeta,
+    {
+      title: `${title} | 文章列表 Blogs`
+    }
+  ];
+};
