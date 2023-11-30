@@ -8,9 +8,7 @@ export function NotTranslated({ post, type }: { post: Content; type: ContentType
       <p>This page is not translated to your language.</p>
       <p>
         Go back:
-        <LocaleLink to={`${type === ContentType.PAGE ? '' : `/${type}`}/${post.frontmatter.slug}`}>
-          {post.frontmatter.title}
-        </LocaleLink>
+        <LocaleLink to={`${type === ContentType.PAGE ? '' : `/${type}`}/${post.slug}`}>{post.title}</LocaleLink>
       </p>
     </div>
   );

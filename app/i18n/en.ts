@@ -11,7 +11,8 @@ export const dict: I18nDict = {
     view_by_category: 'View posts by categories',
     view_by_tag: 'View posts by tags',
     total_wordcount:
-      'Total posts: <span class="badge badge-lg">{{posts}}</span>, wordcount: <span class="badge badge-lg badge-secondary">{{wordcount}}</span>, reading time about <span class="badge badge-lg badge-primary">{{readtime}}</span> hours, total <span class="badge badge-lg badge-accent">{{views}}</span> views.'
+      'Total posts: <span class="badge badge-lg">{{posts}}</span>, wordcount: <span class="badge badge-lg badge-secondary">{{wordcount}}</span>, reading time about <span class="badge badge-lg badge-primary">{{readtime}}</span> hours, total <span class="badge badge-lg badge-accent">{{views}}</span> views.',
+    old_blog: 'Archived Posts in old blog...'
   },
   common: {
     donate: '⚡ Sponsor Willin',

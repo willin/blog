@@ -10,14 +10,16 @@ export function useLoginInfo() {
       setFollowing(true);
       return;
     }
-    if (user)
-      fetch(`https://api.github.com/users/${user?.username}/following/willin`)
+    if (user) {
+      const username = user.thirdparty?.find((x) => x.provider === 'github')?.username || '';
+      fetch(`https://api.github.com/users/${username}/following/willin`)
         .then((res) => {
           if (res.status === 204) {
             setFollowing(true);
           }
         })
         .catch(() => {});
+    }
   }, [user, vip]);
 
   return {

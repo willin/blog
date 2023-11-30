@@ -11,7 +11,8 @@ export const dict: I18nDict = {
     view_by_category: '按照【分类】筛选文章',
     view_by_tag: '按照【标签】筛选文章',
     total_wordcount:
-      '已写下 <span class="badge badge-lg">{{posts}}</span> 篇博客文章，共计 <span class="badge badge-lg badge-secondary">{{wordcount}}</span> 字，完整阅读预计需要 <span class="badge badge-lg badge-primary">{{readtime}}</span> 小时，已有 <span class="badge badge-lg badge-accent">{{views}}</span> 次阅读。'
+      '已写下 <span class="badge badge-lg">{{posts}}</span> 篇博客文章，共计 <span class="badge badge-lg badge-secondary">{{wordcount}}</span> 字，完整阅读预计需要 <span class="badge badge-lg badge-primary">{{readtime}}</span> 小时，已有 <span class="badge badge-lg badge-accent">{{views}}</span> 次阅读。',
+    old_blog: '旧博客归档文章'
   },
   common: {
     donate: '⚡ 为老王充电',

@@ -189,7 +189,7 @@ const main = async () => {
     writeFile(
       path.resolve(OUTPUT, type, locale, `${slug}.json`),
       JSON.stringify({
-        frontmatter,
+        ...frontmatter,
         html,
         code: sourceFiles ? code : undefined
       })
@@ -209,10 +209,10 @@ const main = async () => {
       if (totalTags[type][locale]) {
         totalTags[type][locale].push(...tags);
       } else {
-        totalTags[type][locale] = tags;
+        totalTags[type][locale] = [...tags];
       }
     } else {
-      totalTags[type] = { [locale]: tags };
+      totalTags[type] = { [locale]: [...tags] };
     }
     if (category) {
       if (totalCategories[type]) {

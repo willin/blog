@@ -1,5 +1,5 @@
 import { json, type LoaderFunction } from '@remix-run/cloudflare';
-import { useLoaderData, useRouteLoaderData } from '@remix-run/react';
+import { useLoaderData, useParams, useRouteLoaderData } from '@remix-run/react';
 import { useI18n } from 'remix-i18n';
 import { PostCard } from '~/components/atom/post-card';
 import { TagList } from '~/components/atom/tag-list';
@@ -13,10 +13,12 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 
 export default function BlogIndexPage() {
   const { t, locale } = useI18n();
+  const { slug } = useParams();
   const { totalViews, views } = useLoaderData<typeof loader>();
   const { meta } = useRouteLoaderData<{ meta: MetaIndex }>('root');
   const data = meta[locale()];
-  const posts = data?.contents.filter((c) => c.type === ContentType.BLOG) ?? [];
+  const tag = decodeURIComponent(slug);
+  const posts = data?.contents.filter((c) => c.type === ContentType.BLOG && c.tags?.includes(tag)) ?? [];
 
   return (
     <article>
@@ -42,7 +44,7 @@ export default function BlogIndexPage() {
       {data[ContentType.BLOG]?.tags.length > 0 && (
         <section>
           <h2 className='text-lg text-center'>{t('site.view_by_tag')}</h2>
-          <TagList type='tag' items={data[ContentType.BLOG].tags} />
+          <TagList type='tag' items={data[ContentType.BLOG].tags} current={tag} />
         </section>
       )}
       <div class='grid grid-cols-2 md:grid-cols-4 gap-4 my-10'>

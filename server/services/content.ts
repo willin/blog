@@ -27,8 +27,7 @@ export type ContentMeta = {
   excerpt?: string;
 };
 
-export type Content = {
-  frontmatter: ContentMeta;
+export type Content = ContentMeta & {
   code?: string;
   html: string;
 };
