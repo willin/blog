@@ -80,7 +80,7 @@
 
   .prose img {
     /* Don't apply styles to next/image */
-    @apply m-0;
+    @apply m-0 max-h-[75vh];
   }
   .prose .mermaid > svg {
     @apply mx-auto my-2;

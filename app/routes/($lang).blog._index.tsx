@@ -1,8 +1,7 @@
-import clsx from 'classnames';
 import { json, type MetaFunction, type LoaderFunction } from '@remix-run/cloudflare';
 import { useLoaderData, useRouteLoaderData } from '@remix-run/react';
 import { useI18n } from 'remix-i18n';
-import { PostCard } from '~/components/atom/post-card';
+import { PostCard, PostGrid } from '~/components/atom/post-card';
 import { TagList } from '~/components/atom/tag-list';
 import { ContentType, type MetaIndex } from '~/server/services/content';
 
@@ -46,16 +45,12 @@ export default function BlogIndexPage() {
           <TagList type='tag' items={data[ContentType.BLOG].tags} />
         </section>
       )}
-      <div
-        className={clsx({
-          'columns-2 lg:columns-3 xl::columns-4 my-10': posts?.length > 4,
-          'grid grid-cols-2 md:grid-cols-4 gap-4 my-10': posts?.length <= 4
-        })}>
+      <PostGrid>
         {posts.length > 0 &&
           posts.map((post) => (
             <PostCard post={post} key={post.slug} views={views.find((p) => p.slug === post.slug)?.views} />
           ))}
-      </div>
+      </PostGrid>
       <div className='text-center'>
         <a
           href='https://2022.willin.wang/blog'
