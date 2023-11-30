@@ -5,6 +5,7 @@ import ThemeSwitch from './theme-switch';
 import UserPanel from './user-panel';
 import { LocaleLink } from './link';
 import { ContentType } from '~/server/services/content';
+import RssFeed from './rss-feed';
 
 function PageLinks({ items }: { items: { href: string; label: string }[] }) {
   return (
@@ -67,6 +68,7 @@ export default function MainHeader() {
           </ul>
         </div>
         <div className='navbar-end'>
+          <RssFeed />
           <LocaleSwitch />
           <ThemeSwitch />
           <UserPanel />
