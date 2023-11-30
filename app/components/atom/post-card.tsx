@@ -64,11 +64,11 @@ export function PostCard({
           <p className='text-sm break-words'>{post.description}&nbsp;</p>
           <div className='card-actions justify-end'>
             <div className='join'>
-              <button className='btn btn-outline btn-xs btn-disabled join-item'>
+              <button className='btn btn-outline btn-xs join-item'>
                 {views} {t('common.views')}
               </button>
-              <button className='btn btn-outline btn-xs btn-disabled join-item'>{post.date}</button>
-              <button className='btn btn-outline btn-xs btn-disabled join-item'>{post.category}</button>
+              <button className='btn btn-outline btn-xs join-item'>{post.date}</button>
+              <button className='btn btn-outline btn-xs join-item'>{post.category}</button>
             </div>
           </div>
         </div>
