@@ -47,6 +47,116 @@
     overflow-x: auto;
     white-space: nowrap;
   }
+
+  .break-words,
+  .break-words p {
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .prose [aria-hidden='true'] {
+    @apply absolute invisible no-underline text-secondary max-w-full;
+    margin-left: -1.5rem;
+    width: 100%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    text-align: left;
+    height: max-content;
+  }
+
+  [aria-hidden='true']:hover {
+    @apply visible;
+  }
+
+  .prose [aria-hidden='true']:after {
+    content: '#';
+  }
+
+  .prose *:hover > [aria-hidden='true'] {
+    @apply visible;
+  }
+
+  .prose img {
+    /* Don't apply styles to next/image */
+    @apply m-0;
+  }
+  .prose .mermaid > svg {
+    @apply mx-auto my-2;
+  }
+
+  .prose code {
+    @apply text-accent border-accent border rounded;
+  }
+
+  code[class*='language-'],
+  pre[class*='language-'] {
+    @apply text-neutral-50;
+  }
+
+  .prose {
+    @apply min-w-full;
+  }
+  .prose > * {
+    @apply min-w-[95%] w-full lg:w-[95%] mx-auto;
+  }
+  .prose h1,
+  .prose h2 {
+    @apply relative text-primary-content bg-primary border-primary-content mx-auto rounded shadow-lg text-center min-w-[95%] w-full lg:w-[95%] py-1;
+  }
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    @apply text-secondary relative;
+  }
+
+  .prose table {
+    @apply table min-w-[95%] w-full lg:w-[95%] table-zebra shadow mx-auto;
+  }
+
+  .prose tr {
+    @apply hover;
+  }
+  [data-rehype-pretty-code-fragment] {
+    @apply relative min-w-[95%] w-full lg:w-[95%] mx-auto rounded shadow-lg;
+  }
+  [data-rehype-pretty-code-fragment] code {
+    @apply grid break-words border-0 bg-transparent p-0 text-sm text-black;
+    counter-reset: line;
+    box-decoration-break: clone;
+  }
+  [data-rehype-pretty-code-fragment] pre {
+    @apply mx-auto p-4;
+  }
+  [data-rehype-pretty-code-fragment] code * {
+    user-select: text;
+  }
+  [data-rehype-pretty-code-fragment] .line {
+    @apply py-1;
+  }
+  [data-rehype-pretty-code-fragment] [data-line-numbers] > .line::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 1rem;
+    margin-right: 1rem;
+    text-align: right;
+    color: gray;
+  }
+
+  [data-rehype-pretty-code-title] {
+    @apply px-4 py-3 pl-12 font-mono text-xs font-medium border rounded-t-lg text-secondary-content bg-secondary border-secondary;
+  }
+
+  [data-rehype-pretty-code-title] ~ [data-language-icon] {
+    @apply block;
+  }
+
+  [data-rehype-pretty-code-title] ~ pre {
+    @apply mt-0 rounded-t-none border-t-0;
+  }
 }
 
 @layer components {

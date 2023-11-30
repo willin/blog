@@ -28,7 +28,7 @@ follow: true
 
 其源码位于： https://github.com/willin/domain/blob/main/app/%5Blang%5D/bootstrap.tsx
 
-```tsx title="bootstrap.tsx" showLineNumbers {18-19,33}
+```tsx
 'use client';
 import Script from 'next/script';
 import { useEffect } from 'react';
@@ -127,7 +127,7 @@ const elm = document.querySelector('#ads');
 
 在最初的代码上稍加完善：
 
-```tsx title="bootstrap.tsx" showLineNumbers {11,15,63}
+```tsx
 'use client';
 import Script from 'next/script';
 import { useEffect } from 'react';
@@ -212,7 +212,7 @@ export function Bootstrap() {
 
 还可以优雅一些去进行全局的判断，这里给出一个示例（未经过实际测试）：
 
-```ts title="useAntiAdblock.ts"
+```ts
 export function useAntiAdblock() {
   // 设置一个默认值， false 未默认优先显示广告拦截提示， true 为默认优先显示主要内容
   const [adsCanshow, setAdsCanshow] = useState(false);
@@ -264,7 +264,7 @@ export function useAntiAdblock() {
 
 然后在组件中使用：
 
-```tsx title="Component.tsx"
+```tsx
 export function Component() {
   const adsCanShow = useAntiAdblock();
   if (!adsCanShow) {
@@ -281,7 +281,7 @@ export function Component() {
 
 后来我参考 `theme-change` 插件使用，简化了一下。代码参考： https://github.com/willin/domain/blob/main/app/%5Blang%5D/themes.tsx
 
-```tsx title="themes.tsx" showLineNumbers {8,47,49-50}
+```tsx
 'use client';
 import { themeChange } from 'theme-change';
 import { useEffect } from 'react';
@@ -363,7 +363,7 @@ export function ThemeChange({ title }: { [k: string]: string }) {
 
 参考代码： https://github.com/willin/domain/blob/main/app/%5Blang%5D/background.tsx
 
-```tsx title="background.tsx" showLineNumbers
+```tsx
 'use client';
 import { darkThemes } from '@/lib/themes';
 import { useEffect } from 'react';
@@ -396,13 +396,13 @@ export function BackgroundImage() {
 
 习惯性的，我们会创建一个类似的配置文件：
 
-```ts title="config.ts"
+```ts
 export const AdminId = process.env.ADMIN_ID || 'default';
 ```
 
 其中，会用到 `process.env.XXX` 这样的环境变量。但在组件中使用的时候，会有一些意想不到的情况发生。
 
-```tsx title="component.tsx"
+```tsx
 export function Component() {
   // 省略一些代码
   const user = useUser();

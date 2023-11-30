@@ -1,3 +1,4 @@
+import mermaid from 'mermaid';
 import type { ReadTimeResults } from 'reading-time';
 import { LocaleLink } from '../link';
 import { useI18n } from 'remix-i18n';
@@ -9,6 +10,7 @@ import { i18nConfig } from '~/i18n';
 import { Mdx } from './mdx';
 import type { Content } from '~/server/services/content';
 import { ContentType } from '~/server/services/content';
+import { useEffect } from 'react';
 
 function getUrl(type: string, slug: string, lang: string) {
   let url = `https://willin.wang/`;
@@ -137,6 +139,17 @@ function LoginAndFollow() {
 
 function PostContent({ post }: { post: Content }) {
   const { following, vip } = useLoginInfo();
+  useEffect(() => {
+    const graphs = document.querySelectorAll('.mermaid');
+    if (graphs.length > 0) {
+      mermaid.initialize({
+        theme: 'forest'
+      });
+      for (let i = 0; i < graphs.length; i += 1) {
+        mermaid.init(graphs[i]);
+      }
+    }
+  }, []);
 
   if (!post.follow && !post.vip) {
     return <Mdx code={post.code} html={post.html} />;

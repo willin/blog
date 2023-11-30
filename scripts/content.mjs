@@ -10,6 +10,7 @@ import { getMDXComponent as getComponent } from 'mdx-bundler/client/index.js';
 // Plugins
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 import remarkGithub from 'remark-github';
 import rehypePrismPlus from 'rehype-prism-plus';
@@ -27,14 +28,23 @@ const mdxComponents = {
   // Custom Components
   a: (props) =>
     createElement('a', {
-      target: '_blank',
+      ...(props.href.startsWith('/') || props.href.startsWith('#') ? {} : { target: '_blank' }),
       ...props
     }),
   img: (props) =>
     createElement('img', {
       className: 'rounded-lg shadow max-h-[80vh] max-w-[90%]',
       ...props
-    })
+    }),
+  table: (props) =>
+    createElement(
+      'div',
+      { className: 'overflow-x-auto' },
+      createElement('table', {
+        className: 'table table-zebra',
+        ...props
+      })
+    )
 };
 
 function getMdxComponent(code) {
@@ -155,11 +165,32 @@ const main = async () => {
     const { code } = await bundleMDX({
       source: content,
       files: sourceFiles ? Object.fromEntries(sourceFiles) : undefined,
-      xdmOptions(options) {
+      mdxOptions(options) {
         // eslint-disable-next-line no-param-reassign
         options.rehypePlugins = [
           ...(options.rehypePlugins ?? []),
           rehypeSlug,
+          [
+            rehypePrettyCode,
+            {
+              theme: 'one-dark-pro',
+              onVisitLine(node) {
+                // Prevent lines from collapsing in `display: grid` mode, and allow empty
+                // lines to be copy/pasted
+                if (node.children.length === 0) {
+                  // eslint-disable-next-line no-param-reassign
+                  node.children = [{ type: 'text', value: ' ' }];
+                }
+              },
+              onVisitHighlightedLine(node) {
+                node.properties.className.push('line--highlighted');
+              },
+              onVisitHighlightedWord(node) {
+                // eslint-disable-next-line no-param-reassign
+                node.properties.className = ['word--highlighted'];
+              }
+            }
+          ],
           rehypeAutolinkHeadings,
           [rehypePrismPlus, { ignoreMissing: true, showLineNumbers: true }]
         ];
@@ -167,7 +198,7 @@ const main = async () => {
         options.remarkPlugins = [
           ...(options.remarkPlugins ?? []),
           remarkGfm,
-          [remarkGithub, { repository: 'willin/willin.wang' }],
+          [remarkGithub, { repository: 'willin/blog' }],
           [
             remarkMermaid,
             {

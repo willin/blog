@@ -1,4 +1,5 @@
 import { LocaleLink } from '../link';
+import { Codeblock } from './code';
 
 const CustomLink = (props: { [k: string]: string }) => {
   const href = props.href;
@@ -36,13 +37,13 @@ function DefaultImage(props: { [k: string]: string }) {
 function CustomTable(props: { [k: string]: string }) {
   return (
     <div className='overflow-x-auto'>
-      <table {...props} />
+      <table className='table table-zebra' {...props} />
     </div>
   );
 }
 
 export const components = {
-  // pre: Codeblock,
+  pre: Codeblock,
   Image: RoundedImage,
   img: DefaultImage,
   a: CustomLink,
