@@ -38,15 +38,5 @@ export const dict: I18nDict = {
     all_language: '所有语种',
     adblock: '发现广告拦截插件',
     adblock_message: '请关闭广告拦截插件或订阅 VIP 以继续使用本站服务。'
-  },
-  components: {
-    income: '充 ⚡ 收入',
-    expenditure: '用 ❤️ 支出',
-    balance: '余粮 🌾 ',
-    this_year: '今年',
-    no_data: '请开始您的表演',
-    date: '日期',
-    amount: '金额',
-    desc: '项目说明'
   }
 };

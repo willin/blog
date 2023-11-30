@@ -38,15 +38,5 @@ export const dict: I18nDict = {
     current_language: 'Current Language',
     adblock: 'Adblock Detected',
     adblock_message: 'Please disable adblock to continue using this site.'
-  },
-  components: {
-    income: '⚡ Income',
-    expenditure: '❤️ Expenditure',
-    balance: '🌾 Balance',
-    this_year: 'This year',
-    no_data: 'Nothing here',
-    date: 'Date',
-    amount: 'Amount',
-    desc: 'Description'
   }
 };
