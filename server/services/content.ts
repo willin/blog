@@ -45,7 +45,7 @@ export type MetaIndex = {
 };
 
 export interface IContentService {
-  getMeta(): Promise<ContentMeta>;
+  getMeta(): Promise<MetaIndex>;
   getContent({ locale, type, slug }: { locale: string; type: ContentType; slug: string }): Promise<Content>;
 }
 
@@ -60,11 +60,11 @@ export class ContentService implements IContentService {
     }/_content`;
   }
 
-  async getMeta(): Promise<ContentMeta> {
+  async getMeta(): Promise<MetaIndex> {
     const key = 'meta';
-    const cached = await this.#cache.get<ContentMeta>(key);
+    const cached = await this.#cache.get<MetaIndex>(key);
     if (cached) return cached;
-    const meta: ContentMeta = await fetch(`${this.#baseUrl}/meta.json`).then((res) => res.json());
+    const meta: MetaIndex = await fetch(`${this.#baseUrl}/meta.json`).then((res) => res.json());
     await this.#cache.put(key, meta, 86400);
     return meta;
   }
