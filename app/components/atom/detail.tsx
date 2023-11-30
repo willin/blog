@@ -55,35 +55,33 @@ function PostCopyright({ post, type }: { post: Content; type: ContentType }) {
 
   return (
     <div className='alert alert-info text-info-content my-10'>
-      <div className='flex-1'>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-          className='w-6 h-6 stroke-current mx-2 flex-shrink-0'>
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeWidth='2'
-            d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
-        </svg>
-        <label>
-          <h4 className='mb-2'>版权信息</h4>
-          <p className='text-sm mb-1'>文章标题： {post.title}</p>
-          <p className='text-sm mb-1'>
-            文章作者： <a href='https://willin.wang'>Willin Wang</a>
-          </p>
-          <p className='text-sm mb-1'>
-            本文链接： <a href={getUrl(type, post.slug, locale())}>{getUrl(type, post.slug, locale())}</a>
-          </p>
-          <p className='text-sm  mt-1'>
-            本博客所有文章除特别声明外，均为原创，采用{' '}
-            <a rel='license noreferrer' href='http://creativecommons.org/licenses/by-nc/4.0/' target='_blank'>
-              知识共享署名-非商业性使用 4.0 国际许可协议
-            </a>
-            进行许可。
-          </p>
-        </label>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        fill='none'
+        viewBox='0 0 24 24'
+        className='w-6 h-6 stroke-current mx-2 flex-shrink-0'>
+        <path
+          strokeLinecap='round'
+          strokeLinejoin='round'
+          strokeWidth='2'
+          d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
+      </svg>
+      <div>
+        <h4 className='mb-2'>版权信息</h4>
+        <p className='text-sm mb-1'>文章标题： {post.title}</p>
+        <p className='text-sm mb-1'>
+          文章作者： <a href='https://willin.wang'>Willin Wang</a>
+        </p>
+        <p className='text-sm mb-1'>
+          本文链接： <a href={getUrl(type, post.slug, locale())}>{getUrl(type, post.slug, locale())}</a>
+        </p>
+        <p className='text-sm  mt-1'>
+          本博客所有文章除特别声明外，均为原创，采用{' '}
+          <a rel='license noreferrer' href='http://creativecommons.org/licenses/by-nc/4.0/' target='_blank'>
+            知识共享署名-非商业性使用 4.0 国际许可协议
+          </a>
+          进行许可。
+        </p>
       </div>
     </div>
   );

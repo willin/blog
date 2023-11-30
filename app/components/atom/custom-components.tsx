@@ -1,11 +1,13 @@
+import { LocaleLink } from '../link';
+
 const CustomLink = (props: { [k: string]: string }) => {
   const href = props.href;
 
   if (href.startsWith('/')) {
     return (
-      <a className='link link-primary' to={href} {...props}>
+      <LocaleLink className='link link-primary' to={href} {...props}>
         {props.children}
-      </a>
+      </LocaleLink>
     );
   }
 

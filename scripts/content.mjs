@@ -87,19 +87,13 @@ const getAllFiles = async () => {
         } else {
           const files = await fsp.readdir(path.join(CONTENT, type, lang, item.name));
           const source = files.filter((x) => !x.endsWith('.mdx'));
-          files
-            .filter((x) => x.endsWith('.mdx'))
-            .forEach((file) => {
-              // .mdx 文件名为语言代码， 如 en、 zh
-              // content .mdx named with locale like en, zh
-              fileList.push({
-                type,
-                slug,
-                locale: file.replace(/\.mdx$/, ''),
-                entry: item.name,
-                files: source
-              });
-            });
+          fileList.push({
+            type,
+            slug,
+            locale: lang,
+            entry: item.name,
+            files: source
+          });
         }
       }
     }
@@ -153,7 +147,9 @@ const main = async () => {
       excerpt
     };
     const sourceFiles = files
-      ? await Promise.all(files.map((f) => readFile(path.resolve(CONTENT, type, slug, f)).then((c) => [`./${f}`, c])))
+      ? await Promise.all(
+          files.map((f) => readFile(path.resolve(CONTENT, type, locale, slug, f)).then((c) => [`./${f}`, c]))
+        )
       : undefined;
     // Build Content
     const { code } = await bundleMDX({
