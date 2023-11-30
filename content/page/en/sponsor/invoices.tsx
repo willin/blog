@@ -74,36 +74,38 @@ export function Invoices() {
 
 function TableBody({ invoices }: { invoices: InvoicesTable[] }) {
   return (
-    <table className='table table-zebra table-compact'>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Amount</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        {invoices.length === 0 && (
+    <div className='overflow-x-auto'>
+      <table className='table table-zebra table-md'>
+        <thead>
           <tr>
-            <td colSpan={3} className='text-center'>
-              <a
-                target='_blank'
-                className='btn btn-secondary my-2 hover:glass'
-                href='https://github.com/sponsors/willin'>
-                Get Startted
-              </a>
-            </td>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Description</th>
           </tr>
-        )}
-        {invoices.map((invoice, i) => (
-          <tr key={`${invoice.date}-${i}`}>
-            <td>{invoice.date}</td>
-            <td>{invoice.amount}</td>
-            <td>{invoice.description}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {invoices.length === 0 && (
+            <tr>
+              <td colSpan={3} className='text-center'>
+                <a
+                  target='_blank'
+                  className='btn btn-secondary my-2 hover:glass'
+                  href='https://github.com/sponsors/willin'>
+                  Get Startted
+                </a>
+              </td>
+            </tr>
+          )}
+          {invoices.map((invoice, i) => (
+            <tr key={`${invoice.date}-${i}`}>
+              <td>{invoice.date}</td>
+              <td>{invoice.amount}</td>
+              <td>{invoice.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

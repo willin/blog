@@ -2,22 +2,22 @@ import { type MetaFunction } from '@remix-run/cloudflare';
 
 export const pageMeta: MetaFunction = ({ matches, data }) => {
   const title = matches[0].meta.find((x) => x.title)?.title;
-  const { post } = data;
+  const { post, translated } = data;
   const parentMeta = matches
     .flatMap((match) => match.meta ?? [])
     .filter((meta) => !('title' in meta) && meta.name !== 'keywords' && meta.name !== 'description');
   return [
     ...parentMeta,
     {
-      title: `${post.title} | ${title}`
+      title: `${post?.title || translated?.title} | ${title}`
     },
     {
       name: 'description',
-      content: post.description || ''
+      content: post?.description || ''
     },
     {
       name: 'keywords',
-      content: [post.category, ...(post?.tags || [])].join(', ')
+      content: [post?.category, ...(post?.tags || [])].join(', ')
     }
   ];
 };

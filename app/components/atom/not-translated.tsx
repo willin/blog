@@ -1,5 +1,5 @@
+import { Link } from '@remix-run/react';
 import { ContentType, type Content } from '~/server/services/content';
-import { LocaleLink } from '../link';
 
 export function NotTranslated({ post, type }: { post: Content; type: ContentType }) {
   return (
@@ -8,7 +8,7 @@ export function NotTranslated({ post, type }: { post: Content; type: ContentType
       <p>This page is not translated to your language.</p>
       <p>
         Go back:
-        <LocaleLink to={`${type === ContentType.PAGE ? '' : `/${type}`}/${post.slug}`}>{post.title}</LocaleLink>
+        <Link to={`${type === ContentType.PAGE ? '' : `/${type}`}/${post.slug}`}>{post.title}</Link>
       </p>
     </div>
   );

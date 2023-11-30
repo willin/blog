@@ -1,13 +1,13 @@
 import { useI18n } from 'remix-i18n';
-import { LocaleLink } from '~/components/link';
 import { json, type LoaderFunction } from '@remix-run/cloudflare';
+import { Link } from '@remix-run/react';
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   return json({});
 };
 
 export default function IndexPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div className='flex justify-center'>
@@ -22,9 +22,9 @@ export default function IndexPage() {
           <h3>{t('site.subtitle')}</h3>
           <p className='leading-7 whitespace-pre-line'>{t('site.desc')}</p>
           <div className='card-actions justify-center py-2'>
-            <LocaleLink to='/about' className='btn btn-primary'>
+            <Link to={`/${locale()}/about`} className='btn btn-primary'>
               {t('site.offer')}
-            </LocaleLink>
+            </Link>
           </div>
           {/* <h2 className='mt-4 btn btn-secondary cursor-default'>{t('site.social')}</h2>
           <div className='card-actions justify-center'>
