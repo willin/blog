@@ -14,7 +14,7 @@ export function PostCard({
   const { t } = useI18n();
 
   return (
-    <LocaleLink to={`/${type}/${post.slug}`} className='grid gap-4'>
+    <LocaleLink to={`/${type}/${post.slug}`} className='grid gap-4 h-auto'>
       <div className='card bg-base-100 shadow-xl image-full relative mb-4'>
         <figure>
           <img src={post.image || '/images/bg.jpg'} alt='Cover' />

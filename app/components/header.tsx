@@ -32,7 +32,7 @@ export default function MainHeader() {
       label: page.title
     }));
   items.unshift({
-    href: `/blog`,
+    href: `/${locale()}/blog`,
     label: t('site.blog')
   });
 

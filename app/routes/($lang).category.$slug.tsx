@@ -1,3 +1,4 @@
+import clsx from 'classnames';
 import { json, type LoaderFunction } from '@remix-run/cloudflare';
 import { useLoaderData, useParams, useRouteLoaderData } from '@remix-run/react';
 import { useI18n } from 'remix-i18n';
@@ -50,7 +51,11 @@ export default function BlogCategoryPage() {
           <TagList type='tag' items={data[ContentType.BLOG].tags} />
         </section>
       )}
-      <div class='grid grid-cols-2 md:grid-cols-4 gap-4 my-10'>
+      <div
+        className={clsx({
+          'columns-2 lg:columns-3 xl::columns-4 my-10': posts?.length > 4,
+          'grid grid-cols-2 md:grid-cols-4 gap-4 my-10': posts?.length <= 4
+        })}>
         {posts.length > 0 &&
           posts.map((post) => (
             <PostCard post={post} key={post.slug} views={views.find((p) => p.slug === post.slug)?.views} />
