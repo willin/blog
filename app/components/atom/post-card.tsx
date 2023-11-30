@@ -26,7 +26,7 @@ export function PostGrid({ children }: { children: React.ReactNode }) {
       }
     }
     window.addEventListener('resize', resizeAllGridItems);
-    resizeAllGridItems();
+    setTimeout(resizeAllGridItems, 50);
     return () => window.removeEventListener('resize', resizeAllGridItems);
   }, [pathname]);
 

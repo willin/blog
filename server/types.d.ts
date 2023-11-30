@@ -1,6 +1,7 @@
 import type { Env } from './env';
 import type { IAuthService } from './services/auth';
 import type { IContentService } from './services/content';
+import type { IInvoiceService } from './services/invoice';
 import type { IViewsService } from './services/views';
 
 declare global {
@@ -8,8 +9,10 @@ declare global {
     export interface Services {
       auth: IAuthService;
       content: IContentService;
+      invoice: IInvoiceService;
       view: IViewsService;
     }
+    export { Env };
   }
 
   type Paginated<T> = {

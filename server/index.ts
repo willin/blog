@@ -9,6 +9,7 @@ import { DatabaseService } from './services/database';
 import { AuthService } from './services/auth';
 import { ViewService } from './services/views';
 import { ContentService } from './services/content';
+import { InvoiceService } from './services/invoice';
 
 if (process.env.NODE_ENV === 'development') {
   logDevReady(build);
@@ -29,9 +30,11 @@ export const onRequest = createPagesFunctionHandler({
     const auth = new AuthService(env, url);
     const content = new ContentService(env, url, cache);
     const view = new ViewService(env, db);
+    const invoice = new InvoiceService(env, db, cache);
     const services: RemixServer.Services = {
       auth,
       content,
+      invoice,
       view
     };
     return { env, services };
