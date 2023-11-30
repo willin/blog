@@ -54,6 +54,7 @@ export default function Bootstrap() {
 
   return (
     <>
+      <script async={true} src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js' />
       {!hideAd && <script async={true} src={SCRIPT} crossOrigin='anonymous' />}
       {blocked && (
         <article>

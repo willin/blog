@@ -26,7 +26,6 @@
     "dayjs": "^1.11.10",
     "isbot": "^3.6.13",
     "mdx-bundler": "^10.0.1",
-    "mermaid": "^10.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-auth": "^3.5.1",

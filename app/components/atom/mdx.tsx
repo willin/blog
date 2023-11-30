@@ -32,7 +32,6 @@ export function Mdx({ code, html }: { code: string; html: string }) {
           <Component />
         </article>
       ) : (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         <article
           className='prose prose-quoteless prose-neutral min-w-full my-10 html'
           dangerouslySetInnerHTML={{ __html: html }}

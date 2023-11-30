@@ -1,4 +1,3 @@
-import mermaid from 'mermaid';
 import type { ReadTimeResults } from 'reading-time';
 import { LocaleLink } from '../link';
 import { useI18n } from 'remix-i18n';
@@ -140,13 +139,14 @@ function LoginAndFollow() {
 function PostContent({ post }: { post: Content }) {
   const { following, vip } = useLoginInfo();
   useEffect(() => {
+    if (!window.mermaid) return;
     const graphs = document.querySelectorAll('.mermaid');
     if (graphs.length > 0) {
-      mermaid.initialize({
+      window.mermaid.initialize({
         theme: 'forest'
       });
       for (let i = 0; i < graphs.length; i += 1) {
-        mermaid.init(graphs[i]);
+        window.mermaid.init(graphs[i]);
       }
     }
   }, []);
