@@ -169,7 +169,7 @@ export function PostDetail({ post, type }: { post: Content; type: ContentType })
   const readingTime = post.readtime as ReadTimeResults;
 
   return (
-    <main>
+    <>
       <h1 className='text-5xl text-secondary text-center my-4 break-words'>{post.title}</h1>
       <aside className='text-center mb-8'>
         {type === ContentType.PAGE && (
@@ -215,6 +215,6 @@ export function PostDetail({ post, type }: { post: Content; type: ContentType })
 
         {locale() === 'zh' && <PostCopyright post={post} type={type} />}
       </aside>
-    </main>
+    </>
   );
 }
