@@ -7,6 +7,7 @@ import { useLocation } from '@remix-run/react';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
+  const trailingSlash = pathname.replace(/\/$/, '');
 
   return (
     <>
@@ -15,7 +16,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main
         className={clsx('p-2 sm:p-4 mb-4 mx-auto', {
           'container max-w-[1920px] shadow bg-base-100/90 rounded':
-            pathname !== '/' && pathname !== '/zh' && pathname !== '/en'
+            pathname !== '/' && trailingSlash !== '/zh' && trailingSlash !== '/en'
         })}>
         {children}
         <Bootstrap />
