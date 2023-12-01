@@ -10,7 +10,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@phosphor-icons/react": "^2.0.15",
-    "gray-matter": "^4.0.3",
     "hast-util-from-parse5": "^8.0.1",
     "mdx-bundler": "^10.0.1",
     "parse5": "^7.1.2",

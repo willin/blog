@@ -1,7 +1,6 @@
 import path from 'path';
 import fsp from 'fs/promises';
 import { fileURLToPath } from 'url';
-import matter from 'gray-matter';
 import readingTime from 'reading-time';
 import { bundleMDX } from 'mdx-bundler';
 import { createElement } from 'react';
@@ -145,26 +144,25 @@ const main = async () => {
     const { type, slug, locale, entry, files } = item;
     await checkDir(path.resolve(OUTPUT, type, locale));
     const source = await readFile(path.resolve(CONTENT, type, locale, files ? `${entry}/index.mdx` : entry));
-    const { data, content, excerpt } = matter(source, {
-      excerpt: true,
-      excerpt_separator: '<!-- more -->'
-    });
-    const frontmatter = {
-      type,
-      slug,
-      readtime: readingTime(content),
-      ...data,
-      excerpt
-    };
+
     const sourceFiles = files
       ? await Promise.all(
           files.map((f) => readFile(path.resolve(CONTENT, type, locale, slug, f)).then((c) => [`./${f}`, c]))
         )
       : undefined;
     // Build Content
-    const { code } = await bundleMDX({
-      source: content,
+    const {
+      code,
+      frontmatter: data,
+      matter
+    } = await bundleMDX({
+      source,
       files: sourceFiles ? Object.fromEntries(sourceFiles) : undefined,
+      grayMatterOptions: (options) => {
+        // eslint-disable-next-line no-param-reassign
+        options.excerpt = true;
+        return options;
+      },
       mdxOptions(options) {
         // eslint-disable-next-line no-param-reassign
         options.rehypePlugins = [
@@ -210,6 +208,14 @@ const main = async () => {
         return options;
       }
     });
+
+    const frontmatter = {
+      type,
+      slug,
+      ...data,
+      readtime: readingTime(source),
+      excerpt: matter.excerpt
+    };
     const Component = getMdxComponent(code);
     const html = renderToString(createElement(Component));
 

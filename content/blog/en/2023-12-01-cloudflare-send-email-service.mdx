@@ -1,0 +1,81 @@
+---
+title: Cloudflare Email Worker as a Service / API
+date: '2023-12-01'
+description: A private api/worker service for sending email powered by Cloudflare worker project.
+category: 技术
+tags: [cloudflare, full-stack, open-source]
+---
+
+# Cloudflare Email Worker as a Service / API
+
+A private api/worker service for sending email powered by Cloudflare worker project.
+
+---
+
+[![willin/cloudflare-send-email-service - GitHub](https://gh-card.dev/repos/willin/cloudflare-send-email-service.svg?fullname=)](https://github.com/willin/cloudflare-send-email-service)
+
+## Prepare Job
+
+1. Prepare a domian, such as `example.com`. Now, add a website in [cloudflare-dashboard](https://dash.cloudflare.com/) and build your domain. It maybe cost you about 30min.
+2. Select your site and domain, [Enable Email Routing](https://developers.cloudflare.com/email-routing/get-started/enable-email-routing/). It maybe cost you about 5min.
+3. Install warngler for delpoy cf worker. Ensure your node version >= 16.13.0 and run :
+
+```sh
+npm install wrangler@latest -g
+```
+
+## Setup
+
+1. Get the code
+
+```sh
+git clone git@github.com:willin/cloudflare-send-email-service.git
+```
+
+2. Deploy your worker
+
+```sh
+wrangler deploy  --name send-email-worker-service
+```
+
+3. Config DNS records
+
+Add a TXT record to your domain with the following values:
+
+- Name: `yourdomain.com`
+- Value: `v=spf1 a mx include:relay.mailchannels.net ~all`
+
+Note: If you're facing [Domain Lockdown](https://support.mailchannels.com/hc/en-us/articles/16918954360845-Secure-your-domain-name-against-spoofing-with-Domain-Lockdown) error, follow the below steps:
+
+- Name: `_mailchannels.yourdomain.com`
+- Value: `v=mc1 cfid=yourdomain.workers.dev` (the value of `cfid` will also be present in the error response)
+
+4. Setup DKIM
+
+This step is optional, but highly recommended. DKIM is a DNS record that helps prevent email spoofing. You may follow the steps listed in the [MailChannels documentation](https://support.mailchannels.com/hc/en-us/articles/7122849237389-Adding-a-DKIM-Signature) to set up DKIM for your domain.
+
+## API Documentation
+
+### Endpoint
+
+`http://{{your-cf-worker-prefix}}.workers.dev/`
+
+### Method
+
+`POST`
+
+### Parameters
+
+| Name              | Type     | Description                         |
+| ----------------- | -------- | ----------------------------------- |
+| `sender_email`    | `string` | The email address of the sender.    |
+| `sender_name`     | `string` | The name of the sender.             |
+| `recipient_email` | `string` | The email address of the recipient. |
+| `subject`         | `string` | The subject of the email.           |
+| `message`         | `string` | The message body of the email.      |
+
+### Example Request
+
+```sh
+curl -d"sender_email=admin@yourdomain.com&sender_name=Demo&recipient_email=your-dest@example.com&subject='Hello Guy!'&msg_data='My first email sent!'" "http://your-cf-worker-prefix.workers.dev/"
+```

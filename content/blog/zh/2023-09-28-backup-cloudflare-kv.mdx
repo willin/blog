@@ -2,8 +2,8 @@
 title: Cloudflare KV 备份及迁移
 date: '2023-09-28'
 description: 之前的项目一直都用的是免费的服务，后端 Vercel 托管，数据使用的 Cloudflare KV。 这其中就有一个很严重的问题：`延迟`。经常数据操作了，但是 KV 还是缓存的值。
-category: 闲聊
-tags: [技术, 全栈, node.js]
+category: 技术
+tags: [cloudflare, 全栈]
 follow: true
 ---
 
@@ -14,6 +14,10 @@ follow: true
 现在索性全部换成 Cloudflare 全家桶，虽然可以直接用 KV，但结构化的数据可以用免费的 D1 额度。
 
 从网上搜索了很多关于 Cloudflare KV 备份及迁移的文章，但是都不是很满意，所以自己写了一个。
+
+---
+
+[![willin/remote-cloudflare-kv - GitHub](https://gh-card.dev/repos/willin/remote-cloudflare-kv.svg?fullname=)](https://github.com/willin/remote-cloudflare-kv)
 
 # 列出所有数据 Key
 
@@ -129,7 +133,7 @@ npx wrangler d1 execute RECORDS --file /PATH/data.sql --local
 
 免费域名申请：js.cool/sh.gg/憨憨.我爱你/kaiyuan.fund/log.lu/v0.chat 及其他，可以访问： [https://domain.willin.wang](https://domain.willin.wang)
 
-该项目的源码位于： [https://github.com/willin/domain](https://github.com/willin/domain)
+[![willin/domain - GitHub](https://gh-card.dev/repos/willin/domain.svg?fullname=)](https://github.com/willin/domain)
 
 其中已经使用到的技术栈（如无特殊说明均为最新版本）：
 
