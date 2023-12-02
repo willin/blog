@@ -12,7 +12,7 @@ export default {
       }
     }
   },
-  plugins: [daisyui, typography],
+  plugins: [typography, daisyui],
   daisyui: {
     themes: true
   }
