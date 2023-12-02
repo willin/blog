@@ -1,8 +1,12 @@
 import { useI18n } from 'remix-i18n';
-import { json, type LoaderFunction } from '@remix-run/cloudflare';
+import { json, redirect, type LoaderFunction } from '@remix-run/cloudflare';
 import { Link } from '@remix-run/react';
+import { i18nConfig } from '~/i18n';
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
+  if (params.lang && !i18nConfig.supportedLanguages.includes(params.lang)) {
+    return redirect(`/${i18nConfig.fallbackLng}/${params.lang}`);
+  }
   return json({});
 };
 
