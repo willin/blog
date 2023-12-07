@@ -1,7 +1,7 @@
 {
   "name": "Willin Wang",
   "short_name": "Willin",
-  "theme_color": "#ff8e05",
+  "theme_color": "transparent",
   "background_color": "#ffffff",
   "display": "fullscreen",
   "Scope": "/",
