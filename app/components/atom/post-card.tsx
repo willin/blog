@@ -61,7 +61,7 @@ export function PostCard({
         </figure>
         <div className='card-body'>
           <h2 className='card-title text-lg text-secondary break-words'>{post.title}</h2>
-          <p className='text-sm break-words'>{post?.excerpt || post?.description}&nbsp;</p>
+          <p className='text-sm break-words'>{post?.description}&nbsp;</p>
           <div className='card-actions justify-end'>
             <div className='join'>
               <button className='btn btn-outline btn-xs join-item'>
