@@ -1,0 +1,98 @@
+---
+title: 联邦宇宙（Mastodon、Fediverse）别名服务
+date: '2023-12-23'
+description: 一个开源的联邦宇宙别名服务。A Fediverse Alias Service for public
+category: 技术
+tags: [cloudflare, 全栈, 开源]
+---
+
+## 介绍
+
+- 网站： https://alias.willin.wang
+- 开源代码仓库： https://github.com/willin/alias
+
+比如您在 Mastodon 系统上的用户名为： [@willin@log.lu](https://log.lu/@willin) ，现在您可以申请一下域名后缀的别名：
+
+- js.cool
+- css.fund
+- sh.gg
+- log.lu
+- kaiyuan.fund
+- v0.chat
+
+示例：[i@js.cool](https://js.cool/.well-known/webfinger?resource=acct:i@js.cool) | [i@v0.md](https://v0.md/.well-known/webfinger?resource=acct:i@v0.md) 都指向到了 [@willin@log.lu](https://log.lu/@willin)
+
+## 使用自己的域名进行部署
+
+如果您拥有自己的域名，但是没有部署 Mastodon 或者其他 Fediverse 的应用程序。可以为自己的域名设置别名。需要用到 Cloudflare Worker，参考项目： https://github.com/willin/fediverse-alias
+
+### 第一步：初始化仓库
+
+Fork 或者 Clone 该项目：
+
+```
+git clone https://github.com/willin/fediverse-alias.git
+```
+
+### 第二步配置
+
+- 配置域名路由
+- 修改数据库 ID （参考[创建数据库](https://developers.cloudflare.com/d1/get-started/#3-create-a-database)文档）
+
+编辑 `wrangler.toml`:
+
+```toml
+name = "fediverse-alias"
+compatibility_date = "2023-01-01"
+
+# 修改为你自己的路由
+routes = [
+  { pattern = "yourdomain.com/.well-known/webfinger*", zone_name = "yourdomain.com" }
+  # 如果有多个，继续添加
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dns"
+# 修改为你刚创建的数据库 ID
+database_id = "xxx"
+```
+
+- 初始化数据
+
+修改 `migrations/0011_seeds.sql`:
+
+```sql
+-- 这里是一个示例：
+INSERT INTO aliases(`alias`,`account`,`owner`) VALUES('admin@yourname.com','destination@mastodon.social','');
+-- 多条记录在此处添加
+```
+
+### 第三步：部署
+
+执行：
+
+```bash
+npm run deploy
+npm run migration
+```
+
+## 赞助 Sponsor
+
+维护者 Owner： [Willin Wang](https://willin.wang)
+
+如果您对本项目感兴趣，可以通过以下方式支持我：
+
+- 关注我的 Github 账号：[@willin](https://github.com/willin)
+- 参与 [爱发电](https://afdian.net/@willin) 计划
+- 支付宝或微信[扫码打赏](https://user-images.githubusercontent.com/1890238/89126156-0f3eeb80-d516-11ea-9046-5a3a5d59b86b.png)
+
+Donation ways:
+
+- Github: https://github.com/sponsors/willin
+- Paypal: https://paypal.me/willinwang
+- Alipay or Wechat Pay: [QRCode](https://user-images.githubusercontent.com/1890238/89126156-0f3eeb80-d516-11ea-9046-5a3a5d59b86b.png)
+
+## 许可证 License
+
+Apache-2.0
