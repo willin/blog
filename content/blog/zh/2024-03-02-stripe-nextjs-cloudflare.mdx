@@ -1,0 +1,764 @@
+---
+title: Stripe 支付 （使用 Next.js 部署到 Cloudflare）
+date: '2024-03-02'
+description: 使用 Stripe 为您的生意进行线上收款开发。
+category: 技术
+tags: [cloudflare, 全栈, 开源]
+---
+
+## 安装
+
+```bash
+# 或者使用 npm, yarn 安装
+bun add stripe
+```
+
+## 创建订单
+
+创建 `app/api/create/route.ts`：
+
+```ts
+import type { NextRequest } from 'next/server';
+import { redirect } from 'next/navigation';
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import Stripe from 'stripe';
+
+export const runtime = 'edge';
+
+export async function GET(request: NextRequest) {
+  const { env, cf, ctx } = getRequestContext();
+  // 配置密钥
+  const stripe = Stripe(env.STRIPE_PRIVATE_KEY);
+  // 创建订单会话
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price_data: {
+          // 支付单位
+          currency: 'usd',
+          // 产品信息
+          product_data: {
+            name: 'T-shirt'
+          },
+          // 金额，此处为 $20.00
+          unit_amount: 2000
+        },
+        // 数量
+        quantity: 1
+      }
+    ],
+    // 默认模式
+    mode: 'payment',
+    // 配置成功失败回调
+    success_url: 'http://localhost:3000/success',
+    cancel_url: 'http://localhost:3000/cancel'
+  });
+  // 创建完会话后需要跳转到托管支付页面
+  redirect(session.url);
+}
+```
+
+创建 `Session` 时，其对象格式为：
+
+```js
+{
+  "id": "cs_test_a1WW1DelXijVoLRabQgZFiKm0emvqEStX7WlFjmwjwUu8naYDcBI2UwB8P",
+  "object": "checkout.session",
+  "after_expiration": null,
+  "allow_promotion_codes": null,
+  "amount_subtotal": 2000,
+  "amount_total": 2000,
+  "automatic_tax": {
+    "enabled": false,
+    "liability": null,
+    "status": null
+  },
+  "billing_address_collection": null,
+  "cancel_url": "http://localhost:3000/api/cancel",
+  "client_reference_id": null,
+  "client_secret": null,
+  "consent": null,
+  "consent_collection": null,
+  "created": 1709450363,
+  "currency": "usd",
+  "currency_conversion": null,
+  "custom_fields": [],
+  "custom_text": {
+    "after_submit": null,
+    "shipping_address": null,
+    "submit": null,
+    "terms_of_service_acceptance": null
+  },
+  "customer": null,
+  "customer_creation": "if_required",
+  "customer_details": null,
+  "customer_email": null,
+  "expires_at": 1709536763,
+  "invoice": null,
+  "invoice_creation": {
+    "enabled": false,
+    "invoice_data": {
+      "account_tax_ids": null,
+      "custom_fields": null,
+      "description": null,
+      "footer": null,
+      "issuer": null,
+      "metadata": {},
+      "rendering_options": null
+    }
+  },
+  "livemode": false,
+  "locale": null,
+  "metadata": {},
+  "mode": "payment",
+  "payment_intent": null,
+  "payment_link": null,
+  "payment_method_collection": "if_required",
+  "payment_method_configuration_details": {
+    "id": "pmc_1L0f9MAZ3ftDWrKu7PdmZMop",
+    "parent": null
+  },
+  "payment_method_options": {
+    "card": {
+      "request_three_d_secure": "automatic"
+    }
+  },
+  "payment_method_types": [
+    "card"
+  ],
+  "payment_status": "unpaid",
+  "phone_number_collection": {
+    "enabled": false
+  },
+  "recovered_from": null,
+  "setup_intent": null,
+  "shipping_address_collection": null,
+  "shipping_cost": null,
+  "shipping_details": null,
+  "shipping_options": [],
+  "status": "open",
+  "submit_type": null,
+  "subscription": null,
+  "success_url": "http://localhost:3000/api/success",
+  "total_details": {
+    "amount_discount": 0,
+    "amount_shipping": 0,
+    "amount_tax": 0
+  },
+  "ui_mode": "hosted",
+  "url": "https://checkout.stripe.com/c/pay/cs_test_a1WW1DelXijVoLRabQgZFiKm0emvqEStX7WlFjmwjwUu8naYDcBI2UwB8P#fidkdWxOYHwnPyd1blpxYHZxWjA0TjZmX2xEXzZjcUFSd05wTH10TTZwZ1dnZ1FAMlc0UWNvcjM0dWtwMXZdaFV%2FfHJnb398V0hXYmZLNVI1QlI9Vkd1fH1HTWhiTHNGMFU8MXZ0TGNEUjdVNTVnRF1maXdPXCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"
+}
+```
+
+## 创建 Webhook
+
+创建 `app/api/webhook/route.ts`：
+
+```ts
+import type { NextRequest } from 'next/server';
+import { getRequestContext } from '@cloudflare/next-on-pages';
+
+export const runtime = 'edge';
+
+export async function GET(request: NextRequest) {
+  const { env, cf, ctx } = getRequestContext();
+  console.log(request.url);
+  return Response.json({});
+}
+
+export async function POST(request: NextRequest) {
+  const { env, cf, ctx } = getRequestContext();
+  console.log(request.url);
+  const res = await request.json();
+  console.log(JSON.stringify(res, null, 2));
+  return Response.json({ res });
+}
+```
+
+正常情况下，支付成功会收到 4 条 Webhook 推送：
+
+- `payment_intent.created`
+- `payment_intent.succeeded`
+- `checkout.session.completed`
+- `charge.succeeded`
+
+### 支付创建： `payment_intent.created`
+
+其数据格式如下：
+
+```js
+{
+  "id": "evt_3Oq9MQAZ3ftDWrKu105Dpr85",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1709450486,
+  "data": {
+    "object": {
+      "id": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP",
+      "object": "payment_intent",
+      "amount": 2000,
+      "amount_capturable": 0,
+      "amount_details": {
+        "tip": {}
+      },
+      "amount_received": 0,
+      "application": null,
+      "application_fee_amount": null,
+      "automatic_payment_methods": null,
+      "canceled_at": null,
+      "cancellation_reason": null,
+      "capture_method": "automatic",
+      "charges": {
+        "object": "list",
+        "data": [],
+        "has_more": false,
+        "total_count": 0,
+        "url": "/v1/charges?payment_intent=pi_3Oq9MQAZ3ftDWrKu1WqprhwP"
+      },
+      "client_secret": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP_secret_4xYNrVakbq4b8Ez8aKzpRrVaH",
+      "confirmation_method": "automatic",
+      "created": 1709450486,
+      "currency": "usd",
+      "customer": null,
+      "description": null,
+      "invoice": null,
+      "last_payment_error": null,
+      "latest_charge": null,
+      "livemode": false,
+      "metadata": {},
+      "next_action": null,
+      "on_behalf_of": null,
+      "payment_method": null,
+      "payment_method_configuration_details": null,
+      "payment_method_options": {
+        "card": {
+          "installments": null,
+          "mandate_options": null,
+          "network": null,
+          "request_three_d_secure": "automatic"
+        }
+      },
+      "payment_method_types": [
+        "card"
+      ],
+      "processing": null,
+      "receipt_email": null,
+      "review": null,
+      "setup_future_usage": null,
+      "shipping": null,
+      "source": null,
+      "statement_descriptor": null,
+      "statement_descriptor_suffix": null,
+      "status": "requires_payment_method",
+      "transfer_data": null,
+      "transfer_group": null
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": "req_fpC2jsalYoZG5q",
+    "idempotency_key": "af756db1-fbf9-414f-b502-664c4aab3b86"
+  },
+  "type": "payment_intent.created"
+}
+```
+
+### 支付成功： `payment_intent.succeeded`
+
+其数据格式如下：
+
+```js
+{
+  "id": "evt_3Oq9MQAZ3ftDWrKu1ma3zFtK",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1709450487,
+  "data": {
+    "object": {
+      "id": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP",
+      "object": "payment_intent",
+      "amount": 2000,
+      "amount_capturable": 0,
+      "amount_details": {
+        "tip": {}
+      },
+      "amount_received": 2000,
+      "application": null,
+      "application_fee_amount": null,
+      "automatic_payment_methods": null,
+      "canceled_at": null,
+      "cancellation_reason": null,
+      "capture_method": "automatic",
+      "charges": {
+        "object": "list",
+        "data": [
+          {
+            "id": "ch_3Oq9MQAZ3ftDWrKu1ZmRbQIJ",
+            "object": "charge",
+            "amount": 2000,
+            "amount_captured": 2000,
+            "amount_refunded": 0,
+            "amount_updates": [],
+            "application": null,
+            "application_fee": null,
+            "application_fee_amount": null,
+            "balance_transaction": "txn_3Oq9MQAZ3ftDWrKu1moAHt2a",
+            "billing_details": {
+              "address": {
+                "city": null,
+                "country": "HK",
+                "line1": null,
+                "line2": null,
+                "postal_code": null,
+                "state": null
+              },
+              "email": "example@qq.com",
+              "name": "WWW",
+              "phone": null
+            },
+            "calculated_statement_descriptor": "WWW.MOBSUGAR.IO",
+            "captured": true,
+            "created": 1709450487,
+            "currency": "usd",
+            "customer": null,
+            "description": null,
+            "destination": null,
+            "dispute": null,
+            "disputed": false,
+            "failure_balance_transaction": null,
+            "failure_code": null,
+            "failure_message": null,
+            "fraud_details": {},
+            "invoice": null,
+            "livemode": false,
+            "metadata": {},
+            "on_behalf_of": null,
+            "order": null,
+            "outcome": {
+              "network_status": "approved_by_network",
+              "reason": null,
+              "risk_level": "normal",
+              "risk_score": 13,
+              "seller_message": "Payment complete.",
+              "type": "authorized"
+            },
+            "paid": true,
+            "payment_intent": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP",
+            "payment_method": "pm_1Oq9MPAZ3ftDWrKuke634REA",
+            "payment_method_details": {
+              "card": {
+                "amount_authorized": 2000,
+                "brand": "visa",
+                "checks": {
+                  "address_line1_check": null,
+                  "address_postal_code_check": null,
+                  "cvc_check": "pass"
+                },
+                "country": "US",
+                "exp_month": 11,
+                "exp_year": 2028,
+                "extended_authorization": {
+                  "status": "disabled"
+                },
+                "fingerprint": "3gHl5uLmwTB9HIRs",
+                "funding": "credit",
+                "incremental_authorization": {
+                  "status": "unavailable"
+                },
+                "installments": null,
+                "last4": "4242",
+                "mandate": null,
+                "multicapture": {
+                  "status": "unavailable"
+                },
+                "network": "visa",
+                "network_token": {
+                  "used": false
+                },
+                "overcapture": {
+                  "maximum_amount_capturable": 2000,
+                  "status": "unavailable"
+                },
+                "three_d_secure": null,
+                "wallet": null
+              },
+              "type": "card"
+            },
+            "radar_options": {},
+            "receipt_email": null,
+            "receipt_number": null,
+            "receipt_url": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xSzNjWmlBWjNmdERXckt1KPjJkK8GMgZhPv_5laQ6LBYd9FbofNSkuOxzJWjp-5pGKggGBmjSAksKhagtKXM_GZqvjJz5uKI-dJ8b",
+            "refunded": false,
+            "refunds": {
+              "object": "list",
+              "data": [],
+              "has_more": false,
+              "total_count": 0,
+              "url": "/v1/charges/ch_3Oq9MQAZ3ftDWrKu1ZmRbQIJ/refunds"
+            },
+            "review": null,
+            "shipping": null,
+            "source": null,
+            "source_transfer": null,
+            "statement_descriptor": null,
+            "statement_descriptor_suffix": null,
+            "status": "succeeded",
+            "transfer_data": null,
+            "transfer_group": null
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/charges?payment_intent=pi_3Oq9MQAZ3ftDWrKu1WqprhwP"
+      },
+      "client_secret": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP_secret_4xYNrVakbq4b8Ez8aKzpRrVaH",
+      "confirmation_method": "automatic",
+      "created": 1709450486,
+      "currency": "usd",
+      "customer": null,
+      "description": null,
+      "invoice": null,
+      "last_payment_error": null,
+      "latest_charge": "ch_3Oq9MQAZ3ftDWrKu1ZmRbQIJ",
+      "livemode": false,
+      "metadata": {},
+      "next_action": null,
+      "on_behalf_of": null,
+      "payment_method": "pm_1Oq9MPAZ3ftDWrKuke634REA",
+      "payment_method_configuration_details": null,
+      "payment_method_options": {
+        "card": {
+          "installments": null,
+          "mandate_options": null,
+          "network": null,
+          "request_three_d_secure": "automatic"
+        }
+      },
+      "payment_method_types": [
+        "card"
+      ],
+      "processing": null,
+      "receipt_email": null,
+      "review": null,
+      "setup_future_usage": null,
+      "shipping": null,
+      "source": null,
+      "statement_descriptor": null,
+      "statement_descriptor_suffix": null,
+      "status": "succeeded",
+      "transfer_data": null,
+      "transfer_group": null
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": "req_fpC2jsalYoZG5q",
+    "idempotency_key": "af756db1-fbf9-414f-b502-664c4aab3b86"
+  },
+  "type": "payment_intent.succeeded"
+}
+```
+
+### 会话完成： `checkout.session.completed`
+
+其数据格式如下：
+
+```js
+{
+  "id": "evt_1Oq9MSAZ3ftDWrKuTBdpH074",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1709450487,
+  "data": {
+    "object": {
+      "id": "cs_test_a1WW1DelXijVoLRabQgZFiKm0emvqEStX7WlFjmwjwUu8naYDcBI2UwB8P",
+      "object": "checkout.session",
+      "after_expiration": null,
+      "allow_promotion_codes": null,
+      "amount_subtotal": 2000,
+      "amount_total": 2000,
+      "automatic_tax": {
+        "enabled": false,
+        "liability": null,
+        "status": null
+      },
+      "billing_address_collection": null,
+      "cancel_url": "http://localhost:3000/api/cancel",
+      "client_reference_id": null,
+      "client_secret": null,
+      "consent": null,
+      "consent_collection": null,
+      "created": 1709450363,
+      "currency": "usd",
+      "currency_conversion": null,
+      "custom_fields": [],
+      "custom_text": {
+        "after_submit": null,
+        "shipping_address": null,
+        "submit": null,
+        "terms_of_service_acceptance": null
+      },
+      "customer": null,
+      "customer_creation": "if_required",
+      "customer_details": {
+        "address": {
+          "city": null,
+          "country": "HK",
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
+        "email": "example@qq.com",
+        "name": "WWW",
+        "phone": null,
+        "tax_exempt": "none",
+        "tax_ids": []
+      },
+      "customer_email": null,
+      "expires_at": 1709536763,
+      "invoice": null,
+      "invoice_creation": {
+        "enabled": false,
+        "invoice_data": {
+          "account_tax_ids": null,
+          "custom_fields": null,
+          "description": null,
+          "footer": null,
+          "issuer": null,
+          "metadata": {},
+          "rendering_options": null
+        }
+      },
+      "livemode": false,
+      "locale": null,
+      "metadata": {},
+      "mode": "payment",
+      "payment_intent": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP",
+      "payment_link": null,
+      "payment_method_collection": "if_required",
+      "payment_method_configuration_details": {
+        "id": "pmc_1L0f9MAZ3ftDWrKu7PdmZMop",
+        "parent": null
+      },
+      "payment_method_options": {
+        "card": {
+          "request_three_d_secure": "automatic"
+        }
+      },
+      "payment_method_types": [
+        "card"
+      ],
+      "payment_status": "paid",
+      "phone_number_collection": {
+        "enabled": false
+      },
+      "recovered_from": null,
+      "setup_intent": null,
+      "shipping": null,
+      "shipping_address_collection": null,
+      "shipping_options": [],
+      "shipping_rate": null,
+      "status": "complete",
+      "submit_type": null,
+      "subscription": null,
+      "success_url": "http://localhost:3000/api/success",
+      "total_details": {
+        "amount_discount": 0,
+        "amount_shipping": 0,
+        "amount_tax": 0
+      },
+      "ui_mode": "hosted",
+      "url": null
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "checkout.session.completed"
+}
+```
+
+### 收款成功： `charge.succeeded`
+
+其数据格式如下：
+
+```js
+{
+  "id": "evt_3Oq9MQAZ3ftDWrKu1uS1aAQv",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1709450487,
+  "data": {
+    "object": {
+      "id": "ch_3Oq9MQAZ3ftDWrKu1ZmRbQIJ",
+      "object": "charge",
+      "amount": 2000,
+      "amount_captured": 2000,
+      "amount_refunded": 0,
+      "amount_updates": [],
+      "application": null,
+      "application_fee": null,
+      "application_fee_amount": null,
+      "balance_transaction": "txn_3Oq9MQAZ3ftDWrKu1moAHt2a",
+      "billing_details": {
+        "address": {
+          "city": null,
+          "country": "HK",
+          "line1": null,
+          "line2": null,
+          "postal_code": null,
+          "state": null
+        },
+        "email": "example@qq.com",
+        "name": "WWW",
+        "phone": null
+      },
+      "calculated_statement_descriptor": "WWW.MOBSUGAR.IO",
+      "captured": true,
+      "created": 1709450487,
+      "currency": "usd",
+      "customer": null,
+      "description": null,
+      "destination": null,
+      "dispute": null,
+      "disputed": false,
+      "failure_balance_transaction": null,
+      "failure_code": null,
+      "failure_message": null,
+      "fraud_details": {},
+      "invoice": null,
+      "livemode": false,
+      "metadata": {},
+      "on_behalf_of": null,
+      "order": null,
+      "outcome": {
+        "network_status": "approved_by_network",
+        "reason": null,
+        "risk_level": "normal",
+        "risk_score": 13,
+        "seller_message": "Payment complete.",
+        "type": "authorized"
+      },
+      "paid": true,
+      "payment_intent": "pi_3Oq9MQAZ3ftDWrKu1WqprhwP",
+      "payment_method": "pm_1Oq9MPAZ3ftDWrKuke634REA",
+      "payment_method_details": {
+        "card": {
+          "amount_authorized": 2000,
+          "brand": "visa",
+          "checks": {
+            "address_line1_check": null,
+            "address_postal_code_check": null,
+            "cvc_check": "pass"
+          },
+          "country": "US",
+          "exp_month": 11,
+          "exp_year": 2028,
+          "extended_authorization": {
+            "status": "disabled"
+          },
+          "fingerprint": "3gHl5uLmwTB9HIRs",
+          "funding": "credit",
+          "incremental_authorization": {
+            "status": "unavailable"
+          },
+          "installments": null,
+          "last4": "4242",
+          "mandate": null,
+          "multicapture": {
+            "status": "unavailable"
+          },
+          "network": "visa",
+          "network_token": {
+            "used": false
+          },
+          "overcapture": {
+            "maximum_amount_capturable": 2000,
+            "status": "unavailable"
+          },
+          "three_d_secure": null,
+          "wallet": null
+        },
+        "type": "card"
+      },
+      "radar_options": {},
+      "receipt_email": null,
+      "receipt_number": null,
+      "receipt_url": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xSzNjWmlBWjNmdERXckt1KPfJkK8GMgaSFOB_L6Y6LBYsJgXxeEkmm3jP_kBycWcH9ysRsk-T-qRW5WX10pKtklDHBmT-LIkTUFdG",
+      "refunded": false,
+      "refunds": {
+        "object": "list",
+        "data": [],
+        "has_more": false,
+        "total_count": 0,
+        "url": "/v1/charges/ch_3Oq9MQAZ3ftDWrKu1ZmRbQIJ/refunds"
+      },
+      "review": null,
+      "shipping": null,
+      "source": null,
+      "source_transfer": null,
+      "statement_descriptor": null,
+      "statement_descriptor_suffix": null,
+      "status": "succeeded",
+      "transfer_data": null,
+      "transfer_group": null
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": "req_fpC2jsalYoZG5q",
+    "idempotency_key": "af756db1-fbf9-414f-b502-664c4aab3b86"
+  },
+  "type": "charge.succeeded"
+}
+```
+
+## 添加支付宝、微信登其他支付方式
+
+需要在控制台中添加其他支付方式。对应的文档：
+
+- [支付宝付款](https://docs.stripe.com/payments/alipay)
+- [Wechat Pay payments](https://docs.stripe.com/payments/wechat-pay)
+
+手动/自动化配置支付方式，修改创建订单接口：
+
+```ts
+const session = await stripe.checkout.sessions.create({
+  // 移除 payment_method_types 参数
+  // 可以在控制台中控制默认支付方法
+  payment_method_types: ['card'],
+  line_items: [
+    {
+      price_data: {
+        // 通过火币单位来选择该会话的默认支付方法
+        currency: 'eur',
+        product_data: {
+          name: 'T-shirt'
+        },
+        unit_amount: 2000
+      },
+      quantity: 1
+    }
+  ],
+  mode: 'payment',
+  success_url: 'https://example.com/success',
+  cancel_url: 'https://example.com/cancel'
+});
+```
+
+## 参考文档
+
+- [Stripe 构建支付集成](https://docs.stripe.com/payments/accept-a-payment?platform=web&ui=checkout)
+- [Stripe JS SDK](https://docs.stripe.com/js)
+- [Stripe 测试-测试卡](https://docs.stripe.com/testing#cards)
+- [Stripe Webhook](https://docs.stripe.com/webhooks)
+- [Stripe API](https://docs.stripe.com/api/payment_intents)
+- [Stripe 管理支付方式](https://docs.stripe.com/payments/dashboard-payment-methods)
+- [Stripe Payment Methods API](https://docs.stripe.com/payments/payment-methods)
