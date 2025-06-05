@@ -9,7 +9,7 @@ export function Donate() {
         <a
           target='_blank'
           className='btn btn-secondary btn-lg my-2 hover:glass'
-          href={locale() === 'zh' ? 'https://afdian.net/a/willin' : 'https://github.com/sponsors/willin'}
+          href={locale() === 'zh' ? 'https://afdian.com/a/willin' : 'https://github.com/sponsors/willin'}
           rel='noreferrer'>
           {t('common.donate')}
         </a>

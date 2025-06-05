@@ -87,7 +87,7 @@ function TableBody({ invoices }: { invoices: InvoicesTable[] }) {
           {invoices.length === 0 && (
             <tr>
               <td colSpan={3} className='text-center'>
-                <a target='_blank' className='btn btn-secondary my-2 hover:glass' href='https://afdian.net/a/willin'>
+                <a target='_blank' className='btn btn-secondary my-2 hover:glass' href='https://afdian.com/a/willin'>
                   请开始您的表演
                 </a>
               </td>
